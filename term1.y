@@ -1,6 +1,6 @@
 %{
-#include<stdio.h>
-#include <alloca.h>
+#include <stdio.h>
+
 #include <math.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -11,14 +11,14 @@ float factorial(int n)
 {
   int c;
   float result = 1;
- 
+
   for (c = 1; c <= n; c++)
     result = result * c;
- 
+
   return result;
 }
 
-long int bin_dec(long int num)   
+long int bin_dec(long int num)
 {
 long int rem,sum=0,power=0;
 while(num>0)
@@ -31,6 +31,11 @@ while(num>0)
 
 return sum;
 }
+
+void warning( char *s , char *t );
+
+void yyerror( char *s );
+int yylex (void);
 %}
 
 %token NUMBER MOD RIGHTSHIFT LEFTSHIFT PIVAL
@@ -93,7 +98,7 @@ post   : primary
         | post INC { $$ = $1+1; }
         | post DEC { $$ = $1-1; }
         ;
- primary:
+primary:
          PIVAL { $$ = M_PI; }
         | OPENBRACKET expr CLOSEBRACKET { $$ = $2; }
         | function
@@ -135,17 +140,20 @@ function: SIN OPENBRACKET expr CLOSEBRACKET
 #include "lex.yy.c"
 #include <string.h>
 char *progname;
-yyerror( s )
-char *s;
+void warning( char *s , char *t )
+{
+  fprintf( stderr ,"%s: %s\n" , progname , s );
+  if ( t )
+    fprintf( stderr , " %s\n" , t );
+}
+void yyerror( char *s )
 {
   warning( s , ( char * )0 );
   yyparse();
 }
 
-warning( s , t )
-char *s , *t;
+int main(int argc, char **argv)
 {
-  fprintf( stderr ,"%s: %s\n" , progname , s );
-  if ( t )
-    fprintf( stderr , " %s\n" , t );
+    progname = argv[0];
+    yyparse();
 }

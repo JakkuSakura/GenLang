@@ -1,3 +1,8 @@
+%{
+#include "y.tab.h"
+
+%}
+%option noyywrap
 number [0-9]+\.?|[0-9]*\.[0-9]+
 %%
 [ \t]   { ; }
@@ -30,12 +35,12 @@ abs     return ABS;
 "~"     return UNARYMINUS;
 "/"     return DIV;
 "*"     return MUL;
-"^"     return POW;
+"**"     return POW;
 sqrt    return SQRT;
 "("     return OPENBRACKET;
 ")"     return CLOSEBRACKET;
 "%"     return MOD;
-"^^"    return XOR;
+"^"    return XOR;
 "="     return ASSIGN;
 "&&"    return LAND;
 "||"    return OR;
