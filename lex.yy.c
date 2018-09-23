@@ -502,10 +502,11 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "./bc.l"
 #line 2 "./bc.l"
-#include "y.tab.h"
 
-#line 508 "lex.yy.c"
+#include "mydef.h"
+#include "y.tab.h"
 #line 509 "lex.yy.c"
+#line 510 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -722,9 +723,9 @@ YY_DECL
 		}
 
 	{
-#line 7 "./bc.l"
+#line 8 "./bc.l"
 
-#line 728 "lex.yy.c"
+#line 729 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -783,221 +784,221 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 8 "./bc.l"
+#line 9 "./bc.l"
 { ; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 9 "./bc.l"
+#line 10 "./bc.l"
 return LOG;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 10 "./bc.l"
+#line 11 "./bc.l"
 return FACTORIAL;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 11 "./bc.l"
+#line 12 "./bc.l"
 return BIN_DEC;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 12 "./bc.l"
+#line 13 "./bc.l"
 return PIVAL;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 13 "./bc.l"
+#line 14 "./bc.l"
 return SIN;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 14 "./bc.l"
+#line 15 "./bc.l"
 return COS;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 15 "./bc.l"
+#line 16 "./bc.l"
 return TAN;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 16 "./bc.l"
+#line 17 "./bc.l"
 return AND;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 17 "./bc.l"
+#line 18 "./bc.l"
 return SINH;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 18 "./bc.l"
+#line 19 "./bc.l"
 return COSH;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 19 "./bc.l"
+#line 20 "./bc.l"
 return TANH;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 20 "./bc.l"
+#line 21 "./bc.l"
 return ASIN;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 21 "./bc.l"
+#line 22 "./bc.l"
 return ACOS;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 22 "./bc.l"
+#line 23 "./bc.l"
 return ATAN;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 23 "./bc.l"
+#line 24 "./bc.l"
 return XOR;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 24 "./bc.l"
+#line 25 "./bc.l"
 return OR;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 25 "./bc.l"
+#line 26 "./bc.l"
 return CEIL;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 26 "./bc.l"
+#line 27 "./bc.l"
 return FLOOR;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 27 "./bc.l"
+#line 28 "./bc.l"
 return ABS;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 28 "./bc.l"
+#line 29 "./bc.l"
 { yylval=atof(yytext);return NUMBER; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 29 "./bc.l"
+#line 30 "./bc.l"
 return LEFTSHIFT;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 30 "./bc.l"
+#line 31 "./bc.l"
 return RIGHTSHIFT;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 31 "./bc.l"
+#line 32 "./bc.l"
 return INC;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 32 "./bc.l"
+#line 33 "./bc.l"
 return DEC;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 33 "./bc.l"
+#line 34 "./bc.l"
 return PLUS;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 34 "./bc.l"
+#line 35 "./bc.l"
 return MINUS;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 35 "./bc.l"
+#line 36 "./bc.l"
 return UNARYMINUS;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 36 "./bc.l"
+#line 37 "./bc.l"
 return DIV;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 37 "./bc.l"
+#line 38 "./bc.l"
 return MUL;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 38 "./bc.l"
+#line 39 "./bc.l"
 return POW;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 39 "./bc.l"
+#line 40 "./bc.l"
 return SQRT;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 40 "./bc.l"
+#line 41 "./bc.l"
 return OPENBRACKET;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 41 "./bc.l"
+#line 42 "./bc.l"
 return CLOSEBRACKET;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 42 "./bc.l"
+#line 43 "./bc.l"
 return MOD;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 43 "./bc.l"
+#line 44 "./bc.l"
 return XOR;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 44 "./bc.l"
+#line 45 "./bc.l"
 return ASSIGN;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 45 "./bc.l"
+#line 46 "./bc.l"
 return LAND;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 46 "./bc.l"
+#line 47 "./bc.l"
 return OR;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 47 "./bc.l"
+#line 48 "./bc.l"
 return IOR;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 48 "./bc.l"
+#line 49 "./bc.l"
 return AND;
 	YY_BREAK
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-#line 49 "./bc.l"
+#line 50 "./bc.l"
 {return yytext[0];}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 50 "./bc.l"
+#line 51 "./bc.l"
 ECHO;
 	YY_BREAK
-#line 1001 "lex.yy.c"
+#line 1002 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2002,4 +2003,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 50 "./bc.l"
+#line 51 "./bc.l"

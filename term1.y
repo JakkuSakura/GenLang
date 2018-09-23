@@ -1,12 +1,12 @@
 %{
 #include <stdio.h>
-
 #include <math.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <ctype.h>
 #include <string.h>
-#define YYSTYPE double
+#include "mydef.h"
+
 float factorial(int n)
 {
   int c;
@@ -137,7 +137,7 @@ function: SIN OPENBRACKET expr CLOSEBRACKET
 
 #include <stdio.h>
 #include <ctype.h>
-#include "lex.yy.c"
+
 #include <string.h>
 char *progname;
 void warning( char *s , char *t )

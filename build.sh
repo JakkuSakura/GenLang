@@ -4,5 +4,5 @@ lex ./bc.l
 echo building yacc file
 yacc -d ./term1.y
 echo compiling
-gcc y.tab.c -lm
+gcc y.tab.c lex.yy.c -lm
 ./a.out
