@@ -45,15 +45,35 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NUMBER = 258
+    NUMBER = 258,
+    INTEGER = 259,
+    ID = 260
   };
 #endif
 /* Tokens.  */
 #define NUMBER 258
+#define INTEGER 259
+#define ID 260
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 16 "./term1.y" /* yacc.c:1909  */
+
+    double F64;
+    int64_t I64;
+    char *STR;
+    struct{
+        int son_int;
+        union YYSTYPE *son;
+    }TREE;
+
+#line 74 "y.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

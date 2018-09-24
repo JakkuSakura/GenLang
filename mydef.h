@@ -4,7 +4,6 @@
 
 #ifndef PROJECT_MYDEF_H
 #define PROJECT_MYDEF_H
-
-#define YYSTYPE double
+#include "y.tab.h"
 
 #endif //PROJECT_MYDEF_H

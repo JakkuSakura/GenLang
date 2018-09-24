@@ -4,8 +4,12 @@
 #include "y.tab.h"
 %}
 %option noyywrap
-number [0-9]+\.?|[0-9]*\.[0-9]+
+integer [0-9]+
+number [0-9]*\.[0-9]+
+identifier [_a-zA-Z][0-9a-zA-Z]*
 %%
-[ \t]   { ; }
-{number}	{ yylval=atof(yytext);return NUMBER; }
-\n|. {return yytext[0];}
+[ \t]           { ; }
+{identifier}    { yylval.STR=strdup(yytext);return ID; }
+{number}	    { yylval.F64=atof(yytext);return NUMBER; }
+{integer}       { yylval.I64=atol(yytext);return INTEGER; }
+\n|.            { return yytext[0]; }

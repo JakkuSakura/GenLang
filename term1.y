@@ -5,8 +5,6 @@
 #include <stddef.h>
 #include <ctype.h>
 #include <string.h>
-#include "mydef.h"
-
 
 void warning( char *s , char *t );
 
@@ -14,14 +12,30 @@ void yyerror( char *s );
 int yylex (void);
 %}
 
-%token NUMBER
+
+%union{
+    double F64;
+    int64_t I64;
+    char *STR;
+    struct{
+        int son_int;
+        union YYSTYPE *son;
+    }TREE;
+}
+
+%token<F64> NUMBER
+%token<I64> INTEGER
+%token<STR> ID
+%type<TREE> TreeNode
+%type<F64> expr
 %%
 lines	:	lines expr '\n'	{ printf("%g\n", $2); }
 	|	lines '\n'
-	|
+    |
 	;
-expr: NUMBER 
-        ;
+expr : NUMBER
+    | INTEGER { $$ = (double)$1; }
+
 %%
 
 #include <stdio.h>
