@@ -47,13 +47,33 @@ extern int yydebug;
   {
     NUMBER = 258,
     INTEGER = 259,
-    ID = 260
+    ID = 260,
+    ADD = 261,
+    MUL = 262,
+    SUB = 263,
+    DIV = 264,
+    MOD = 265,
+    LSH = 266,
+    RSH = 267,
+    OR = 268,
+    AND = 269,
+    XOR = 270
   };
 #endif
 /* Tokens.  */
 #define NUMBER 258
 #define INTEGER 259
 #define ID 260
+#define ADD 261
+#define MUL 262
+#define SUB 263
+#define DIV 264
+#define MOD 265
+#define LSH 266
+#define RSH 267
+#define OR 268
+#define AND 269
+#define XOR 270
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -65,12 +85,8 @@ union YYSTYPE
     double F64;
     int64_t I64;
     char *STR;
-    struct{
-        int son_int;
-        union YYSTYPE *son;
-    }TREE;
 
-#line 74 "y.tab.h" /* yacc.c:1909  */
+#line 90 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

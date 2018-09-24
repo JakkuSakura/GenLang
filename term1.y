@@ -17,16 +17,12 @@ int yylex (void);
     double F64;
     int64_t I64;
     char *STR;
-    struct{
-        int son_int;
-        union YYSTYPE *son;
-    }TREE;
 }
 
 %token<F64> NUMBER
 %token<I64> INTEGER
 %token<STR> ID
-%type<TREE> TreeNode
+%token<SRT> ADD MUL SUB DIV MOD LSH RSH OR AND XOR
 %type<F64> expr
 %%
 lines	:	lines expr '\n'	{ printf("%g\n", $2); }
