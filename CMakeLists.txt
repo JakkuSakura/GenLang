@@ -1,2 +1,1 @@
-
-add_executable(calculator y.tab.c)
+add_executable(genlang y.tab.c lex.yy.c Node.c Node.h)

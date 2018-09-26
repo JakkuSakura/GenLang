@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <ctype.h>
 #include <string.h>
-
+#include "Node.h"
 void warning( char *s , char *t );
 
 void yyerror( char *s );
@@ -17,20 +17,23 @@ int yylex (void);
     double F64;
     int64_t I64;
     char *STR;
+    Node *ND;
+    void *NIL;
 }
-
 %token<F64> NUMBER
 %token<I64> INTEGER
 %token<STR> ID
-%token<SRT> ADD MUL SUB DIV MOD LSH RSH OR AND XOR
-%type<F64> expr
+%token<ND> NODE
+%token<NIL> ADD MUL SUB DIV MOD LSH RSH OR AND XOR
+
+%type<ND> expr
 %%
 lines	:	lines expr '\n'	{ printf("%g\n", $2); }
 	|	lines '\n'
     |
 	;
-expr : NUMBER
-    | INTEGER { $$ = (double)$1; }
+expr : NUMBER { $$ = new_node(); $$->type = NUMBER; $$->un.val.I64 = $1}
+    | INTEGER { $$ = new_node(); $$->type = NUMBER; $$->un.val.F64 = $1}
 
 %%
 
