@@ -15,6 +15,7 @@ typedef struct __node
     union {
         YYSTYPE val;
         struct {
+            int token;
             int len;
             struct __node *childs;
         };
@@ -39,6 +40,12 @@ void free_nodes()
     for (int i = 0; i < NODE_MAXN; ++i) {
         if (nodes[i].type == ID)
             free(nodes[i].un.val.STR);
+        if (nodes[i].type == NODE && nodes[i].un.childs != nullptr)
+        {
+            free(nodes[i].un.childs);
+            nodes[i].un.childs = nullptr;
+        }
+
     }
     free(nodes);
     nodes = nullptr;

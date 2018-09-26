@@ -23,17 +23,22 @@ int yylex (void);
 %token<F64> NUMBER
 %token<I64> INTEGER
 %token<STR> ID
-%token<ND> NODE
 %token<NIL> ADD MUL SUB DIV MOD LSH RSH OR AND XOR
 
-%type<ND> expr
+%type<ND> val_expr add_expr mul_expr
 %%
 lines	:	lines expr '\n'	{ printf("%g\n", $2); }
 	|	lines '\n'
     |
 	;
-expr : NUMBER { $$ = new_node(); $$->type = NUMBER; $$->un.val.I64 = $1}
-    | INTEGER { $$ = new_node(); $$->type = NUMBER; $$->un.val.F64 = $1}
+expr : val_expr
+    ;
+add_expr : val_expr
+        | val_expr ADD val_expr { $$ = new_node(); $$->type = ADD; $$->un..childs}
+val_expr : NUMBER { $$ = new_node(); $$->type = NUMBER; $$->un.val.F64 = $1; }
+    | INTEGER { $$ = new_node(); $$->type = INTEGER; $$->un.val.I64 = $1; }
+    | ID { $$ = new_node(); $$->type = ID; $$->un.val.STR = strdup($1); }
+    ;
 
 %%
 
