@@ -58,7 +58,8 @@ extern int yydebug;
     OR = 268,
     AND = 269,
     XOR = 270,
-    NODE = 271
+    NODE = 271,
+    BLOCK = 272
   };
 #endif
 /* Tokens.  */
@@ -76,6 +77,7 @@ extern int yydebug;
 #define AND 269
 #define XOR 270
 #define NODE 271
+#define BLOCK 272
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

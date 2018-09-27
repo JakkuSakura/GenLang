@@ -3,16 +3,17 @@
 //
 
 #include "Node.h"
+
 static Node *nodes = NULL;
+
 void free_nodes() {
 
     for (int i = 0; i < NODE_MAXN; ++i) {
         if (nodes[i].type == ID)
-            free(nodes[i].un.val.STR);
-        if (nodes[i].type == NODE && nodes[i].un.expr.childs != NULL)
-        {
-            free(nodes[i].un.expr.childs);
-            nodes[i].un.expr.childs = NULL;
+            free(nodes[i].STR);
+        if (nodes[i].type == NODE && nodes[i].childs != NULL) {
+            free(nodes[i].childs);
+            nodes[i].childs = NULL;
         }
 
     }
@@ -20,25 +21,31 @@ void free_nodes() {
     nodes = NULL;
 }
 
-Node **new_node_array(int i) {
-    return (Node **)malloc(sizeof(Node *) * i);
+pNode *new_pNode_array(int i) {
+    return (pNode *) malloc(sizeof(pNode) * i);
 }
-Node *new_node() {
+
+pNode new_node(int flag) {
     static int cnt;
-    if (nodes == NULL)
-    {
+    if (nodes == NULL) {
         cnt = 0;
-        nodes = (Node *)malloc(sizeof(Node) * NODE_MAXN);
-        memset(nodes, 0, sizeof(Node) * NODE_MAXN);
+        nodes = (pNode) calloc(NODE_MAXN, sizeof(Node));
     }
-    return &nodes[cnt ++];
+    pNode r = &nodes[cnt++];
+    r->type = flag;
+    return r;
 
 }
 
 
-Node *new_node_operation(int tk) {
-    Node *n = new_node();
-    n->type = NODE;
-    n->un.expr.token = tk;
+pNode new_node_operation(int tk) {
+    Node *n = new_node(NODE);
+    n->token = tk;
     return n;
+}
+
+void add_child_node(pNode r, pNode nd) {
+    r->childs = realloc(r->childs, (size_t) (r->len + 1));
+    r->childs[r->len + 1] = nd;
+    r->len += 1;
 }

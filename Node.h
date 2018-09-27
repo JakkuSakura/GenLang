@@ -16,13 +16,13 @@ typedef struct __node
             double F64;
             long long I64;
             char *STR;
-        }val;
+        };
         struct {
             int token;
             int len;
             struct __node **childs;
-        }expr;
-    }un;
+        };
+    };
 }Node;
 typedef Node *pNode;
 #define YYSTYPE pNode
@@ -32,8 +32,9 @@ typedef Node *pNode;
 #define NODE_MAXN 50000
 
 
-Node **new_node_array(int i);
-Node *new_node();
-Node *new_node_operation(int tk);
+pNode *new_pNode_array(int i);
+pNode new_node(int flag);
+void add_child_node(pNode r, pNode nd);
+pNode new_node_operation(int tk);
 void free_nodes();
 #endif //PROJECT_NODE_H

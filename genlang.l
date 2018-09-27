@@ -4,33 +4,36 @@
 %}
 integer [0-9]+
 number [0-9]*\.[0-9]+
-identifier [_a-zA-Z][0-9a-zA-Z]*
+identifier [_a-zA-Z][0-9a-zA-Z_]*
 %%
 [ \t]           { ; }
 {identifier}    {
-                    yylval = new_node();
-                    yylval->type = ID;
-
-                    yylval->un.val.STR=strdup(yytext);
+                    yylval = new_node(ID);
+                    yylval->STR=strdup(yytext);
 
                     return ID;
                 }
 {number}	    {
-                    yylval = new_node();
-                    yylval->type = NUMBER;
+                    yylval = new_node(NUMBER);
 
-                    yylval->un.val.F64=atof(yytext);
+                    yylval->F64=atof(yytext);
 
                     return NUMBER;
                  }
 {integer}       {
-                    yylval = new_node();
-                    yylval->type = INTEGER;
+                    yylval = new_node(INTEGER);
 
-                    yylval->un.val.I64=atol(yytext);
+                    yylval->I64=atol(yytext);
 
                     return INTEGER;
                  }
 "+"             { yylval = new_node_operation(ADD); return ADD; }
+"*"             { yylval = new_node_operation(MUL); return MUL; }
+"-"             { yylval = new_node_operation(SUB); return SUB; }
+"/"             { yylval = new_node_operation(DIV); return DIV; }
+"%"             { yylval = new_node_operation(MOD); return MOD; }
+"<<"            { yylval = new_node_operation(LSH); return LSH; }
+">>"            { yylval = new_node_operation(RSH); return RSH; }
 \n|.            { return yytext[0]; }
+
 %%
