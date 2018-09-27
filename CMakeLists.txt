@@ -1,1 +1,4 @@
+project(GenLang)
+set(CMAKE_C_STANDARD 99)
 add_executable(genlang y.tab.c lex.yy.c Node.c Node.h)
+add_executable(testlex lexmain.c Node.c Node.h)

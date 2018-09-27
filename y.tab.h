@@ -57,7 +57,8 @@ extern int yydebug;
     RSH = 267,
     OR = 268,
     AND = 269,
-    XOR = 270
+    XOR = 270,
+    NODE = 271
   };
 #endif
 /* Tokens.  */
@@ -74,22 +75,11 @@ extern int yydebug;
 #define OR 268
 #define AND 269
 #define XOR 270
+#define NODE 271
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
-{
-#line 16 "./term1.y" /* yacc.c:1909  */
-
-    double F64;
-    int64_t I64;
-    char *STR;
-
-#line 90 "y.tab.h" /* yacc.c:1909  */
-};
-
-typedef union YYSTYPE YYSTYPE;
+typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

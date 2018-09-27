@@ -10,3 +10,4 @@ gcc y.tab.c lex.yy.c -lm
 
 echo running
 ./a.out
+

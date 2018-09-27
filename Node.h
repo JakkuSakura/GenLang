@@ -7,47 +7,33 @@
 
 #include <stdlib.h>
 #include <memory.h>
-#include "y.tab.h"
 
 typedef struct __node
 {
     int type;
     union {
-        YYSTYPE val;
+        union {
+            double F64;
+            long long I64;
+            char *STR;
+        }val;
         struct {
             int token;
             int len;
-            struct __node *childs;
-        };
+            struct __node **childs;
+        }expr;
     }un;
 }Node;
+typedef Node *pNode;
+#define YYSTYPE pNode
+
+#include "y.tab.h"
+
 #define NODE_MAXN 50000
-Node *nodes = nullptr;
-Node *new_node()
-{
-    static int cnt;
-    if (nodes == nullptr)
-    {
-        cnt = 0;
-        nodes = (Node *)malloc(sizeof(Node) * NODE_MAXN);
-        memset(nodes, 0, sizeof(Node) * NODE_MAXN);
-    }
-    return &nodes[cnt ++];
 
-}
-void free_nodes()
-{
-    for (int i = 0; i < NODE_MAXN; ++i) {
-        if (nodes[i].type == ID)
-            free(nodes[i].un.val.STR);
-        if (nodes[i].type == NODE && nodes[i].un.childs != nullptr)
-        {
-            free(nodes[i].un.childs);
-            nodes[i].un.childs = nullptr;
-        }
 
-    }
-    free(nodes);
-    nodes = nullptr;
-}
+Node **new_node_array(int i);
+Node *new_node();
+Node *new_node_operation(int tk);
+void free_nodes();
 #endif //PROJECT_NODE_H
