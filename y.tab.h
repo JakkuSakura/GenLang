@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -45,39 +45,125 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NUMBER = 258,
-    INTEGER = 259,
-    ID = 260,
-    ADD = 261,
-    MUL = 262,
-    SUB = 263,
-    DIV = 264,
-    MOD = 265,
-    LSH = 266,
-    RSH = 267,
-    OR = 268,
-    AND = 269,
-    XOR = 270,
-    NODE = 271,
-    BLOCK = 272
+    IDENTIFIER = 258,
+    CONSTANT = 259,
+    STRING_LITERAL = 260,
+    SIZEOF = 261,
+    PTR_OP = 262,
+    INC_OP = 263,
+    DEC_OP = 264,
+    LEFT_OP = 265,
+    RIGHT_OP = 266,
+    LE_OP = 267,
+    GE_OP = 268,
+    EQ_OP = 269,
+    NE_OP = 270,
+    AND_OP = 271,
+    OR_OP = 272,
+    MUL_ASSIGN = 273,
+    DIV_ASSIGN = 274,
+    MOD_ASSIGN = 275,
+    ADD_ASSIGN = 276,
+    SUB_ASSIGN = 277,
+    LEFT_ASSIGN = 278,
+    RIGHT_ASSIGN = 279,
+    AND_ASSIGN = 280,
+    XOR_ASSIGN = 281,
+    OR_ASSIGN = 282,
+    TYPE_NAME = 283,
+    TYPEDEF = 284,
+    EXTERN = 285,
+    STATIC = 286,
+    AUTO = 287,
+    REGISTER = 288,
+    CHAR = 289,
+    SHORT = 290,
+    INT = 291,
+    LONG = 292,
+    SIGNED = 293,
+    UNSIGNED = 294,
+    FLOAT = 295,
+    DOUBLE = 296,
+    CONST = 297,
+    VOLATILE = 298,
+    VOID = 299,
+    STRUCT = 300,
+    UNION = 301,
+    ENUM = 302,
+    ELLIPSIS = 303,
+    CASE = 304,
+    DEFAULT = 305,
+    IF = 306,
+    ELSE = 307,
+    SWITCH = 308,
+    WHILE = 309,
+    DO = 310,
+    FOR = 311,
+    GOTO = 312,
+    CONTINUE = 313,
+    BREAK = 314,
+    RETURN = 315
   };
 #endif
 /* Tokens.  */
-#define NUMBER 258
-#define INTEGER 259
-#define ID 260
-#define ADD 261
-#define MUL 262
-#define SUB 263
-#define DIV 264
-#define MOD 265
-#define LSH 266
-#define RSH 267
-#define OR 268
-#define AND 269
-#define XOR 270
-#define NODE 271
-#define BLOCK 272
+#define IDENTIFIER 258
+#define CONSTANT 259
+#define STRING_LITERAL 260
+#define SIZEOF 261
+#define PTR_OP 262
+#define INC_OP 263
+#define DEC_OP 264
+#define LEFT_OP 265
+#define RIGHT_OP 266
+#define LE_OP 267
+#define GE_OP 268
+#define EQ_OP 269
+#define NE_OP 270
+#define AND_OP 271
+#define OR_OP 272
+#define MUL_ASSIGN 273
+#define DIV_ASSIGN 274
+#define MOD_ASSIGN 275
+#define ADD_ASSIGN 276
+#define SUB_ASSIGN 277
+#define LEFT_ASSIGN 278
+#define RIGHT_ASSIGN 279
+#define AND_ASSIGN 280
+#define XOR_ASSIGN 281
+#define OR_ASSIGN 282
+#define TYPE_NAME 283
+#define TYPEDEF 284
+#define EXTERN 285
+#define STATIC 286
+#define AUTO 287
+#define REGISTER 288
+#define CHAR 289
+#define SHORT 290
+#define INT 291
+#define LONG 292
+#define SIGNED 293
+#define UNSIGNED 294
+#define FLOAT 295
+#define DOUBLE 296
+#define CONST 297
+#define VOLATILE 298
+#define VOID 299
+#define STRUCT 300
+#define UNION 301
+#define ENUM 302
+#define ELLIPSIS 303
+#define CASE 304
+#define DEFAULT 305
+#define IF 306
+#define ELSE 307
+#define SWITCH 308
+#define WHILE 309
+#define DO 310
+#define FOR 311
+#define GOTO 312
+#define CONTINUE 313
+#define BREAK 314
+#define RETURN 315
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

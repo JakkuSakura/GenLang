@@ -6,7 +6,7 @@ echo building yacc file
 yacc -d genlang.y
 
 echo compiling
-gcc y.tab.c lex.yy.c Node.c -lm
+gcc y.tab.c lex.yy.c -ly -lm
 
 echo running
 ./a.out
