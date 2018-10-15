@@ -416,10 +416,8 @@ function_definition
 
 %%
 #include <stdio.h>
-
 extern char yytext[];
 extern int column;
-
 yyerror(s)
 char *s;
 {
