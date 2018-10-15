@@ -1,3 +1,26 @@
+%{
+#include <stdio.h>
+#include "Node.h"
+
+extern char yytext[];
+extern int column;
+
+int yylex();
+void yyerror(char *s)
+{
+	fflush(stdout);
+	printf("\n%*s\n%*s\n", column, "^", column, s);
+}
+%}
+
+%union{
+	int I32;
+	long long I64;
+	float F32;
+	double D64;
+	const char *STR;
+	Node *NODE;
+}
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -11,6 +34,7 @@
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
 %start translation_unit
+
 %%
 
 primary_expression
@@ -415,12 +439,8 @@ function_definition
 	;
 
 %%
-#include <stdio.h>
-extern char yytext[];
-extern int column;
-yyerror(s)
-char *s;
+int main()
 {
-	fflush(stdout);
-	printf("\n%*s\n%*s\n", column, "^", column, s);
+	printf("Start your show now\n");
+	yyparse();
 }

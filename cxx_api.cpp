@@ -15,7 +15,5 @@ void readLong(long long val)
 }
 void readFloat(float val)
 {
-	cout << val << endl;	
-
+	cout << val << endl;
 }
-void read
