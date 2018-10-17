@@ -2,10 +2,10 @@ D			[0-9]
 L			[a-zA-Z_]
 H			[a-fA-F0-9]
 E			[Ee][+-]?{D}+
-FS			(f|F|l|L)
-IS			(u|U|l|L)*
+DQUA		\"
 %{
 #include <stdlib.h>
+#include <Node.h>
 #include "genlang.y.hpp"
 void count();
 int yylex();
@@ -15,99 +15,114 @@ int check_type();
 %%
 "/*"			{ comment(); }
 
-"auto"			{ count(); return(AUTO); }
-"break"			{ count(); return(BREAK); }
-"case"			{ count(); return(CASE); }
-"char"			{ count(); return(CHAR); }
-"const"			{ count(); return(CONST); }
-"continue"		{ count(); return(CONTINUE); }
-"default"		{ count(); return(DEFAULT); }
-"do"			{ count(); return(DO); }
-"double"		{ count(); return(DOUBLE); }
-"else"			{ count(); return(ELSE); }
-"enum"			{ count(); return(ENUM); }
-"extern"		{ count(); return(EXTERN); }
-"float"			{ count(); return(FLOAT); }
-"for"			{ count(); return(FOR); }
-"goto"			{ count(); return(GOTO); }
-"if"			{ count(); return(IF); }
-"int"			{ count(); return(INT); }
-"long"			{ count(); return(LONG); }
-"register"		{ count(); return(REGISTER); }
-"return"		{ count(); return(RETURN); }
-"short"			{ count(); return(SHORT); }
-"signed"		{ count(); return(SIGNED); }
-"sizeof"		{ count(); return(SIZEOF); }
-"static"		{ count(); return(STATIC); }
-"struct"		{ count(); return(STRUCT); }
-"switch"		{ count(); return(SWITCH); }
-"typedef"		{ count(); return(TYPEDEF); }
-"union"			{ count(); return(UNION); }
-"unsigned"		{ count(); return(UNSIGNED); }
-"void"			{ count(); return(VOID); }
-"volatile"		{ count(); return(VOLATILE); }
-"while"			{ count(); return(WHILE); }
+"auto"			{ count(); yylval = new NReserved(AUTO); return AUTO; }
+"break"			{ count(); yylval = new NReserved(BREAK); return BREAK; }
+"case"			{ count(); yylval = new NReserved(CASE); return CASE; }
+"char"			{ count(); yylval = new NReserved(CHAR); return CHAR; }
+"const"			{ count(); yylval = new NReserved(CONST); return CONST; }
+"continue"		{ count(); yylval = new NReserved(CONTINUE); return CONTINUE; }
+"default"		{ count(); yylval = new NReserved(DEFAULT); return DEFAULT; }
+"do"			{ count(); yylval = new NReserved(DO); return DO; }
+"double"		{ count(); yylval = new NReserved(DOUBLE); return DOUBLE; }
+"else"			{ count(); yylval = new NReserved(ELSE); return ELSE; }
+"enum"			{ count(); yylval = new NReserved(ENUM); return ENUM; }
+"extern"		{ count(); yylval = new NReserved(EXTERN); return EXTERN; }
+"float"			{ count(); yylval = new NReserved(FLOAT); return FLOAT; }
+"for"			{ count(); yylval = new NReserved(FOR); return FOR; }
+"goto"			{ count(); yylval = new NReserved(GOTO); return GOTO; }
+"if"			{ count(); yylval = new NReserved(IF); return IF; }
+"int"			{ count(); yylval = new NReserved(INT); return INT; }
+"long"			{ count(); yylval = new NReserved(LONG); return LONG; }
+"register"		{ count(); yylval = new NReserved(REGISTER); return REGISTER; }
+"return"		{ count(); yylval = new NReserved(RETURN); return RETURN; }
+"short"			{ count(); yylval = new NReserved(SHORT); return SHORT; }
+"signed"		{ count(); yylval = new NReserved(SIGNED); return SIGNED; }
+"sizeof"		{ count(); yylval = new NReserved(SIZEOF); return SIZEOF; }
+"static"		{ count(); yylval = new NReserved(STATIC); return STATIC; }
+"struct"		{ count(); yylval = new NReserved(STRUCT); return STRUCT; }
+"switch"		{ count(); yylval = new NReserved(SWITCH); return SWITCH; }
+"typedef"		{ count(); yylval = new NReserved(TYPEDEF); return TYPEDEF; }
+"union"			{ count(); yylval = new NReserved(UNION); return UNION; }
+"unsigned"		{ count(); yylval = new NReserved(UNSIGNED); return UNSIGNED; }
+"void"			{ count(); yylval = new NReserved(VOID); return VOID; }
+"volatile"		{ count(); yylval = new NReserved(VOLATILE); return VOLATILE; }
+"while"			{ count(); yylval = new NReserved(WHILE); return WHILE; }
+/* TODO: to complete this function */
+{L}({L}|{D})*		{ count(); yylval = new NIdentifier(yytext); return(check_type()); }
 
-{L}({L}|{D})*		{ count(); yylval.STR = yytext; return(check_type()); }
+0[xX]{H}+		{
+	 				count();
+					yylval = new NInteger(strtoul(yytext, NULL, 0), 4, 0);
+	  				return(CONSTANT);
+  				}
 
-"0"[xX]{H}+{IS}?		{ count(); yylval.I64 = atol(yytext + 2, 16); return(CONSTANT); }
-{D}+{IS}?		{ count(); yylval.I64 = atol(yytext); return(CONSTANT); }
+{D}+			{
+	 				count();
+					yylval = new NInteger(strtoul(yytext, NULL, 0), 4, 0);
+	  				return(CONSTANT);
+				}
 
-{D}+{E}{FS}?		{ count(); return(CONSTANT); }
-{D}*"."{D}+({E})?{FS}?	{ count(); return(CONSTANT); }
-{D}+"."{D}*({E})?{FS}?	{ count(); return(CONSTANT); }
+{D}+{E}?			{ count(); yylval = new NDouble(strtod(yytext, NULL)); return(CONSTANT); }
+{D}*"."{D}+({E})?	{ count(); yylval = new NDouble(strtod(yytext, NULL)); return(CONSTANT); }
+{D}+"."{D}*({E})?	{ count(); yylval = new NDouble(strtod(yytext, NULL)); return(CONSTANT); }
 
-L?\"(\\.|[^\\])* 	{ count(); return(STRING_LITERAL); }
+{DQUA}(\\.|[^{DQUA}\\])*{DQUA}
+				{
+					count();
+					yylval = new NString(yytext + 1);
+					yylval.value.pop_back();
 
-"..."			{ count(); return(ELLIPSIS); }
-">>="			{ count(); return(RIGHT_ASSIGN); }
-"<<="			{ count(); return(LEFT_ASSIGN); }
-"+="			{ count(); return(ADD_ASSIGN); }
-"-="			{ count(); return(SUB_ASSIGN); }
-"*="			{ count(); return(MUL_ASSIGN); }
-"/="			{ count(); return(DIV_ASSIGN); }
-"%="			{ count(); return(MOD_ASSIGN); }
-"&="			{ count(); return(AND_ASSIGN); }
-"^="			{ count(); return(XOR_ASSIGN); }
-"|="			{ count(); return(OR_ASSIGN); }
-">>"			{ count(); return(RIGHT_OP); }
-"<<"			{ count(); return(LEFT_OP); }
-"++"			{ count(); return(INC_OP); }
-"--"			{ count(); return(DEC_OP); }
-"->"			{ count(); return(PTR_OP); }
-"&&"			{ count(); return(AND_OP); }
-"||"			{ count(); return(OR_OP); }
-"<="			{ count(); return(LE_OP); }
-">="			{ count(); return(GE_OP); }
-"=="			{ count(); return(EQ_OP); }
-"!="			{ count(); return(NE_OP); }
-";"			{ count(); return(';'); }
-("{"|"<%")		{ count(); return('{'); }
-("}"|"%>")		{ count(); return('}'); }
-","			{ count(); return(','); }
-":"			{ count(); return(':'); }
-"="			{ count(); return('='); }
-"("			{ count(); return('('); }
-")"			{ count(); return(')'); }
-("["|"<:")		{ count(); return('['); }
-("]"|":>")		{ count(); return(']'); }
-"."			{ count(); return('.'); }
-"&"			{ count(); return('&'); }
-"!"			{ count(); return('!'); }
-"~"			{ count(); return('~'); }
-"-"			{ count(); return('-'); }
-"+"			{ count(); return('+'); }
-"*"			{ count(); return('*'); }
-"/"			{ count(); return('/'); }
-"%"			{ count(); return('%'); }
-"<"			{ count(); return('<'); }
-">"			{ count(); return('>'); }
-"^"			{ count(); return('^'); }
-"|"			{ count(); return('|'); }
-"?"			{ count(); return('?'); }
+					return(STRING_LITERAL);
+				}
+
+">>="			{ count(); yylval = new NBinaryOperator(RIGHT_ASSIGN); return RIGHT_ASSIGN; }
+"<<="			{ count(); yylval = new NBinaryOperator(LEFT_ASSIGN); return LEFT_ASSIGN; }
+"+="			{ count(); yylval = new NBinaryOperator(ADD_ASSIGN); return ADD_ASSIGN; }
+"-="			{ count(); yylval = new NBinaryOperator(SUB_ASSIGN); return SUB_ASSIGN; }
+"*="			{ count(); yylval = new NBinaryOperator(MUL_ASSIGN); return MUL_ASSIGN; }
+"/="			{ count(); yylval = new NBinaryOperator(DIV_ASSIGN); return DIV_ASSIGN; }
+"%="			{ count(); yylval = new NBinaryOperator(MOD_ASSIGN); return MOD_ASSIGN; }
+"&="			{ count(); yylval = new NBinaryOperator(AND_ASSIGN); return AND_ASSIGN; }
+"^="			{ count(); yylval = new NBinaryOperator(XOR_ASSIGN); return XOR_ASSIGN; }
+"|="			{ count(); yylval = new NBinaryOperator(OR_ASSIGN); return OR_ASSIGN; }
+">>"			{ count(); yylval = new NBinaryOperator(RIGHT_OP); return RIGHT_OP; }
+"<<"			{ count(); yylval = new NBinaryOperator(LEFT_OP); return LEFT_OP; }
+"++"			{ count(); yylval = new NBinaryOperator(INC_OP); return INC_OP; }
+"--"			{ count(); yylval = new NBinaryOperator(DEC_OP); return DEC_OP; }
+"->"			{ count(); yylval = new NBinaryOperator(PTR_OP); return PTR_OP; }
+"&&"			{ count(); yylval = new NBinaryOperator(AND_OP); return AND_OP; }
+"||"			{ count(); yylval = new NBinaryOperator(OR_OP); return OR_OP; }
+"<="			{ count(); yylval = new NBinaryOperator(LE_OP); return LE_OP; }
+">="			{ count(); yylval = new NBinaryOperator(GE_OP); return GE_OP; }
+"=="			{ count(); yylval = new NBinaryOperator(EQ_OP); return EQ_OP; }
+"!="			{ count(); yylval = new NBinaryOperator(NE_OP); return NE_OP; }
+";"				{ count(); return(';'); }
+"{"				{ count(); return('{'); }
+"}"				{ count(); return('}'); }
+","				{ count(); yylval = new NBinaryOperator(','); return(','); }
+":"				{ count(); yylval = new NBinaryOperator(':'); return(':'); }
+"="				{ count(); yylval = new NBinaryOperator('='); return('='); }
+"("				{ count(); return('('); }
+")"				{ count(); return(')'); }
+"["				{ count(); return('['); }
+"]"				{ count(); return(']'); }
+"."				{ count(); yylval = new NBinaryOperator('.'); return('.'); }
+"&"				{ count(); yylval = new NBinaryOperator('&'); return('&'); }
+"!"				{ count(); yylval = new NSingleOperator('!'); return('!'); }
+"~"				{ count(); yylval = new NSingleOperator('~'); return('~'); }
+"-"				{ count(); return('-'); }
+"+"				{ count(); return('+'); }
+"*"				{ count(); return('*'); }
+"/"				{ count(); return('/'); }
+"%"				{ count(); return('%'); }
+"<"				{ count(); return('<'); }
+">"				{ count(); return('>'); }
+"^"				{ count(); return('^'); }
+"|"				{ count(); return('|'); }
+"?"				{ count(); return('?'); }
 
 [ \t\v\n\f]		{ count(); }
-.			{ /* ignore bad characters */ }
+.				{ /* ignore bad characters */ }
 
 %%
 #include <stdio.h>
