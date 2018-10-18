@@ -5,12 +5,13 @@ E			[Ee][+-]?{D}+
 DQUA		\"
 %{
 #include <stdlib.h>
-#include <Node.h>
+#include "Node.h"
 #include "genlang.y.hpp"
 void count();
 int yylex();
 void comment();
 int check_type();
+extern SSTYPE yylval;
 %}
 %%
 "/*"			{ comment(); }
@@ -47,8 +48,7 @@ int check_type();
 "void"			{ count(); yylval = new NReserved(VOID); return VOID; }
 "volatile"		{ count(); yylval = new NReserved(VOLATILE); return VOLATILE; }
 "while"			{ count(); yylval = new NReserved(WHILE); return WHILE; }
-/* TODO: to complete this function */
-{L}({L}|{D})*		{ count(); yylval = new NIdentifier(yytext); return(check_type()); }
+{L}({L}|{D})*		{ count(); yylval = new NIdentifier(yytext); return(check_type()); } /* TODO: to complete this function */
 
 0[xX]{H}+		{
 	 				count();
@@ -66,8 +66,7 @@ int check_type();
 {D}*"."{D}+({E})?	{ count(); yylval = new NDouble(strtod(yytext, NULL)); return(CONSTANT); }
 {D}+"."{D}*({E})?	{ count(); yylval = new NDouble(strtod(yytext, NULL)); return(CONSTANT); }
 
-{DQUA}(\\.|[^{DQUA}\\])*{DQUA}
-				{
+{DQUA}(\\.|[^{DQUA}\\])*{DQUA} {
 					count();
 					yylval = new NString(yytext + 1);
 					yylval.value.pop_back();
@@ -100,7 +99,6 @@ int check_type();
 "{"				{ count(); return('{'); }
 "}"				{ count(); return('}'); }
 ","				{ count(); yylval = new NBinaryOperator(','); return(','); }
-":"				{ count(); yylval = new NBinaryOperator(':'); return(':'); }
 "="				{ count(); yylval = new NBinaryOperator('='); return('='); }
 "("				{ count(); return('('); }
 ")"				{ count(); return(')'); }
@@ -110,16 +108,17 @@ int check_type();
 "&"				{ count(); yylval = new NBinaryOperator('&'); return('&'); }
 "!"				{ count(); yylval = new NSingleOperator('!'); return('!'); }
 "~"				{ count(); yylval = new NSingleOperator('~'); return('~'); }
-"-"				{ count(); return('-'); }
+"-"				{ count(); return('-'); } /* + and - must be processed in yacc*/
 "+"				{ count(); return('+'); }
-"*"				{ count(); return('*'); }
-"/"				{ count(); return('/'); }
-"%"				{ count(); return('%'); }
-"<"				{ count(); return('<'); }
-">"				{ count(); return('>'); }
-"^"				{ count(); return('^'); }
-"|"				{ count(); return('|'); }
-"?"				{ count(); return('?'); }
+"*"				{ count(); yylval = new NBinaryOperator('*'); return('*'); }
+"/"				{ count(); yylval = new NBinaryOperator('/'); return('/'); }
+"%"				{ count(); yylval = new NBinaryOperator('%'); return('%'); }
+"<"				{ count(); yylval = new NBinaryOperator('<'); return('<'); }
+">"				{ count(); yylval = new NBinaryOperator('>'); return('>'); }
+"^"				{ count(); yylval = new NBinaryOperator('^'); return('^'); }
+"|"				{ count(); yylval = new NBinaryOperator('|'); return('|'); }
+"?"				{ count(); return('?'); } /* This will be translated into if-else statement*/
+":"				{ count(); return(':'); }
 
 [ \t\v\n\f]		{ count(); }
 .				{ /* ignore bad characters */ }

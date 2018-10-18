@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-typedef Node *YYSTYPE;
+
 class CodeGenContext;
 class NStatement;
 class NExpression;
@@ -36,8 +36,8 @@ class NInteger : public NExpression
 public:
     int size;
     int is_signed;
-    __int64 value;
-    NInteger(__int64 value, int size, int is_signed)
+    long long value;
+    NInteger(long long value, int size, int is_signed)
     : value(value), size(size), is_signed(is_signed) { }
 
 };
@@ -54,7 +54,7 @@ class NString : public NExpression
 public:
     std::string value;
     NString(const char *str) : value(str){}
-}
+};
 
 class NIdentifier : public NExpression
 {
@@ -68,9 +68,9 @@ class NMethodCall : public NExpression
 {
 public:
     const NIdentifier *id;
-    ExpressionList arguments;
+    ExpressionList *arguments;
     NMethodCall(const NIdentifier &id, ExpressionList &arguments) :
-        id(&id), arguments(arguments) { }
+        id(&id), arguments(&arguments) { }
     NMethodCall(const NIdentifier &id) : id(&id) { }
 
 };
@@ -91,7 +91,7 @@ class NSingleOperator : public NExpression
 public:
     int op;
     NExpression *expr;
-    NBinaryOperator(int op, NExpression &e):
+    NSingleOperator(int op, NExpression &e):
         expr(&e), op(op) { }
 
 };
@@ -99,7 +99,7 @@ class NMultiOperator : public Node // it's not a NExpression
 {
     int op;
     NMultiOperator(int op) : op(op) {}
-}
+};
 class NBlock : public NExpression
 {
 public:
@@ -113,7 +113,7 @@ class NExpressionStatement : public NStatement
 public:
     NExpression *expression;
     NExpressionStatement(NExpression &expression) :
-        expression(expression) { }
+        expression(&expression) { }
 
 };
 
@@ -141,3 +141,5 @@ public:
                          const VariableList &arguments, NBlock &block) :
         type(&type), id(&id), arguments(arguments), block(&block) { }
 };
+typedef Node *pNode;
+#define YYSTYPE pNode;

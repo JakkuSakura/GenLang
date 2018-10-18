@@ -62,9 +62,11 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 14 "genlang.y" /* yacc.c:339  */
+#line 1 "genlang.y" /* yacc.c:339  */
 
 #include <stdio.h>
+#include "Node.h"
+
 extern char yytext[];
 extern int column;
 
@@ -75,7 +77,7 @@ void yyerror(char *s)
 	printf("\n%*s\n%*s\n", column, "^", column, s);
 }
 
-#line 79 "genlang.y.cpp" /* yacc.c:339  */
+#line 81 "genlang.y.cpp" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -111,8 +113,8 @@ extern int yydebug;
   enum yytokentype
   {
     IDENTIFIER = 258,
-    CONSTANT = 259,
-    STRING_LITERAL = 260,
+    STRING_LITERAL = 259,
+    CONSTANT = 260,
     SIZEOF = 261,
     PTR_OP = 262,
     INC_OP = 263,
@@ -187,7 +189,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 191 "genlang.y.cpp" /* yacc.c:358  */
+#line 193 "genlang.y.cpp" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -490,28 +492,28 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    29,    29,    30,    31,    32,    36,    37,    38,    39,
-      40,    41,    42,    43,    47,    48,    52,    53,    54,    55,
-      56,    57,    61,    62,    63,    64,    65,    66,    70,    71,
-      75,    76,    77,    78,    82,    83,    84,    88,    89,    90,
-      94,    95,    96,    97,    98,   102,   103,   104,   108,   109,
-     113,   114,   118,   119,   123,   124,   128,   129,   133,   134,
-     138,   139,   143,   144,   145,   146,   147,   148,   149,   150,
-     151,   152,   153,   157,   158,   162,   166,   167,   171,   172,
-     173,   174,   175,   176,   180,   181,   185,   186,   190,   191,
-     192,   193,   194,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,   207,   208,   209,   213,   214,   215,   219,   220,
-     224,   225,   229,   233,   234,   235,   236,   240,   241,   245,
-     246,   247,   251,   252,   253,   257,   258,   262,   263,   267,
-     268,   272,   273,   277,   278,   279,   280,   281,   282,   283,
-     287,   288,   289,   290,   294,   295,   300,   301,   305,   306,
-     310,   311,   312,   316,   317,   321,   322,   326,   327,   328,
-     332,   333,   334,   335,   336,   337,   338,   339,   340,   344,
-     345,   346,   350,   351,   355,   356,   357,   358,   359,   360,
-     364,   365,   366,   370,   371,   372,   373,   377,   378,   382,
-     383,   387,   388,   392,   393,   394,   398,   399,   400,   401,
-     405,   406,   407,   408,   409,   413,   414,   418,   419,   423,
-     424,   425,   426
+       0,    35,    35,    36,    37,    38,    42,    43,    44,    45,
+      46,    47,    48,    49,    53,    54,    58,    59,    60,    61,
+      62,    63,    67,    68,    69,    70,    71,    72,    76,    77,
+      81,    82,    83,    84,    88,    89,    90,    94,    95,    96,
+     100,   101,   102,   103,   104,   108,   109,   110,   114,   115,
+     119,   120,   124,   125,   129,   130,   134,   135,   139,   140,
+     144,   145,   149,   150,   151,   152,   153,   154,   155,   156,
+     157,   158,   159,   163,   164,   168,   172,   173,   177,   178,
+     179,   180,   181,   182,   186,   187,   191,   192,   196,   197,
+     198,   199,   200,   204,   205,   206,   207,   208,   209,   210,
+     211,   212,   213,   214,   215,   219,   220,   221,   225,   226,
+     230,   231,   235,   239,   240,   241,   242,   246,   247,   251,
+     252,   253,   257,   258,   259,   263,   264,   268,   269,   273,
+     274,   278,   279,   283,   284,   285,   286,   287,   288,   289,
+     293,   294,   295,   296,   300,   301,   306,   307,   311,   312,
+     316,   317,   318,   322,   323,   327,   328,   332,   333,   334,
+     338,   339,   340,   341,   342,   343,   344,   345,   346,   350,
+     351,   352,   356,   357,   361,   362,   363,   364,   365,   366,
+     370,   371,   372,   376,   377,   378,   379,   383,   384,   388,
+     389,   393,   394,   398,   399,   400,   404,   405,   406,   407,
+     411,   412,   413,   414,   415,   419,   420,   424,   425,   429,
+     430,   431,   432
 };
 #endif
 
@@ -520,8 +522,8 @@ static const yytype_uint16 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "IDENTIFIER", "CONSTANT",
-  "STRING_LITERAL", "SIZEOF", "PTR_OP", "INC_OP", "DEC_OP", "LEFT_OP",
+  "$end", "error", "$undefined", "IDENTIFIER", "STRING_LITERAL",
+  "CONSTANT", "SIZEOF", "PTR_OP", "INC_OP", "DEC_OP", "LEFT_OP",
   "RIGHT_OP", "LE_OP", "GE_OP", "EQ_OP", "NE_OP", "AND_OP", "OR_OP",
   "MUL_ASSIGN", "DIV_ASSIGN", "MOD_ASSIGN", "ADD_ASSIGN", "SUB_ASSIGN",
   "LEFT_ASSIGN", "RIGHT_ASSIGN", "AND_ASSIGN", "XOR_ASSIGN", "OR_ASSIGN",
@@ -638,7 +640,7 @@ static const yytype_uint8 yydefact[] =
      107,     0,    83,     0,   187,     0,   212,     0,     0,     0,
      131,     1,   206,     0,   127,     0,   125,   134,   145,   143,
        0,    77,     0,   210,     0,     0,   114,     0,   110,     0,
-     116,     2,     3,     4,     0,     0,     0,     0,     0,     0,
+     116,     2,     4,     3,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,    22,
       23,    24,    25,    26,    27,   191,   183,     6,    16,    28,
        0,    30,    34,    37,    40,    45,    48,    50,    52,    54,
@@ -1732,14 +1734,8 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 93:
-#line 198 "genlang.y" /* yacc.c:1646  */
-    {printf("void ");}
+      
 #line 1739 "genlang.y.cpp" /* yacc.c:1646  */
-    break;
-
-
-#line 1743 "genlang.y.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1967,7 +1963,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 429 "genlang.y" /* yacc.c:1906  */
+#line 435 "genlang.y" /* yacc.c:1906  */
 
 int main()
 {
