@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1539928111 source:/root/Desktop/cpp/GenLang/main.cpp
+	<iostream>
+
+1539927817 source:/root/Desktop/cpp/GenLang/src/main/main.cpp
+	<stdio.h>
+
+1539928740 source:/root/Desktop/cpp/GenLang/src/genlang.parser.cc
+	<stdio.h>
+	"Node.h"
+	<stddef.h>
+	<libintl.h>
+	<alloca.h>
+	<malloc.h>
+	<stdlib.h>
+	<stdlib.h>
+	<stdio.h>
+
+1539918713 /root/Desktop/cpp/GenLang/includes/Node.h
+	<iostream>
+	<vector>
+
+1539929283 source:/root/Desktop/cpp/GenLang/src/genlang.scanner.cc
+	<stdio.h>
+	<string.h>
+	<errno.h>
+	<stdlib.h>
+	<inttypes.h>
+	<stdlib.h>
+	"Node.h"
+	"genlang.parser.hh"
+	<unistd.h>
+	<stdio.h>
+
+1539928740 /root/Desktop/cpp/GenLang/src/genlang.parser.hh
+
