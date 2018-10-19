@@ -28,17 +28,17 @@
 
 "("	          					return TOKEN(TLPAREN);
 ")"					          	return TOKEN(TRPAREN);
-"{"         						return TOKEN(TLBRACE);
+"{"         					return TOKEN(TLBRACE);
 "}"					          	return TOKEN(TRBRACE);
 
-"."         						return TOKEN(TDOT);
+"."         					return TOKEN(TDOT);
 ","				          		return TOKEN(TCOMMA);
 
 "+"				          		return TOKEN(TPLUS);
 "-"		          				return TOKEN(TMINUS);
 "*"		          				return TOKEN(TMUL);
 "/"				          		return TOKEN(TDIV);
-";"						{}
-.                       printf("Unknown token!\n"); yyterminate();
+";"								{}
+.                     			printf("Unknown token!\n"); yyterminate();
 
 %%
