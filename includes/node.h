@@ -11,22 +11,26 @@ typedef std::vector<NStatement*> StatementList;
 typedef std::vector<NExpression*> ExpressionList;
 typedef std::vector<NVariableDeclaration*> VariableList;
 
-enum nodetype {node,nExpression,nStatement,nInteger,nDouble,nIdentifier,
+enum nodetype {node,nExpression,nStatement,nInteger,nDouble,nIdentifier, nVarType,
                nMethodCall,nBinaryOperator,nAssignment,nBlock,nExpressionStatement,
                nReturnStatement,nVariableDeclaration,nExternDeclaration,nFunctionDeclaration
               };
 const char * getNodeName(nodetype t);
 class Node {
 public:
-    nodetype type;
+    nodetype m_type;
     void setNodeType(nodetype tp)
     {
-        type = tp;
+        m_type = tp;
     }
-	nodetype getNodeType()
+	nodetype getNodeType() const
 	{
-		return type;
+		return m_type;
 	}
+    virtual const char *toString() const
+    {
+        return "";
+    }
     virtual ~Node() {}
 };
 
@@ -50,16 +54,25 @@ public:
     NInteger(long long value) : value(value) {
         setNodeType(nodetype::nInteger);
     }
-
+    virtual const char *toString() const {
+        static char buf[24];
+        std::sprintf(buf, "%d", value);
+        return buf;
+    }
 };
 
 class NDouble : public NExpression {
 public:
     double value;
+
     NDouble(double value) : value(value) {
         setNodeType(nodetype::nDouble);
     }
-
+    virtual const char *toString() const {
+        static char buf[24];
+        std::sprintf(buf, "%g", value);
+        return buf;
+    }
 };
 
 class NIdentifier : public NExpression {
@@ -68,8 +81,18 @@ public:
     NIdentifier(const std::string &name) : name(name) {
         setNodeType(nodetype::nIdentifier);
     }
-
+    virtual const char *toString() const
+    {
+        return name.c_str();
+    }
 };
+class NVarType : public NIdentifier {
+public:
+    NVarType(const std::string &name) : NIdentifier(name) {
+        setNodeType(nodetype::nVarType);
+    }
+};
+
 
 class NMethodCall : public NExpression {
 public:
@@ -151,6 +174,7 @@ public:
         type(type), id(id), assignmentExpr(assignmentExpr) {
         setNodeType(nodetype::nVariableDeclaration);
     }
+
 
 };
 

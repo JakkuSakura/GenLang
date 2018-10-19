@@ -48,25 +48,32 @@ extern int yydebug;
     TIDENTIFIER = 258,
     TINTEGER = 259,
     TDOUBLE = 260,
-    TCEQ = 261,
-    TCNE = 262,
-    TCLT = 263,
-    TCLE = 264,
-    TCGT = 265,
-    TCGE = 266,
-    TEQUAL = 267,
-    TLPAREN = 268,
-    TRPAREN = 269,
-    TLBRACE = 270,
-    TRBRACE = 271,
-    TCOMMA = 272,
-    TDOT = 273,
-    TPLUS = 274,
-    TMINUS = 275,
-    TMUL = 276,
-    TDIV = 277,
-    TRETURN = 278,
-    TEXTERN = 279
+    TVARTYPE = 261,
+    TCEQ = 262,
+    TCNE = 263,
+    TCLT = 264,
+    TCLE = 265,
+    TCGT = 266,
+    TCGE = 267,
+    TEQUAL = 268,
+    TENDSTATEMENT = 269,
+    TLPAREN = 270,
+    TRPAREN = 271,
+    TLBRACE = 272,
+    TRBRACE = 273,
+    TCOMMA = 274,
+    TDOT = 275,
+    TPLUS = 276,
+    TMINUS = 277,
+    TMUL = 278,
+    TDIV = 279,
+    TRETURN = 280,
+    TEXTERN = 281,
+    TIF = 282,
+    TFOR = 283,
+    TWHILE = 284,
+    TCONTINUE = 285,
+    TBREAK = 286
   };
 #endif
 
@@ -75,20 +82,21 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "lexyacc/genlang.y" /* yacc.c:1909  */
+#line 13 "lexyacc/genlang.y" /* yacc.c:1909  */
 
 	Node *node;
 	NBlock *block;
 	NExpression *expr;
 	NStatement *stmt;
 	NIdentifier *ident;
+	NVarType *vartype;
 	NVariableDeclaration *var_decl;
 	std::vector<NVariableDeclaration*> *varvec;
 	std::vector<NExpression*> *exprvec;
 	std::string *string;
 	int token;
 
-#line 92 "src/genlang.parser.hh" /* yacc.c:1909  */
+#line 100 "src/genlang.parser.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

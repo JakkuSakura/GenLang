@@ -2,7 +2,7 @@
 static const char *nodeName[]
 =
 {
-    "node","nExpression","nStatement","nInteger","nDouble","nIdentifier",
+    "node","nExpression","nStatement","nInteger","nDouble","nIdentifier", "nVarType",
     "nMethodCall","nBinaryOperator","nAssignment","nBlock","nExpressionStatement",
     "nReturnStatement","nVariableDeclaration","nExternDeclaration","nFunctionDeclaration"
 };
