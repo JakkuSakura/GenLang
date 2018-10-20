@@ -54,7 +54,7 @@ void print(const Node *node, int t)
     case nBinaryOperator:
     {
         NBinaryOperator *n = (NBinaryOperator *)node;
-        printf("%*soperator %d\n", t * 2 ,"", n->op);
+        printf("%*soperator %d\n", t * 2 + 2 ,"", n->op);
         print(&n->lhs, t + 1);
         print(&n->rhs, t + 1);
         break;

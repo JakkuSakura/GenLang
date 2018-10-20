@@ -13,7 +13,8 @@ typedef std::vector<NVariableDeclaration*> VariableList;
 
 enum nodetype {node,nExpression,nStatement,nInteger,nDouble,nIdentifier, nVarType,
                nMethodCall,nBinaryOperator,nAssignment,nBlock,nExpressionStatement,
-               nReturnStatement,nVariableDeclaration,nExternDeclaration,nFunctionDeclaration
+               nReturnStatement,nVariableDeclaration,nExternDeclaration,nFunctionDeclaration,
+               nIfStatement, nLoopStatement
               };
 const char * getNodeName(nodetype t);
 class Node {
@@ -23,20 +24,21 @@ public:
     {
         m_type = tp;
     }
-	nodetype getNodeType() const
-	{
-		return m_type;
-	}
+    nodetype getNodeType() const
+    {
+        return m_type;
+    }
     virtual const char *toString() const
     {
         return "";
     }
     virtual ~Node() {}
+    const static Node NullNode;
 };
 
 class NExpression : public Node {
 public:
-    NExpression(){
+    NExpression() {
         setNodeType(nodetype::nExpression);
     }
 };
@@ -134,7 +136,7 @@ public:
 class NBlock : public NExpression {
 public:
     StatementList statements;
-    NBlock(){
+    NBlock() {
         setNodeType(nodetype::nBlock);
     }
 
@@ -177,7 +179,26 @@ public:
 
 
 };
-
+class NIfStatement : public NStatement {
+public:
+    const NExpression &expr;
+    const NBlock &stmts;
+    NIfStatement(const NExpression &expr, const NBlock &stmts) :
+        expr(expr), stmts(stmts) {
+        setNodeType(nodetype::nIfStatement);
+    }
+};
+class NLoopStatement : public NStatement {
+public:
+    const NStatement &init;
+    const NExpression &judge;
+    const NExpression &iter;
+    const NBlock &stmts;
+    NLoopStatement(const NStatement &init, const NExpression &judge, const NExpression &iter, const NBlock &stmts) :
+        init(init), judge(judge), iter(iter), stmts(stmts) {
+        setNodeType(nodetype::nLoopStatement);
+    }
+};
 class NExternDeclaration : public NStatement {
 public:
     const NIdentifier &type;

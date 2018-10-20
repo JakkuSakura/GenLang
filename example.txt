@@ -2,6 +2,11 @@ extern void printi(int val);
 
 int do_math(int a) {
   int x = a * 5;
+  if(x == 3) x = x + 1;
+  for(int j = 1; j <= 3; j = j + 1)
+  {
+    echo("hello");
+  }
   return x + 3;
 }
 

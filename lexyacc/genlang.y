@@ -45,7 +45,7 @@ void yyerror(const char *s);
 %type <varvec> func_decl_args
 %type <exprvec> call_args
 %type <block> program stmts block
-%type <stmt> stmt var_decl func_decl extern_decl
+%type <stmt> stmt var_decl func_decl extern_decl if_stmt loop_stmt
 %type <token> comparison
 %type <vartype> var_type
 
@@ -69,10 +69,20 @@ stmt : var_decl TENDSTATEMENT { $$ = $1; }
 	 | extern_decl TENDSTATEMENT { $$ = $1; }
 	 | expr TENDSTATEMENT { $$ = new NExpressionStatement(*$1); }
 	 | TRETURN expr TENDSTATEMENT { $$ = new NReturnStatement(*$2); }
+	 | if_stmt
+	 | loop_stmt
+	 | TENDSTATEMENT { $$ = new NStatement(); }
      ;
-
+if_stmt : TIF TLPAREN expr TRPAREN block { $$ = new NIfStatement(*$3, *$5); }
+	;
+loop_stmt : TFOR TLPAREN stmt expr TENDSTATEMENT expr TRPAREN block
+			{
+				$$ = new NLoopStatement(*$3, *$4, *$6, *$8);
+			}
+	;
 block : TLBRACE stmts TRBRACE { $$ = $2; }
 	  | TLBRACE TRBRACE { $$ = new NBlock(); }
+	  | stmts { $$ = $1; }
 	  ;
 
 var_decl : var_type ident { $$ = new NVariableDeclaration(*$1, *$2); }

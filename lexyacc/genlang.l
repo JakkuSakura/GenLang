@@ -49,6 +49,7 @@ void count();
 "*"		          				count(); return TOKEN(TMUL);
 "/"				          		count(); return TOKEN(TDIV);
 ";"								count(); return TOKEN(TENDSTATEMENT);
+"\""("\\\""|[^"\""])*"\""		count(); /*TODO;*/
 .                     			count(); printf("Unknown token!\n"); yyterminate();
 
 %%
