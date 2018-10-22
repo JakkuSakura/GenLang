@@ -74,5 +74,21 @@ void print(const Node *node, int t)
         }
         break;
     }
+    case nIfStatement:
+    {
+        NIfStatement *n = (NIfStatement *)node;
+        print(&n->expr, t + 1);
+        print(&n->stmt, t + 1);
+        break;
+    }
+    case nLoopStatement:
+    {
+        NLoopStatement *n = (NLoopStatement *)node;
+        print(&n->init, t + 1);
+        print(&n->judge, t + 1);
+        print(&n->iter, t + 1);
+        print(&n->stmt, t + 1);
+        break;
+    }
     }
 }

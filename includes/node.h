@@ -14,7 +14,7 @@ typedef std::vector<NVariableDeclaration*> VariableList;
 enum nodetype {node,nExpression,nStatement,nInteger,nDouble,nIdentifier, nVarType,
                nMethodCall,nBinaryOperator,nAssignment,nBlock,nExpressionStatement,
                nReturnStatement,nVariableDeclaration,nExternDeclaration,nFunctionDeclaration,
-               nIfStatement, nLoopStatement
+               nIfStatement, nLoopStatement, nString
               };
 const char * getNodeName(nodetype t);
 class Node {
@@ -122,18 +122,7 @@ public:
 
 };
 
-class NAssignment : public NExpression {
-public:
-    NIdentifier &lhs;
-    NExpression &rhs;
-    NAssignment(NIdentifier &lhs, NExpression &rhs) :
-        lhs(lhs), rhs(rhs) {
-        setNodeType(nodetype::nAssignment);
-    }
-
-};
-
-class NBlock : public NExpression {
+class NBlock : public NStatement {
 public:
     StatementList statements;
     NBlock() {
@@ -182,9 +171,9 @@ public:
 class NIfStatement : public NStatement {
 public:
     const NExpression &expr;
-    const NBlock &stmts;
-    NIfStatement(const NExpression &expr, const NBlock &stmts) :
-        expr(expr), stmts(stmts) {
+    const NStatement &stmt;
+    NIfStatement(const NExpression &expr, const NStatement &stmt) :
+        expr(expr), stmt(stmt) {
         setNodeType(nodetype::nIfStatement);
     }
 };
@@ -193,9 +182,9 @@ public:
     const NStatement &init;
     const NExpression &judge;
     const NExpression &iter;
-    const NBlock &stmts;
-    NLoopStatement(const NStatement &init, const NExpression &judge, const NExpression &iter, const NBlock &stmts) :
-        init(init), judge(judge), iter(iter), stmts(stmts) {
+    const NStatement &stmt;
+    NLoopStatement(const NStatement &init, const NExpression &judge, const NExpression &iter, const NStatement &stmt) :
+        init(init), judge(judge), iter(iter), stmt(stmt) {
         setNodeType(nodetype::nLoopStatement);
     }
 };
@@ -225,5 +214,18 @@ public:
     }
 
 };
+class NString : public NExpression
+{
+public:
+    std::string value;
+    NString(const std::string &s):value(s)
+    {
+        setNodeType(nodetype::nString);
+    }
+    virtual const char *toString() const
+    {
+        return value.c_str();
+    }
 
+};
 #endif

@@ -49,31 +49,32 @@ extern int yydebug;
     TINTEGER = 259,
     TDOUBLE = 260,
     TVARTYPE = 261,
-    TCEQ = 262,
-    TCNE = 263,
-    TCLT = 264,
-    TCLE = 265,
-    TCGT = 266,
-    TCGE = 267,
-    TEQUAL = 268,
-    TENDSTATEMENT = 269,
-    TLPAREN = 270,
-    TRPAREN = 271,
-    TLBRACE = 272,
-    TRBRACE = 273,
-    TCOMMA = 274,
-    TDOT = 275,
-    TPLUS = 276,
-    TMINUS = 277,
-    TMUL = 278,
-    TDIV = 279,
-    TRETURN = 280,
-    TEXTERN = 281,
-    TIF = 282,
-    TFOR = 283,
-    TWHILE = 284,
-    TCONTINUE = 285,
-    TBREAK = 286
+    TSTRING = 262,
+    TCEQ = 263,
+    TCNE = 264,
+    TCLT = 265,
+    TCLE = 266,
+    TCGT = 267,
+    TCGE = 268,
+    TEQUAL = 269,
+    TENDSTATEMENT = 270,
+    TLPAREN = 271,
+    TRPAREN = 272,
+    TLBRACE = 273,
+    TRBRACE = 274,
+    TCOMMA = 275,
+    TDOT = 276,
+    TPLUS = 277,
+    TMINUS = 278,
+    TMUL = 279,
+    TDIV = 280,
+    TRETURN = 281,
+    TEXTERN = 282,
+    TIF = 283,
+    TFOR = 284,
+    TWHILE = 285,
+    TCONTINUE = 286,
+    TBREAK = 287
   };
 #endif
 
@@ -89,6 +90,7 @@ union YYSTYPE
 	NExpression *expr;
 	NStatement *stmt;
 	NIdentifier *ident;
+	NString *nstr;
 	NVarType *vartype;
 	NVariableDeclaration *var_decl;
 	std::vector<NVariableDeclaration*> *varvec;
@@ -96,7 +98,7 @@ union YYSTYPE
 	std::string *string;
 	int token;
 
-#line 100 "src/genlang.parser.hh" /* yacc.c:1909  */
+#line 102 "src/genlang.parser.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

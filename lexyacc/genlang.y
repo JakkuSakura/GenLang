@@ -16,6 +16,7 @@ void yyerror(const char *s);
 	NExpression *expr;
 	NStatement *stmt;
 	NIdentifier *ident;
+	NString *nstr;
 	NVarType *vartype;
 	NVariableDeclaration *var_decl;
 	std::vector<NVariableDeclaration*> *varvec;
@@ -28,7 +29,7 @@ void yyerror(const char *s);
    match our tokens.l lex file. We also define the node type
    they represent.
  */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TVARTYPE
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TVARTYPE TSTRING
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TENDSTATEMENT
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT
 %token <token> TPLUS TMINUS TMUL TDIV
@@ -46,8 +47,9 @@ void yyerror(const char *s);
 %type <exprvec> call_args
 %type <block> program stmts block
 %type <stmt> stmt var_decl func_decl extern_decl if_stmt loop_stmt
-%type <token> comparison
+%type <token> comparison assign
 %type <vartype> var_type
+%type <nstr> const_string
 
 /* Operator precedence for mathematical operators */
 %left TPLUS TMINUS
@@ -73,16 +75,21 @@ stmt : var_decl TENDSTATEMENT { $$ = $1; }
 	 | loop_stmt
 	 | TENDSTATEMENT { $$ = new NStatement(); }
      ;
-if_stmt : TIF TLPAREN expr TRPAREN block { $$ = new NIfStatement(*$3, *$5); }
+if_stmt : TIF TLPAREN expr TRPAREN stmt { $$ = new NIfStatement(*$3, *$5); }
+	| TIF TLPAREN expr TRPAREN block { $$ = new NIfStatement(*$3, *$5); }
 	;
-loop_stmt : TFOR TLPAREN stmt expr TENDSTATEMENT expr TRPAREN block
+loop_stmt :
+	TFOR TLPAREN stmt expr TENDSTATEMENT expr TRPAREN stmt
+	{
+		$$ = new NLoopStatement(*$3, *$4, *$6, *$8);
+	}
+	|	TFOR TLPAREN stmt expr TENDSTATEMENT expr TRPAREN block
 			{
 				$$ = new NLoopStatement(*$3, *$4, *$6, *$8);
 			}
 	;
 block : TLBRACE stmts TRBRACE { $$ = $2; }
 	  | TLBRACE TRBRACE { $$ = new NBlock(); }
-	  | stmts { $$ = $1; }
 	  ;
 
 var_decl : var_type ident { $$ = new NVariableDeclaration(*$1, *$2); }
@@ -110,7 +117,7 @@ numeric : TINTEGER { $$ = new NInteger(atol($1->c_str())); delete $1; }
 		| TDOUBLE { $$ = new NDouble(atof($1->c_str())); delete $1; }
 		;
 
-expr : ident TEQUAL expr { $$ = new NAssignment(*$1, *$3); }
+expr : ident assign expr { $$ = new NBinaryOperator(*$1, $2, *$3); }
 	 | ident TLPAREN call_args TRPAREN { $$ = new NMethodCall(*$1, *$3); delete $3; }
 	 | ident { $$ = $1; }
 	 | numeric
@@ -120,8 +127,12 @@ expr : ident TEQUAL expr { $$ = new NAssignment(*$1, *$3); }
          | expr TMINUS expr { $$ = new NBinaryOperator(*$1, $2, *$3); }
  	 | expr comparison expr { $$ = new NBinaryOperator(*$1, $2, *$3); }
      | TLPAREN expr TRPAREN { $$ = $2; }
+	 | const_string	{ $$ = $1; }
 	 ;
-
+assign : TEQUAL
+	;
+const_string : TSTRING { $$ = new NString(*$1); delete $1; }
+	;
 call_args : /*blank*/  { $$ = new ExpressionList(); }
 		  | expr { $$ = new ExpressionList(); $$->push_back($1); }
 		  | call_args TCOMMA expr  { $1->push_back($3); }
