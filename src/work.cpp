@@ -194,16 +194,54 @@ void pas_init(const NProgram *n)
 }
 void pas_print_var_table(const NProgram *n)
 {
-    printf("var\n")
+    printf("var\n");
 }
-void pas_generate(const NProgram *n)
+void pas_generate(const Node *node);
+void pas_print_functions(const NProgram *node)
+{   
+    StatementList &st = node->block->statements;
+    for(int i = 0; i < st.size(); ++i)
+    {
+        if( st[i]->getNodeType() ==  nFunctionDeclaration)
+        {
+            NFunctionDeclaration *n = (NFunctionDeclaration *)st[i];
+            printf("function %s(", n->id.toString());
+            VariableList &arg = n->arguments;
+            for (size_t i = 0; i < arg.size(); i++) {
+                if(i >= 1) printf(",");
+                printf("%s:%s", arg[i]->id.toString(), arg[i]->type.toString());
+            }
+            printf("):%s\n", n->type.toString());
+
+            NBlock &block = n->block;
+            pas_generate(&block);
+            const StatementList &st = block.statements;
+            for (size_t i = 0; i < st.size(); i++) {
+                printf("%s\n", getNodeName(st[i]->getNodeType()));
+            }
+
+            break;
+        }
+    }
+    
+}
+void pas_generate(const Node *node)
 {
     switch (node->getNodeType()) {
     case nProgram:
     {
-        printf("program %s\n", time(0));
+        const NProgram *n = (NProgram *)node;
+        printf("program %ld\n", time(0));
         pas_print_var_table(n);
-        pas_generate(((NProgram *)node)->block);
+        pas_print_functions(n);
+        printf("begin\n");
+        
+        NBlock *no = n->block;
+        const StatementList &st = no->statements;
+        for (size_t i = 0; i < st.size(); i++) {
+            pas_generate(st[i]);
+        }
+        printf("end.\n");
         break;
     }
     case nBlock:
@@ -214,88 +252,78 @@ void pas_generate(const NProgram *n)
         for (size_t i = 0; i < st.size(); i++) {
             pas_generate(st[i]);
         }
-        printf("end.\n");
+        printf("end;\n");
         break;
     }
     /* TODO: I dont know here
     case nExternDeclaration:
     {
         NExternDeclaration *n = (NExternDeclaration *)node;
-        pas_generate(&n->type, callback);
-        pas_generate(&n->id, callback);
+        pas_generate(&n->type);
+        pas_generate(&n->id);
         break;
-    }
+    }*/
     case nVariableDeclaration:
     {
         NVariableDeclaration *n = (NVariableDeclaration *)node;
-        pas_generate(&n->type, callback);
-        pas_generate(&n->id, callback);
-        NExpression *expr = n->assignmentExpr;
-        if(expr) pas_generate(expr, callback);
-        break;
-    }*/
-    case nFunctionDeclaration:
-    {
-        NFunctionDeclaration *n = (NFunctionDeclaration *)node;
-        printf("function %s(", n->id.toString());
-        VariableList &arg = n->arguments;
-        for (size_t i = 0; i < arg.size(); i++) {
-            if(i >= 1) printf(",");
-            printf("%s:%s", arg[i]->id.toString(), arg[i]->type.toString());
-        }
-        printf("):%s\n", n->type.toString());
-
-        NBlock &block = n->block;
-        pas_generate(&block);
-
+        pas_generate(&n->type);
+        pas_generate(&n->id);
+        Node *expr = n->assignmentExpr;
+        if(expr) pas_generate(expr);
         break;
     }
+    /*
     case nExpressionStatement:
     {
         NExpression *ne = &((NExpressionStatement *)node)->expression;
         pas_generate(ne);
-        printf(";\n");
+        printf("(there's an expression);\n");
         break;
-    }
+    }*/
+    
     case nBinaryOperator:
     {
         NBinaryOperator *n = (NBinaryOperator *)node;
         pas_generate(&n->lhs);
-        printf("%s", n->toString());
+        printf("(%d)", n->op);
         pas_generate(&n->rhs);
         break;
     }
     case nReturnStatement:
     {
         NReturnStatement *n = (NReturnStatement *)node;
-        pas_generate(&n->expression, callback);
-        printf("");
+        pas_generate(&n->expression);
+        printf("%s\n", "functionID");
         break;
     }
     case nMethodCall:
     {
         NMethodCall *n = (NMethodCall *)node;
-        pas_generate(&n->id, callback);
+        pas_generate(&n->id);
         for (size_t i = 0; i < n->arguments.size(); i++) {
-            pas_generate(n->arguments[i], callback);
+            pas_generate(n->arguments[i]);
         }
         break;
     }
     case nIfStatement:
     {
         NIfStatement *n = (NIfStatement *)node;
-        pas_generate(&n->expr, callback);
-        pas_generate(&n->stmt, callback);
+        pas_generate(&n->expr);
+        pas_generate(&n->stmt);
         break;
     }
     case nLoopStatement:
     {
         NLoopStatement *n = (NLoopStatement *)node;
-        pas_generate(&n->init, callback);
-        pas_generate(&n->judge, callback);
-        pas_generate(&n->iter, callback);
-        pas_generate(&n->stmt, callback);
+        pas_generate(&n->init);
+        pas_generate(&n->judge);
+        pas_generate(&n->iter);
+        pas_generate(&n->stmt);
         break;
+    }
+    default:
+    {
+        printf("%s", node->toString());
     }
     }
 }
