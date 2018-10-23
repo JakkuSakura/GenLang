@@ -14,7 +14,7 @@ typedef std::vector<NVariableDeclaration*> VariableList;
 enum nodetype {node,nExpression,nStatement,nInteger,nDouble,nIdentifier, nVarType,
                nMethodCall,nBinaryOperator,nAssignment,nBlock,nExpressionStatement,
                nReturnStatement,nVariableDeclaration,nExternDeclaration,nFunctionDeclaration,
-               nIfStatement, nLoopStatement, nString
+               nIfStatement, nLoopStatement, nString, nProgram
               };
 const char * getNodeName(nodetype t);
 class Node {
@@ -35,6 +35,7 @@ public:
     virtual ~Node() {}
     const static Node NullNode;
 };
+
 
 class NExpression : public Node {
 public:
@@ -228,4 +229,18 @@ public:
     }
 
 };
+class NProgram : public Node {
+public:
+    NBlock *block;
+    NProgram(){
+        block = NULL;
+        setNodeType(nProgram);
+    }
+
+    void setBlock(NBlock *b)
+    {
+            block = b;
+    }
+};
+
 #endif

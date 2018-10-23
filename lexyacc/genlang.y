@@ -2,7 +2,7 @@
 #include "node.h"
 #include <cstdio>
 #include <cstdlib>
-NBlock *programBlock = NULL; /* the top level root node of our final AST */
+NProgram *programBlock = NULL; /* the top level root node of our final AST */
 
 extern int yylex();
 extern char *yytext;
@@ -18,6 +18,7 @@ void yyerror(const char *s);
 	NIdentifier *ident;
 	NString *nstr;
 	NVarType *vartype;
+	NProgram *program;
 	NVariableDeclaration *var_decl;
 	std::vector<NVariableDeclaration*> *varvec;
 	std::vector<NExpression*> *exprvec;
@@ -59,7 +60,7 @@ void yyerror(const char *s);
 
 %%
 
-program : stmts { programBlock = $1; }
+program : stmts { programBlock = new NProgram(); programBlock->setBlock($1); }
 		;
 
 stmts : stmt { $$ = new NBlock(); $$->statements.push_back($1); }

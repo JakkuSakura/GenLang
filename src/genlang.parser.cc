@@ -67,7 +67,7 @@
 #include "node.h"
 #include <cstdio>
 #include <cstdlib>
-NBlock *programBlock = NULL; /* the top level root node of our final AST */
+NProgram *programBlock = NULL; /* the top level root node of our final AST */
 
 extern int yylex();
 extern char *yytext;
@@ -155,13 +155,14 @@ union YYSTYPE
 	NIdentifier *ident;
 	NString *nstr;
 	NVarType *vartype;
+	NProgram *program;
 	NVariableDeclaration *var_decl;
 	std::vector<NVariableDeclaration*> *varvec;
 	std::vector<NExpression*> *exprvec;
 	std::string *string;
 	int token;
 
-#line 165 "src/genlang.parser.cc" /* yacc.c:355  */
+#line 166 "src/genlang.parser.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -178,7 +179,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 182 "src/genlang.parser.cc" /* yacc.c:358  */
+#line 183 "src/genlang.parser.cc" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -478,12 +479,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    62,    62,    65,    66,    69,    70,    71,    72,    73,
-      74,    75,    76,    78,    79,    82,    86,    91,    92,    95,
-      96,    99,   103,   107,   108,   109,   111,   113,   116,   117,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   132,   134,   136,   137,   138,   141,   141,   141,   141,
-     141,   141
+       0,    63,    63,    66,    67,    70,    71,    72,    73,    74,
+      75,    76,    77,    79,    80,    83,    87,    92,    93,    96,
+      97,   100,   104,   108,   109,   110,   112,   114,   117,   118,
+     121,   122,   123,   124,   125,   126,   127,   128,   129,   130,
+     131,   133,   135,   137,   138,   139,   142,   142,   142,   142,
+     142,   142
 };
 #endif
 
@@ -1343,245 +1344,245 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 62 "lexyacc/genlang.y" /* yacc.c:1646  */
-    { programBlock = (yyvsp[0].block); }
-#line 1349 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 63 "lexyacc/genlang.y" /* yacc.c:1646  */
+    { programBlock = new NProgram(); programBlock->setBlock((yyvsp[0].block)); }
+#line 1350 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 65 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 66 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.block) = new NBlock(); (yyval.block)->statements.push_back((yyvsp[0].stmt)); }
-#line 1355 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1356 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 66 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 67 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyvsp[-1].block)->statements.push_back((yyvsp[0].stmt)); }
-#line 1361 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1362 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 69 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 70 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[-1].stmt); }
-#line 1367 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1368 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 71 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 72 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[-1].stmt); }
-#line 1373 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1374 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 72 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 73 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NExpressionStatement(*(yyvsp[-1].expr)); }
-#line 1379 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1380 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 73 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 74 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NReturnStatement(*(yyvsp[-1].expr)); }
-#line 1385 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1386 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 76 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 77 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NStatement(); }
-#line 1391 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1392 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 78 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 79 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NIfStatement(*(yyvsp[-2].expr), *(yyvsp[0].stmt)); }
-#line 1397 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1398 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 79 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 80 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NIfStatement(*(yyvsp[-2].expr), *(yyvsp[0].block)); }
-#line 1403 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1404 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 83 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 84 "lexyacc/genlang.y" /* yacc.c:1646  */
     {
 		(yyval.stmt) = new NLoopStatement(*(yyvsp[-5].stmt), *(yyvsp[-4].expr), *(yyvsp[-2].expr), *(yyvsp[0].stmt));
 	}
-#line 1411 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1412 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 87 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 88 "lexyacc/genlang.y" /* yacc.c:1646  */
     {
 				(yyval.stmt) = new NLoopStatement(*(yyvsp[-5].stmt), *(yyvsp[-4].expr), *(yyvsp[-2].expr), *(yyvsp[0].block));
 			}
-#line 1419 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1420 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 91 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 92 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.block) = (yyvsp[-1].block); }
-#line 1425 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1426 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 92 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 93 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.block) = new NBlock(); }
-#line 1431 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1432 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 95 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 96 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NVariableDeclaration(*(yyvsp[-1].vartype), *(yyvsp[0].ident)); }
-#line 1437 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1438 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 96 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 97 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NVariableDeclaration(*(yyvsp[-3].vartype), *(yyvsp[-2].ident), (yyvsp[0].expr)); }
-#line 1443 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1444 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 100 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 101 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NExternDeclaration(*(yyvsp[-4].vartype), *(yyvsp[-3].ident), *(yyvsp[-1].varvec)); delete (yyvsp[-1].varvec); }
-#line 1449 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1450 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 104 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 105 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.stmt) = new NFunctionDeclaration(*(yyvsp[-5].vartype), *(yyvsp[-4].ident), *(yyvsp[-2].varvec), *(yyvsp[0].block)); delete (yyvsp[-2].varvec); }
-#line 1455 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1456 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 107 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 108 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.varvec) = new VariableList(); }
-#line 1461 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1462 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 108 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 109 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.varvec) = new VariableList(); (yyval.varvec)->push_back((yyvsp[0].var_decl)); }
-#line 1467 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1468 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 109 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 110 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyvsp[-2].varvec)->push_back((yyvsp[0].var_decl)); }
-#line 1473 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1474 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 111 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 112 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.vartype) = new NVarType(*(yyvsp[0].string)); delete (yyvsp[0].string); }
-#line 1479 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1480 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 113 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 114 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.ident) = new NIdentifier(*(yyvsp[0].string)); delete (yyvsp[0].string); }
-#line 1485 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1486 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 116 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 117 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NInteger(atol((yyvsp[0].string)->c_str())); delete (yyvsp[0].string); }
-#line 1491 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1492 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 117 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 118 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NDouble(atof((yyvsp[0].string)->c_str())); delete (yyvsp[0].string); }
-#line 1497 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1498 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 120 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 121 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NBinaryOperator(*(yyvsp[-2].ident), (yyvsp[-1].token), *(yyvsp[0].expr)); }
-#line 1503 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1504 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 121 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 122 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NMethodCall(*(yyvsp[-3].ident), *(yyvsp[-1].exprvec)); delete (yyvsp[-1].exprvec); }
-#line 1509 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1510 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 122 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 123 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = (yyvsp[0].ident); }
-#line 1515 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1516 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 124 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 125 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NBinaryOperator(*(yyvsp[-2].expr), (yyvsp[-1].token), *(yyvsp[0].expr)); }
-#line 1521 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1522 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 125 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 126 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NBinaryOperator(*(yyvsp[-2].expr), (yyvsp[-1].token), *(yyvsp[0].expr)); }
-#line 1527 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1528 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 126 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 127 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NBinaryOperator(*(yyvsp[-2].expr), (yyvsp[-1].token), *(yyvsp[0].expr)); }
-#line 1533 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1534 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 127 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 128 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NBinaryOperator(*(yyvsp[-2].expr), (yyvsp[-1].token), *(yyvsp[0].expr)); }
-#line 1539 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1540 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 128 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 129 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = new NBinaryOperator(*(yyvsp[-2].expr), (yyvsp[-1].token), *(yyvsp[0].expr)); }
-#line 1545 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1546 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 129 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 130 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = (yyvsp[-1].expr); }
-#line 1551 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1552 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 130 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 131 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.expr) = (yyvsp[0].nstr); }
-#line 1557 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1558 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 134 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 135 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.nstr) = new NString(*(yyvsp[0].string)); delete (yyvsp[0].string); }
-#line 1563 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1564 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 136 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 137 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.exprvec) = new ExpressionList(); }
-#line 1569 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1570 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 137 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 138 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyval.exprvec) = new ExpressionList(); (yyval.exprvec)->push_back((yyvsp[0].expr)); }
-#line 1575 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1576 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 138 "lexyacc/genlang.y" /* yacc.c:1646  */
+#line 139 "lexyacc/genlang.y" /* yacc.c:1646  */
     { (yyvsp[-2].exprvec)->push_back((yyvsp[0].expr)); }
-#line 1581 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1582 "src/genlang.parser.cc" /* yacc.c:1646  */
     break;
 
 
-#line 1585 "src/genlang.parser.cc" /* yacc.c:1646  */
+#line 1586 "src/genlang.parser.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1809,7 +1810,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 143 "lexyacc/genlang.y" /* yacc.c:1906  */
+#line 144 "lexyacc/genlang.y" /* yacc.c:1906  */
 
 
 void yyerror(const char *s) { std::fprintf(stdout, "Error: %s \"%s\"\n", s, yytext);  }

@@ -92,13 +92,14 @@ union YYSTYPE
 	NIdentifier *ident;
 	NString *nstr;
 	NVarType *vartype;
+	NProgram *program;
 	NVariableDeclaration *var_decl;
 	std::vector<NVariableDeclaration*> *varvec;
 	std::vector<NExpression*> *exprvec;
 	std::string *string;
 	int token;
 
-#line 102 "src/genlang.parser.hh" /* yacc.c:1909  */
+#line 103 "src/genlang.parser.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
