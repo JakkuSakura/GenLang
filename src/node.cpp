@@ -5,7 +5,7 @@ static const char *nodeName[]
     "node","nExpression","nStatement","nInteger","nDouble","nIdentifier", "nVarType",
     "nMethodCall","nBinaryOperator","nAssignment","nBlock","nExpressionStatement",
     "nReturnStatement","nVariableDeclaration","nExternDeclaration","nFunctionDeclaration",
-    "nIfStatement", "nLoopStatement", "nString", "nProgram"
+    "nIfStatement", "nLoopStatement", "nString", "nProgram", "nVariableDeclarationStatement"
 };
 const char * getNodeName(int t)
 {

@@ -46,8 +46,10 @@ void yyerror(const char *s);
 %type <expr> numeric expr
 %type <varvec> func_decl_args
 %type <exprvec> call_args
-%type <block> program stmts block
-%type <stmt> stmt var_decl func_decl extern_decl if_stmt loop_stmt
+%type <block> stmts block
+%type <program> program
+%type <stmt> stmt var_decl_stmt func_decl extern_decl if_stmt loop_stmt
+%type <var_decl> var_decl
 %type <token> comparison assign
 %type <vartype> var_type
 %type <nstr> const_string
@@ -67,37 +69,40 @@ stmts : stmt { $$ = new NBlock(); $$->statements.push_back($1); }
 	  | stmts stmt { $1->statements.push_back($2); }
 	  ;
 
-stmt : var_decl TENDSTATEMENT { $$ = $1; }
- 	 | func_decl
-	 | extern_decl TENDSTATEMENT { $$ = $1; }
+stmt : func_decl
+	 | extern_decl
 	 | expr TENDSTATEMENT { $$ = new NExpressionStatement(*$1); }
 	 | TRETURN expr TENDSTATEMENT { $$ = new NReturnStatement(*$2); }
 	 | if_stmt
 	 | loop_stmt
+	 | var_decl_stmt
 	 | TENDSTATEMENT { $$ = new NStatement(); }
      ;
 if_stmt : TIF TLPAREN expr TRPAREN stmt { $$ = new NIfStatement(*$3, *$5); }
 	| TIF TLPAREN expr TRPAREN block { $$ = new NIfStatement(*$3, *$5); }
 	;
-loop_stmt :
-	TFOR TLPAREN stmt expr TENDSTATEMENT expr TRPAREN stmt
-	{
-		$$ = new NLoopStatement(*$3, *$4, *$6, *$8);
-	}
-	|	TFOR TLPAREN stmt expr TENDSTATEMENT expr TRPAREN block
-			{
-				$$ = new NLoopStatement(*$3, *$4, *$6, *$8);
-			}
+loop_stmt
+	:	 TFOR TLPAREN var_decl TENDSTATEMENT expr TENDSTATEMENT expr TRPAREN stmt
+			{  $$ = new NLoopStatement(*$3, *$5, *$7, *$9); }
+	|	TFOR TLPAREN var_decl TENDSTATEMENT expr TENDSTATEMENT expr TRPAREN block
+			{  $$ = new NLoopStatement(*$3, *$5, *$7, *$9); }
+	|	TFOR TLPAREN expr TENDSTATEMENT expr TENDSTATEMENT expr TRPAREN stmt
+			{ $$ = new NLoopStatement(*$3, *$5, *$7, *$9); }
+	|	TFOR TLPAREN expr TENDSTATEMENT expr TENDSTATEMENT expr TRPAREN block
+			{  $$ = new NLoopStatement(*$3, *$5, *$7, *$9); }
 	;
+
 block : TLBRACE stmts TRBRACE { $$ = $2; }
 	  | TLBRACE TRBRACE { $$ = new NBlock(); }
 	  ;
+var_decl_stmt : var_decl TENDSTATEMENT { $$ = new NVariableDeclarationStatement(*$1); }
+	;
 
 var_decl : var_type ident { $$ = new NVariableDeclaration(*$1, *$2); }
-		 | var_type ident TEQUAL expr { $$ = new NVariableDeclaration(*$1, *$2, $4); }
-		 ;
+	| var_type ident TEQUAL expr { $$ = new NVariableDeclaration(*$1, *$2, $4); }
+	;
 
-extern_decl : TEXTERN var_type ident TLPAREN func_decl_args TRPAREN
+extern_decl : TEXTERN var_type ident TLPAREN func_decl_args TRPAREN TENDSTATEMENT
                 { $$ = new NExternDeclaration(*$2, *$3, *$5); delete $5; }
             ;
 
@@ -106,8 +111,8 @@ func_decl : var_type ident TLPAREN func_decl_args TRPAREN block
 		  ;
 
 func_decl_args : /*blank*/  { $$ = new VariableList(); }
-		  | var_decl { $$ = new VariableList(); $$->push_back($<var_decl>1); }
-		  | func_decl_args TCOMMA var_decl { $1->push_back($<var_decl>3); }
+		  | var_decl { $$ = new VariableList(); $$->push_back($1); }
+		  | func_decl_args TCOMMA var_decl { $1->push_back($3); }
 		  ;
 var_type : TVARTYPE		{ $$ = new NVarType(*$1); delete $1; }
 			;

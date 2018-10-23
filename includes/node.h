@@ -14,7 +14,8 @@ namespace nodetype{
     enum  {node,nExpression,nStatement,nInteger,nDouble,nIdentifier, nVarType,
                nMethodCall,nBinaryOperator,nAssignment,nBlock,nExpressionStatement,
                nReturnStatement,nVariableDeclaration,nExternDeclaration,
-                nFunctionDeclaration, nIfStatement, nLoopStatement, nString, nProgram
+                nFunctionDeclaration, nIfStatement, nLoopStatement, nString, nProgram,
+                nVariableDeclarationStatement
               };
 };
 const char * getNodeName(int t);
@@ -152,7 +153,7 @@ public:
 
 };
 
-class NVariableDeclaration : public NStatement {
+class NVariableDeclaration : public Node {
 public:
     const NIdentifier &type;
     NIdentifier &id;
@@ -166,7 +167,15 @@ public:
         type(type), id(id), assignmentExpr(assignmentExpr) {
         setNodeType(nodetype::nVariableDeclaration);
     }
-
+};
+class NVariableDeclarationStatement : public NStatement
+{
+public:
+    const NVariableDeclaration &var_decl;
+    NVariableDeclarationStatement(const NVariableDeclaration &var_decl) :
+        var_decl(var_decl) {
+        setNodeType(nodetype::nVariableDeclarationStatement);
+    }
 
 };
 class NIfStatement : public NStatement {
@@ -180,11 +189,11 @@ public:
 };
 class NLoopStatement : public NStatement {
 public:
-    const NStatement &init;
+    const Node &init;
     const NExpression &judge;
     const NExpression &iter;
     const NStatement &stmt;
-    NLoopStatement(const NStatement &init, const NExpression &judge, const NExpression &iter, const NStatement &stmt) :
+    NLoopStatement(const Node &init, const NExpression &judge, const NExpression &iter, const NStatement &stmt) :
         init(init), judge(judge), iter(iter), stmt(stmt) {
         setNodeType(nodetype::nLoopStatement);
     }
