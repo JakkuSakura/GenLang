@@ -7,7 +7,7 @@ static const char *nodeName[]
     "nReturnStatement","nVariableDeclaration","nExternDeclaration","nFunctionDeclaration",
     "nIfStatement", "nLoopStatement", "nString", "nProgram"
 };
-const char * getNodeName(nodetype t)
+const char * getNodeName(int t)
 {
     return nodeName[t];
 }

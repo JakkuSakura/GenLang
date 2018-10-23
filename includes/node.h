@@ -2,7 +2,7 @@
 #define __GENLANG_NODE_H
 #include <iostream>
 #include <vector>
-
+#include <cstdio>
 class NStatement;
 class NExpression;
 class NVariableDeclaration;
@@ -10,21 +10,22 @@ class NVariableDeclaration;
 typedef std::vector<NStatement*> StatementList;
 typedef std::vector<NExpression*> ExpressionList;
 typedef std::vector<NVariableDeclaration*> VariableList;
-
-enum nodetype {node,nExpression,nStatement,nInteger,nDouble,nIdentifier, nVarType,
+namespace nodetype{
+    enum  {node,nExpression,nStatement,nInteger,nDouble,nIdentifier, nVarType,
                nMethodCall,nBinaryOperator,nAssignment,nBlock,nExpressionStatement,
-               nReturnStatement,nVariableDeclaration,nExternDeclaration,nFunctionDeclaration,
-               nIfStatement, nLoopStatement, nString, nProgram
+               nReturnStatement,nVariableDeclaration,nExternDeclaration,
+                nFunctionDeclaration, nIfStatement, nLoopStatement, nString, nProgram
               };
-const char * getNodeName(nodetype t);
+};
+const char * getNodeName(int t);
 class Node {
 public:
-    nodetype m_type;
-    void setNodeType(nodetype tp)
+    int m_type;
+    void setNodeType(int tp)
     {
         m_type = tp;
     }
-    nodetype getNodeType() const
+    int getNodeType() const
     {
         return m_type;
     }
@@ -33,7 +34,6 @@ public:
         return "";
     }
     virtual ~Node() {}
-    const static Node NullNode;
 };
 
 
@@ -59,7 +59,7 @@ public:
     }
     virtual const char *toString() const {
         static char buf[24];
-        std::sprintf(buf, "%d", value);
+        std::sprintf(buf, "%lld", value);
         return buf;
     }
 };
@@ -234,7 +234,7 @@ public:
     NBlock *block;
     NProgram(){
         block = NULL;
-        setNodeType(nProgram);
+        setNodeType(nodetype::nProgram);
     }
 
     void setBlock(NBlock *b)

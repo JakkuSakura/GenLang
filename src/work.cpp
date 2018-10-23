@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 #include "node.h"
+using namespace std;
+using namespace nodetype;
 void print(const Node *node, int t)
 {
     printf("%*s%s %s\n", t * 2, "", getNodeName(node->getNodeType()), node->toString());
@@ -148,7 +151,6 @@ void walk(const Node *node, void (*callback)(const Node *))
     case nBinaryOperator:
     {
         NBinaryOperator *n = (NBinaryOperator *)node;
-        printf("%*soperator %d\n", t * 2 + 2 ,"", n->op);
         walk(&n->lhs, callback);
         walk(&n->rhs, callback);
         break;
@@ -190,7 +192,10 @@ void pas_init(const NProgram *n)
 {
     printf("this program is inited\n");
 }
+void pas_generate(const NProgram *n)
+{
 
+}
 void pas_code(const NProgram *node)
 {
     pas_init(node);
