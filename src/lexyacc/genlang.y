@@ -65,6 +65,7 @@ void yyerror(const char *s);
 %%
 
 program : stmts { programBlock = new NProgram(); programBlock->setBlock($1); }
+		| /* empty file */	{ programBlock = NULL; }
 		;
 
 stmts : stmt { $$ = new NBlock(); $$->statements.push_back($1); }
@@ -156,7 +157,7 @@ const_char : TCHAR
 			int len = 1;
 			if((*$1)[1] == '\\')
 				len = 2;
-			$$ = new NChar($1->substr(1, len)); delete $1; 
+			$$ = new NChar($1->substr(1, len)); delete $1;
 		}
 	;
 

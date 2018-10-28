@@ -1,7 +1,3 @@
-program prog1540728829;
-var
-a:longint;
-b:longint;
 procedure print_c(val:char);
 begin
     write(val)
@@ -53,12 +49,3 @@ begin
     read(s);
     input_s := s;
 end;
-function plus(a:longint;b:longint):longint;
-begin
-plus := a + b;
-end;
-begin
-a := input_i;
-b := input_i;
-print_i(a + b);
-end.

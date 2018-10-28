@@ -522,8 +522,8 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lexyacc/genlang.l"
-#line 2 "lexyacc/genlang.l"
+#line 1 "src/lexyacc/genlang.l"
+#line 2 "src/lexyacc/genlang.l"
 #include <string>
 #include "node.h"
 #include "genlang.parser.hh"
@@ -749,7 +749,7 @@ YY_DECL
 		}
 
 	{
-#line 13 "lexyacc/genlang.l"
+#line 13 "src/lexyacc/genlang.l"
 
 
 #line 756 "src/genlang.scanner.cc"
@@ -812,204 +812,204 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 15 "lexyacc/genlang.l"
+#line 15 "src/lexyacc/genlang.l"
 count();
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 16 "lexyacc/genlang.l"
+#line 16 "src/lexyacc/genlang.l"
 count();
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 17 "lexyacc/genlang.l"
+#line 17 "src/lexyacc/genlang.l"
 count(); return TOKEN(TEXTERN);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 18 "lexyacc/genlang.l"
+#line 18 "src/lexyacc/genlang.l"
 count(); return TOKEN(TIMPORT);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 19 "lexyacc/genlang.l"
+#line 19 "src/lexyacc/genlang.l"
 count(); return TOKEN(TRETURN);
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 20 "lexyacc/genlang.l"
+#line 20 "src/lexyacc/genlang.l"
 count(); return TOKEN(TIF);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 21 "lexyacc/genlang.l"
+#line 21 "src/lexyacc/genlang.l"
 count(); return TOKEN(TFOR);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 22 "lexyacc/genlang.l"
+#line 22 "src/lexyacc/genlang.l"
 count(); return TOKEN(TWHILE);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 23 "lexyacc/genlang.l"
+#line 23 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCONTINUE);
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 24 "lexyacc/genlang.l"
+#line 24 "src/lexyacc/genlang.l"
 count(); return TOKEN(TBREAK);
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 25 "lexyacc/genlang.l"
+#line 25 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TVARTYPE;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 26 "lexyacc/genlang.l"
+#line 26 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TVARTYPE;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 27 "lexyacc/genlang.l"
+#line 27 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TVARTYPE;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 28 "lexyacc/genlang.l"
+#line 28 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TVARTYPE;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 29 "lexyacc/genlang.l"
+#line 29 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TVARTYPE;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 30 "lexyacc/genlang.l"
+#line 30 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TIDENTIFIER;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 31 "lexyacc/genlang.l"
+#line 31 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TDOUBLE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 32 "lexyacc/genlang.l"
+#line 32 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TINTEGER;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 35 "lexyacc/genlang.l"
+#line 35 "src/lexyacc/genlang.l"
 count(); return TOKEN(TEQUAL);
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 36 "lexyacc/genlang.l"
+#line 36 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCEQ);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 37 "lexyacc/genlang.l"
+#line 37 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCNE);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 38 "lexyacc/genlang.l"
+#line 38 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCLT);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 39 "lexyacc/genlang.l"
+#line 39 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCLE);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 40 "lexyacc/genlang.l"
+#line 40 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCGT);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 41 "lexyacc/genlang.l"
+#line 41 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCGE);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 43 "lexyacc/genlang.l"
+#line 43 "src/lexyacc/genlang.l"
 count(); return TOKEN(TLPAREN);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 44 "lexyacc/genlang.l"
+#line 44 "src/lexyacc/genlang.l"
 count(); return TOKEN(TRPAREN);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 45 "lexyacc/genlang.l"
+#line 45 "src/lexyacc/genlang.l"
 count(); return TOKEN(TLBRACE);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 46 "lexyacc/genlang.l"
+#line 46 "src/lexyacc/genlang.l"
 count(); return TOKEN(TRBRACE);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 48 "lexyacc/genlang.l"
+#line 48 "src/lexyacc/genlang.l"
 count(); return TOKEN(TDOT);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 49 "lexyacc/genlang.l"
+#line 49 "src/lexyacc/genlang.l"
 count(); return TOKEN(TCOMMA);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 51 "lexyacc/genlang.l"
+#line 51 "src/lexyacc/genlang.l"
 count(); return TOKEN(TPLUS);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 52 "lexyacc/genlang.l"
+#line 52 "src/lexyacc/genlang.l"
 count(); return TOKEN(TMINUS);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 53 "lexyacc/genlang.l"
+#line 53 "src/lexyacc/genlang.l"
 count(); return TOKEN(TMUL);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 54 "lexyacc/genlang.l"
+#line 54 "src/lexyacc/genlang.l"
 count(); return TOKEN(TDIV);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 55 "lexyacc/genlang.l"
+#line 55 "src/lexyacc/genlang.l"
 count(); return TOKEN(TENDSTATEMENT);
 	YY_BREAK
 case 37:
 /* rule 37 can match eol */
 YY_RULE_SETUP
-#line 56 "lexyacc/genlang.l"
+#line 56 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TSTRING;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 57 "lexyacc/genlang.l"
+#line 57 "src/lexyacc/genlang.l"
 count(); SAVE_TOKEN(); return TCHAR;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 58 "lexyacc/genlang.l"
+#line 58 "src/lexyacc/genlang.l"
 count(); printf("Unknown token!\n"); yyterminate();
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 60 "lexyacc/genlang.l"
+#line 60 "src/lexyacc/genlang.l"
 ECHO;
 	YY_BREAK
 #line 1016 "src/genlang.scanner.cc"
@@ -2013,7 +2013,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 60 "lexyacc/genlang.l"
+#line 60 "src/lexyacc/genlang.l"
 
 
 int column = 0;

@@ -85,7 +85,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 13 "lexyacc/genlang.y" /* yacc.c:1909  */
+#line 13 "src/lexyacc/genlang.y" /* yacc.c:1909  */
 
 	Node *node;
 	NBlock *block;
