@@ -13,7 +13,9 @@ void count();
 %%
 
 [ \t\n]					        count();
+"//".*"\n"						count();
 "extern"                        count(); return TOKEN(TEXTERN);
+"import"						count(); return TOKEN(TIMPORT);
 "return"				        count(); return TOKEN(TRETURN);
 "if"							count(); return TOKEN(TIF);
 "for"							count(); return TOKEN(TFOR);
@@ -22,6 +24,8 @@ void count();
 "break"							count(); return TOKEN(TBREAK);
 "int"							count(); SAVE_TOKEN(); return TVARTYPE;
 "double" 						count(); SAVE_TOKEN(); return TVARTYPE;
+"char" 							count(); SAVE_TOKEN(); return TVARTYPE;
+"string"						count(); SAVE_TOKEN(); return TVARTYPE;
 "void"	 						count(); SAVE_TOKEN(); return TVARTYPE;
 [a-zA-Z_][a-zA-Z0-9_]*  		count(); SAVE_TOKEN(); return TIDENTIFIER;
 [0-9]+\.[0-9]* 			    	count(); SAVE_TOKEN(); return TDOUBLE;
@@ -50,6 +54,7 @@ void count();
 "/"				          		count(); return TOKEN(TDIV);
 ";"								count(); return TOKEN(TENDSTATEMENT);
 "\""("\\\""|[^"\""])*"\""		count(); SAVE_TOKEN(); return TSTRING;
+"\'".+"\'"						count(); SAVE_TOKEN(); return TCHAR;
 .                     			count(); printf("Unknown token!\n"); yyterminate();
 
 %%
@@ -67,5 +72,5 @@ void count()
 		else
 			column++;
 
-	ECHO;
+	/* ECHO; */
 }

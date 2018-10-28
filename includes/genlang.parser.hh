@@ -50,31 +50,33 @@ extern int yydebug;
     TDOUBLE = 260,
     TVARTYPE = 261,
     TSTRING = 262,
-    TCEQ = 263,
-    TCNE = 264,
-    TCLT = 265,
-    TCLE = 266,
-    TCGT = 267,
-    TCGE = 268,
-    TEQUAL = 269,
-    TENDSTATEMENT = 270,
-    TLPAREN = 271,
-    TRPAREN = 272,
-    TLBRACE = 273,
-    TRBRACE = 274,
-    TCOMMA = 275,
-    TDOT = 276,
-    TPLUS = 277,
-    TMINUS = 278,
-    TMUL = 279,
-    TDIV = 280,
-    TRETURN = 281,
-    TEXTERN = 282,
-    TIF = 283,
-    TFOR = 284,
-    TWHILE = 285,
-    TCONTINUE = 286,
-    TBREAK = 287
+    TCHAR = 263,
+    TCEQ = 264,
+    TCNE = 265,
+    TCLT = 266,
+    TCLE = 267,
+    TCGT = 268,
+    TCGE = 269,
+    TEQUAL = 270,
+    TENDSTATEMENT = 271,
+    TLPAREN = 272,
+    TRPAREN = 273,
+    TLBRACE = 274,
+    TRBRACE = 275,
+    TCOMMA = 276,
+    TDOT = 277,
+    TPLUS = 278,
+    TMINUS = 279,
+    TMUL = 280,
+    TDIV = 281,
+    TRETURN = 282,
+    TEXTERN = 283,
+    TIMPORT = 284,
+    TIF = 285,
+    TFOR = 286,
+    TWHILE = 287,
+    TCONTINUE = 288,
+    TBREAK = 289
   };
 #endif
 
@@ -91,6 +93,7 @@ union YYSTYPE
 	NStatement *stmt;
 	NIdentifier *ident;
 	NString *nstr;
+	NChar *nchar;
 	NVarType *vartype;
 	NProgram *program;
 	NVariableDeclaration *var_decl;
@@ -99,7 +102,7 @@ union YYSTYPE
 	std::string *string;
 	int token;
 
-#line 103 "src/genlang.parser.hh" /* yacc.c:1909  */
+#line 106 "src/genlang.parser.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

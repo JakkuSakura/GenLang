@@ -1,5 +1,10 @@
-extern void printi(int val);
-
+import basic_io;
+//extern void printi(int val);
+void echo(string s)
+{
+    print_s(s);
+    print_c('\n');
+}
 int do_math(int a) {
   int x = a * 5;
   echo("hello");
@@ -12,6 +17,6 @@ int do_math(int a) {
   return x + 3;
 }
 
-echo(do_math(11));
-echo(do_math(12));
-printi(10);
+print_i(do_math(11));
+print_i(do_math(12));
+print_i(10);

@@ -15,7 +15,7 @@ namespace nodetype{
                nMethodCall,nBinaryOperator,nAssignment,nBlock,nExpressionStatement,
                nReturnStatement,nVariableDeclaration,nExternDeclaration,
                 nFunctionDeclaration, nIfStatement, nLoopStatement, nString, nProgram,
-                nVariableDeclarationStatement
+                nVariableDeclarationStatement, nImportDeclaration, nChar
               };
 };
 const char * getNodeName(int t);
@@ -210,7 +210,16 @@ public:
     }
 
 };
+class NImportDeclaration: public NStatement {
+public:
+    const NIdentifier &id;
 
+    NImportDeclaration(const NIdentifier &id) :
+        id(id) {
+        setNodeType(nodetype::nImportDeclaration);
+    }
+
+};
 class NFunctionDeclaration : public NStatement {
 public:
     const NIdentifier &type;
@@ -236,7 +245,35 @@ public:
     {
         return value.c_str();
     }
-
+};
+class NChar : public NExpression
+{
+public:
+    std::string value;
+    NChar(const std::string &s):value(s)
+    {
+        setNodeType(nodetype::nChar);
+    }
+    int ascii()
+    {
+        if (value == "\\n") {
+            return '\n';
+        }
+        if (value == "\\r") {
+            return '\r';
+        }
+        if (value == "\\t") {
+            return '\t';
+        }
+        if (value == "\\\\") {
+            return '\\';
+        }
+        return value[0];
+    }
+    virtual const char *toString() const
+    {
+        return value.c_str();
+    }
 };
 class NProgram : public Node {
 public:

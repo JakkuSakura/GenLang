@@ -17,6 +17,7 @@ void yyerror(const char *s);
 	NStatement *stmt;
 	NIdentifier *ident;
 	NString *nstr;
+	NChar *nchar;
 	NVarType *vartype;
 	NProgram *program;
 	NVariableDeclaration *var_decl;
@@ -30,11 +31,11 @@ void yyerror(const char *s);
    match our tokens.l lex file. We also define the node type
    they represent.
  */
-%token <string> TIDENTIFIER TINTEGER TDOUBLE TVARTYPE TSTRING
+%token <string> TIDENTIFIER TINTEGER TDOUBLE TVARTYPE TSTRING TCHAR
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TENDSTATEMENT
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT
 %token <token> TPLUS TMINUS TMUL TDIV
-%token <token> TRETURN TEXTERN
+%token <token> TRETURN TEXTERN TIMPORT
 %token <token> TIF TFOR TWHILE TCONTINUE TBREAK
 
 /* Define the type of node our nonterminal symbols represent.
@@ -48,11 +49,12 @@ void yyerror(const char *s);
 %type <exprvec> call_args
 %type <block> stmts block
 %type <program> program
-%type <stmt> stmt var_decl_stmt func_decl extern_decl if_stmt loop_stmt
+%type <stmt> stmt var_decl_stmt func_decl extern_decl if_stmt loop_stmt import_decl
 %type <var_decl> var_decl
 %type <token> comparison assign
 %type <vartype> var_type
 %type <nstr> const_string
+%type <nchar> const_char
 
 /* Operator precedence for mathematical operators */
 %left TPLUS TMINUS
@@ -71,6 +73,7 @@ stmts : stmt { $$ = new NBlock(); $$->statements.push_back($1); }
 
 stmt : func_decl
 	 | extern_decl
+	 | import_decl
 	 | expr TENDSTATEMENT { $$ = new NExpressionStatement(*$1); }
 	 | TRETURN expr TENDSTATEMENT { $$ = new NReturnStatement(*$2); }
 	 | if_stmt
@@ -105,6 +108,9 @@ var_decl : var_type ident { $$ = new NVariableDeclaration(*$1, *$2); }
 extern_decl : TEXTERN var_type ident TLPAREN func_decl_args TRPAREN TENDSTATEMENT
                 { $$ = new NExternDeclaration(*$2, *$3, *$5); delete $5; }
             ;
+import_decl : TIMPORT ident TENDSTATEMENT
+				{ $$ = new NImportDeclaration(*$2);}
+	;
 
 func_decl : var_type ident TLPAREN func_decl_args TRPAREN block
 			{ $$ = new NFunctionDeclaration(*$1, *$2, *$4, *$6); delete $4; }
@@ -134,11 +140,27 @@ expr : ident assign expr { $$ = new NBinaryOperator(*$1, $2, *$3); }
  	 | expr comparison expr { $$ = new NBinaryOperator(*$1, $2, *$3); }
      | TLPAREN expr TRPAREN { $$ = $2; }
 	 | const_string	{ $$ = $1; }
+	 | const_char { $$ = $1; }
 	 ;
 assign : TEQUAL
 	;
-const_string : TSTRING { $$ = new NString(*$1); delete $1; }
+const_string : TSTRING
+		{
+			std::string s = $1->substr(1, $1->size() - 2);
+		 	$$ = new NString(s);
+			delete $1;
+	 	}
 	;
+const_char : TCHAR
+		{
+			int len = 1;
+			if((*$1)[1] == '\\')
+				len = 2;
+			$$ = new NChar($1->substr(1, len)); delete $1; 
+		}
+	;
+
+
 call_args : /*blank*/  { $$ = new ExpressionList(); }
 		  | expr { $$ = new ExpressionList(); $$->push_back($1); }
 		  | call_args TCOMMA expr  { $1->push_back($3); }
