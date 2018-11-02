@@ -1,0 +1,40 @@
+
+void print_c(char val)
+{
+    {{print_c}}
+}
+
+void print_s(string val)
+{
+    {{print_s}}
+}
+
+void print_i(int val)
+{
+    {{print_i}}
+}
+
+void print_f(double val)
+{
+    {{print_f}}
+}
+
+char input_c()
+{
+    {{input_c}}
+}
+
+double input_f()
+{
+    {{input_f}}
+}
+
+int input_i()
+{
+    {{input_i}}
+}
+
+string input_s()
+{
+    {{input_s}}
+}
