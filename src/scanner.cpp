@@ -1,10 +1,10 @@
 #include <bits/stdc++.h>
-enum ClassName { INTEGER, CHAR, string };
-struct ScannerVal{
-    ClassName type;
-    union{
-            long long integer;
-            char chr;
-            string *s;
-    };
-};
+#include "Basic.h"
+using namespace GenLang;
+int main()
+{
+    Object *obj = gc.newObject();
+
+    gc.autoClean(NULL);
+    return 0;
+}

@@ -1,24 +1,24 @@
-all: genlang
+DIR_INC = ./includes
+DIR_SRC = ./src
+DIR_OBJ = ./obj
+DIR_BIN = ./bin
 
-genlang: scanner parser
-	g++ src/*.cc src/*.cpp -o bin/genlang -Iincludes -O2
+SRC = $(wildcard ${DIR_SRC}/*.cpp)
+OBJ = $(patsubst %.cpp,${DIR_OBJ}/%.o,$(notdir ${SRC}))
 
-scanner:
-	flex -o src/genlang.scanner.cc src/lexyacc/genlang.l
+TARGET = genlang
 
-parser:
-	bison -d -o src/genlang.parser.cc src/lexyacc/genlang.y
-	mv src/genlang.parser.hh includes/genlang.parser.hh
+BIN_TARGET = ${DIR_BIN}/${TARGET}
 
-.IGNORE: clean
+CC = g++
+CFLAGS = -g -Wall -I${DIR_INC}
+
+${BIN_TARGET}:${OBJ}
+	$(CC) $(OBJ)  -o $@
+
+${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+.PHONY:clean
 
 clean:
-	rm bin/genlang src/genlang.parser.cc src/genlang.scanner.cc includes/genlang.parser.hh
-	rm -r ./export
-
-test: genlang
-	cat examples/example.txt | bin/genlang
-
-export: clean genlang
-	mkdir ./export
-	cp -r ./bin/* ./gstl ./export/
+	find ${DIR_OBJ} -name *.o -exec rm -rf {} \;

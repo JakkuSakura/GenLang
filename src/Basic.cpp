@@ -2,80 +2,60 @@
 #include <string>
 #include <map>
 #include <deque>
+#include <queue>
+#include <set>
 namespace GenLang {
-class DynamicType {
-    enum { OBJECT, LIST } type;
-    std::string className;
-protected:
-    void setClassName(const std::string &name) {
-        className = name
-    }
-public:
-    virtual int size();
-    virtual const std::string &getClassName() const {
-        return className;
-    }
-    virtual const std::string &toString() const = 0;
-};
 
-class Object : public DynamicType {
-    typedef std::map<std::string, DynamicType *> Mapping;
-    Mapping members;
-public:
-    DynamicType *get(const std::string &name);
-    virtual int size()
+Object *GC::newObject() {
+    Object *newobj = new Object();
+    objects.insert(newobj);
+    return newobj;
+}
+List *GC::newList() {
+    List *newlist = new List();
+    objects.insert(newlist);
+    return newlist;
+}
+void GC::autoClean(DynamicType *root) {
+    std::set<DynamicType *> se;
+    std::queue<DynamicType *> qu;
+    qu.push(root);
+    se.insert(root);
+    while(!qu.empty())
     {
-        return members.size();
-    }
-    Object():type(OBJECT) { }
-
-};
-
-class List : public DynamicType {
-    std::deque<DynamicType *> members;
-public:
-    DynamicType *get(int id) {
-        if(id < 0)
-            id = members.size() - 1 - id;
-        return members[id];
-    }
-    virtual int size()
-    {
-        return members.size();
-    }
-    Object():type(LIST) { }
-};
-class GC {
-    std::set<DynamicType *> objects;
-    DynamicType *newObject() {
-        DynamicType *newobj = new Object();
-        object.push_front(newobj);
-        return newobj;
-    }
-
-    void delObject(DynamicType *dt) {
-        objects.erase(dt);
-    }
-    void autoClean(DynamicType *root) {
-        std::set<DynamicType *> se;
-        std::queue<DynamicType *> qu;
-        qu.push(root);
-        while(!qu.empty())
+        DynamicType *dt = qu.front();
+        qu.pop();
+        if(!dt) continue;
+        if(dt->getType() == DynamicType::OBJECT)
         {
-            DynamicType *dt = qu.front();
-            qu.pop();
-            se.insert(dt);
-            if(dt->type == OBJECT)
-            {
-                Object *obj = (Object *)dt;
-                for (Object::Mapping::iterator it = dt.) {
-                    /* code */
+            Object *obj = (Object *)dt;
+            for (Object::iterator it = obj->begin(); it != obj->end(); ++it) {
+                if(it->second && !se.count(it->second))
+                {
+                    se.insert(it->second);
+                    qu.push(it->second);
                 }
-            } else {
-
+            }
+        } else {
+            List *lst = (List *)dt;
+            for (List::iterator it = lst->begin(); it != lst->end(); ++it) {
+                if(!se.count(*it))
+                {
+                    se.insert(*it);
+                    qu.push(*it);
+                }
             }
         }
     }
-};
+    for (std::set<DynamicType *>::iterator it = objects.begin(); it != objects.end(); ++it) {
+        if(!se.count(*it))
+        {
+            objects.erase(*it);
+            delete *it;
+        }
+    }
+}
+
+GC gc;
 
 }
