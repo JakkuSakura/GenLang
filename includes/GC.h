@@ -41,6 +41,11 @@ public:
     int autoClean(DynamicType *root);
     void detach(GC &gc) {
         gc.objects.insert(objects.begin(), objects.end());
+        objects.clear();
+    }
+    DynamicType *detach(DynamicType *dt) {
+        objects.erase(dt);
+        return dt;
     }
 };
 }

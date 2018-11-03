@@ -130,21 +130,31 @@ protected:
 // };
 typedef std::pair<std::string, DynamicType *> str_pair;
 class Object : public Container
-    <std::vector<str_pair>,
-    DynamicType::Type::OBJECT> {
+    <std::vector<str_pair>, DynamicType::Type::OBJECT> {
     bool sorted;
-    // static KeyComparer<str_pair> comparer;
+    bool unorded;
+protected:
+    void setUnorded(bool v) {
+        unorded = v;
+    }
 public:
     Object() {
         sorted = true;
+        unorded = false;
     }
 
     int index(const std::string &s) {
-        if(!sorted) std::sort(members.begin(), members.end());
-
-        int i = std::lower_bound(members.begin(), members.end(), std::make_pair(s, (DynamicType *)NULL)) - begin();
-        if (i < size() && members[i].first == s)
-            return i;
+        if(unorded) {
+            for (int i = 0; i < size(); i++) {
+                if(members[i].first == s)
+                    return i;
+            }
+        }else{
+            if(!sorted) std::sort(members.begin(), members.end());
+            int i = std::lower_bound(members.begin(), members.end(), std::make_pair(s, (DynamicType *)NULL)) - begin();
+            if (i < size() && members[i].first == s)
+                return i;
+        }
         return -1;
     }
 
@@ -161,7 +171,6 @@ public:
             members[i].second = dt;
         else
             append(name, dt);
-        sorted = false;
         return dt;
     }
 
