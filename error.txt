@@ -1,0 +1,89 @@
+In file included from src/scanner.cpp:2:0:
+includes/Basic.h:125:27: error: ‘pair’ does not name a type
+     bool operator()(const pair<T, T2> &a, const pair<T, T2> &b) const {
+                           ^~~~
+includes/Basic.h:125:31: error: expected ‘,’ or ‘...’ before ‘<’ token
+     bool operator()(const pair<T, T2> &a, const pair<T, T2> &b) const {
+                               ^
+includes/Basic.h:128:1: error: expected ‘;’ after struct definition
+ }
+ ^
+includes/Basic.h: In member function ‘bool GenLang::KeyComparer<T, T2>::operator()(int) const’:
+includes/Basic.h:126:16: error: ‘a’ was not declared in this scope
+         return a.first < b.first;
+                ^
+includes/Basic.h:126:26: error: ‘b’ was not declared in this scope
+         return a.first < b.first;
+                          ^
+In file included from /usr/include/c++/6/bits/stl_algobase.h:71:0,
+                 from /usr/include/c++/6/bits/char_traits.h:39,
+                 from /usr/include/c++/6/ios:40,
+                 from /usr/include/c++/6/istream:38,
+                 from /usr/include/c++/6/sstream:38,
+                 from /usr/include/c++/6/complex:45,
+                 from /usr/include/c++/6/ccomplex:39,
+                 from /usr/include/x86_64-linux-gnu/c++/6/bits/stdc++.h:52,
+                 from src/scanner.cpp:1:
+/usr/include/c++/6/bits/predefined_ops.h: In instantiation of ‘bool __gnu_cxx::__ops::_Iter_comp_val<_Compare>::operator()(_Iterator, _Value&) [with _Iterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Value = const std::__cxx11::basic_string<char>; _Compare = GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>]’:
+/usr/include/c++/6/bits/stl_algobase.h:959:14:   required from ‘_ForwardIterator std::__lower_bound(_ForwardIterator, _ForwardIterator, const _Tp&, _Compare) [with _ForwardIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Tp = std::__cxx11::basic_string<char>; _Compare = __gnu_cxx::__ops::_Iter_comp_val<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:2030:32:   required from ‘_FIter std::lower_bound(_FIter, _FIter, const _Tp&, _Compare) [with _FIter = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Tp = std::__cxx11::basic_string<char>; _Compare = GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>]’
+includes/Basic.h:142:110:   required from here
+/usr/include/c++/6/bits/predefined_ops.h:147:11: error: no match for call to ‘(GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>) (std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>&, const std::__cxx11::basic_string<char>&)’
+  { return bool(_M_comp(*__it, __val)); }
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/scanner.cpp:2:0:
+includes/Basic.h:125:10: note: candidate: bool GenLang::KeyComparer<T, T2>::operator()(int) const [with T = std::__cxx11::basic_string<char>; T2 = GenLang::DynamicType*]
+     bool operator()(const pair<T, T2> &a, const pair<T, T2> &b) const {
+          ^~~~~~~~
+includes/Basic.h:125:10: note:   candidate expects 1 argument, 2 provided
+In file included from /usr/include/c++/6/bits/stl_algobase.h:71:0,
+                 from /usr/include/c++/6/bits/char_traits.h:39,
+                 from /usr/include/c++/6/ios:40,
+                 from /usr/include/c++/6/istream:38,
+                 from /usr/include/c++/6/sstream:38,
+                 from /usr/include/c++/6/complex:45,
+                 from /usr/include/c++/6/ccomplex:39,
+                 from /usr/include/x86_64-linux-gnu/c++/6/bits/stdc++.h:52,
+                 from src/scanner.cpp:1:
+/usr/include/c++/6/bits/predefined_ops.h: In instantiation of ‘constexpr bool __gnu_cxx::__ops::_Iter_comp_iter<_Compare>::operator()(_Iterator1, _Iterator2) [with _Iterator1 = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Iterator2 = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>]’:
+/usr/include/c++/6/bits/stl_algo.h:1844:14:   required from ‘void std::__insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:1882:25:   required from ‘void std::__final_insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:1968:31:   required from ‘void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:4739:18:   required from ‘void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>]’
+includes/Basic.h:140:104:   required from here
+/usr/include/c++/6/bits/predefined_ops.h:125:18: error: no match for call to ‘(GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>) (std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>&, std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>&)’
+         { return bool(_M_comp(*__it1, *__it2)); }
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/scanner.cpp:2:0:
+includes/Basic.h:125:10: note: candidate: bool GenLang::KeyComparer<T, T2>::operator()(int) const [with T = std::__cxx11::basic_string<char>; T2 = GenLang::DynamicType*]
+     bool operator()(const pair<T, T2> &a, const pair<T, T2> &b) const {
+          ^~~~~~~~
+includes/Basic.h:125:10: note:   candidate expects 1 argument, 2 provided
+In file included from /usr/include/c++/6/bits/stl_algobase.h:71:0,
+                 from /usr/include/c++/6/bits/char_traits.h:39,
+                 from /usr/include/c++/6/ios:40,
+                 from /usr/include/c++/6/istream:38,
+                 from /usr/include/c++/6/sstream:38,
+                 from /usr/include/c++/6/complex:45,
+                 from /usr/include/c++/6/ccomplex:39,
+                 from /usr/include/x86_64-linux-gnu/c++/6/bits/stdc++.h:52,
+                 from src/scanner.cpp:1:
+/usr/include/c++/6/bits/predefined_ops.h: In instantiation of ‘bool __gnu_cxx::__ops::_Iter_comp_val<_Compare>::operator()(_Iterator, _Value&) [with _Iterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Value = std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>; _Compare = GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>]’:
+/usr/include/c++/6/bits/stl_heap.h:129:48:   required from ‘void std::__push_heap(_RandomAccessIterator, _Distance, _Distance, _Tp, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Distance = long int; _Tp = std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>; _Compare = __gnu_cxx::__ops::_Iter_comp_val<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_heap.h:230:23:   required from ‘void std::__adjust_heap(_RandomAccessIterator, _Distance, _Distance, _Tp, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Distance = long int; _Tp = std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_heap.h:335:22:   required from ‘void std::__make_heap(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:1669:23:   required from ‘void std::__heap_select(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:1930:25:   required from ‘void std::__partial_sort(_RandomAccessIterator, _RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:1945:27:   required from ‘void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Size = long int; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:1965:25:   required from ‘void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*> >]’
+/usr/include/c++/6/bits/stl_algo.h:4739:18:   required from ‘void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>*, std::vector<std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*> > >; _Compare = GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>]’
+includes/Basic.h:140:104:   required from here
+/usr/include/c++/6/bits/predefined_ops.h:147:11: error: no match for call to ‘(GenLang::KeyComparer<std::__cxx11::basic_string<char>, GenLang::DynamicType*>) (std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>&, std::pair<std::__cxx11::basic_string<char>, GenLang::DynamicType*>&)’
+  { return bool(_M_comp(*__it, __val)); }
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/scanner.cpp:2:0:
+includes/Basic.h:125:10: note: candidate: bool GenLang::KeyComparer<T, T2>::operator()(int) const [with T = std::__cxx11::basic_string<char>; T2 = GenLang::DynamicType*]
+     bool operator()(const pair<T, T2> &a, const pair<T, T2> &b) const {
+          ^~~~~~~~
+includes/Basic.h:125:10: note:   candidate expects 1 argument, 2 provided
+make: *** [src/scanner.o] Error 1

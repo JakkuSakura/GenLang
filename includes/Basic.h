@@ -1,12 +1,14 @@
 #ifndef GENLANG_BASIC
 #define GENLANG_BASIC
 #include "Basic.h"
+#include <algorithm>
 #include <cstdlib>
 #include <string>
 #include <map>
 #include <deque>
 #include <queue>
 #include <set>
+#include <iostream>
 namespace GenLang {
 class DynamicType {
     std::string className;
@@ -120,15 +122,53 @@ public:
 protected:
     Mapping members;
 };
-
-class Object : public Container<std::map<std::string, DynamicType *>, DynamicType::Type::OBJECT> {
+// template<class T>
+// struct KeyComparer {
+//     bool operator()(const T &a, const T &b) const {
+//         return a.first < b.first;
+//     }
+// };
+typedef std::pair<std::string, DynamicType *> str_pair;
+class Object : public Container
+    <std::vector<str_pair>,
+    DynamicType::Type::OBJECT> {
+    bool sorted;
+    // static KeyComparer<str_pair> comparer;
 public:
+    Object() {
+        sorted = true;
+    }
+
+    int index(const std::string &s) {
+        if(!sorted) std::sort(members.begin(), members.end());
+
+        int i = std::lower_bound(members.begin(), members.end(), std::make_pair(s, (DynamicType *)NULL)) - begin();
+        if (i < size() && members[i].first == s)
+            return i;
+        return -1;
+    }
+
     DynamicType *get(const std::string &name) {
-        return members[name];
+        int i = index(name);
+        if(i >= 0)
+            return members[i].second;
+        return NULL;
     }
     template<class T>
     T *put(const std::string &name, T *dt) {
-        members[name] = dt;
+        int i = index(name);
+        if(i >= 0)
+            members[i].second = dt;
+        else
+            append(name, dt);
+        sorted = false;
+        return dt;
+    }
+
+    template<class T>
+    T *append(const std::string &name, T *dt) {
+        members.push_back(std::make_pair(name, dt));
+        sorted = false;
         return dt;
     }
 
@@ -164,7 +204,7 @@ public:
     }
 
     template<class T>
-    T *put(T *dt)
+    T *append(T *dt)
     {
         members.push_back(dt);
         return dt;

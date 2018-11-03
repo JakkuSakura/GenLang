@@ -4,8 +4,8 @@ AllDirs := src includes
 Sources := $(foreach n,$(AllDirs), $(wildcard $(n)/*.cpp))
 Objs := $(patsubst %.cpp,%.o, $(Sources))
 Deps := $(patsubst %.cpp,%.d, $(Sources))
-StaticLib := bin/genlang.a
-DynamicLib := bin/ganlang.so
+StaticLib := #bin/genlang.a
+DynamicLib := #bin/ganlang.so
 Bin := bin/genlang
 
 #AllLibs : $(DynamicLib)
@@ -28,7 +28,7 @@ $(Bin) : $(Objs)
 	$(CC) $(Objs) -o $@
 
 %.d : %.cpp
-	$(CC) -MT"$(<:.cpp=.o) $@" -MM $(CXXFLAGS) $< > $@
+	$(CC) -MT"$(<:.cpp=.o) $@" -MM $(CXXFLAGS) $< >$@
 run: $(Bin)
 	$(Bin)
 

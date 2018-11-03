@@ -5,10 +5,14 @@ namespace GenLang {
 class GC {
     std::set<DynamicType *> objects;
 public:
+    template<class T >
+    inline void signin(T *t) {
+        objects.insert(t);
+    }
     template<class T, class... T2>
     inline T *newDynamicType(T2... args) {
         T *n = new T(args...);
-        objects.insert(n);
+        signin(n);
         return n;
     }
 
@@ -35,6 +39,9 @@ public:
         autoClean(NULL);
     }
     int autoClean(DynamicType *root);
+    void detach(GC &gc) {
+        gc.objects.insert(objects.begin(), objects.end());
+    }
 };
 }
 
