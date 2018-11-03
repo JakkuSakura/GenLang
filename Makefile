@@ -1,24 +1,39 @@
-DIR_INC = ./includes
-DIR_SRC = ./src
-DIR_OBJ = ./obj
-DIR_BIN = ./bin
+SHELL = /bin/bash
 
-SRC = $(wildcard ${DIR_SRC}/*.cpp)
-OBJ = $(patsubst %.cpp,${DIR_OBJ}/%.o,$(notdir ${SRC}))
+AllDirs := src includes
+Sources := $(foreach n,$(AllDirs), $(wildcard $(n)/*.cpp))
+Objs := $(patsubst %.cpp,%.o, $(Sources))
+Deps := $(patsubst %.cpp,%.d, $(Sources))
+StaticLib := bin/genlang.a
+DynamicLib := bin/ganlang.so
+Bin := bin/genlang
 
-TARGET = genlang
-
-BIN_TARGET = ${DIR_BIN}/${TARGET}
+#AllLibs : $(DynamicLib)
+#AllLibs : $(StaticLib)
+AllLibs : $(Bin)
 
 CC = g++
-CFLAGS = -g -Wall -I${DIR_INC}
+CXXFLAGS = -O2 -Wall -Iincludes
+#$(foreach n,$(AllDirs), -I$(n))
 
-${BIN_TARGET}:${OBJ}
-	$(CC) $(OBJ)  -o $@
+LDFLAGS = -lstdc++
 
-${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-.PHONY:clean
+$(StaticLib) : $(Objs)
+	ar rcs $@ $^
 
+$(DynamicLib) : $(Objs)
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
+
+$(Bin) : $(Objs)
+	$(CC) $(Objs) -o $@
+
+%.d : %.cpp
+	$(CC) -MT"$(<:.cpp=.o) $@" -MM $(CXXFLAGS) $< > $@
+run: $(Bin)
+	$(Bin)
+
+sinclude $(Deps)
+
+.PHONY : clean
 clean:
-	find ${DIR_OBJ} -name *.o -exec rm -rf {} \;
+	rm -f $(Objs) $(Deps) $(StaticLib) $(DynamicLib) $(Bin)
