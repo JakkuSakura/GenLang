@@ -1,22 +1,12 @@
 #include "Basic.h"
+#include "GC.h"
 #include <string>
 #include <map>
 #include <deque>
 #include <queue>
 #include <set>
 namespace GenLang {
-
-Object *GC::newObject() {
-    Object *newobj = new Object();
-    objects.insert(newobj);
-    return newobj;
-}
-List *GC::newList() {
-    List *newlist = new List();
-    objects.insert(newlist);
-    return newlist;
-}
-void GC::autoClean(DynamicType *root) {
+int GC::autoClean(DynamicType *root) {
     std::set<DynamicType *> se;
     std::queue<DynamicType *> qu;
     qu.push(root);
@@ -47,13 +37,16 @@ void GC::autoClean(DynamicType *root) {
             }
         }
     }
+    int cnt = 0;
     for (std::set<DynamicType *>::iterator it = objects.begin(); it != objects.end(); ++it) {
         if(!se.count(*it))
         {
             objects.erase(*it);
             delete *it;
+            ++cnt;
         }
     }
+    return cnt;
 }
 
 GC gc;

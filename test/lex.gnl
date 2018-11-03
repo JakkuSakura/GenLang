@@ -1,2 +1,5 @@
 import basic_io;
 print "helloworld";
+struct foo{
+    let a as object;
+}
