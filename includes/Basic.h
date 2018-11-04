@@ -43,8 +43,17 @@ protected:
     BasicType() {
         setType(ty);
     }
+    operator const T () const {
+        return getVal();
+    }
+    operator T () {
+        return getVal();
+    }
 public:
     const T &getVal() const {
+        return val;
+    }
+    T &getVal() {
         return val;
     }
 };

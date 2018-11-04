@@ -10,8 +10,18 @@ struct Node : public Object{
         setClassName(type);
     }
 };
-struct Expr : public Node{
-    Expr() : Node("Expr"){}
+struct Expr : public Node {
+    Expr() : Node("Expr") {}
+};
+struct Stmt : public Node {
+    Stmt(Expr *expr) : Node("Stmt") {
+        append("expr", expr);
+    }
+};
+struct StmtBlock : public Node {
+    StmtBlock(List *lst) : Node("StmtBlock") {
+        append("list", lst);
+    }
 };
 struct BinaryOperator : public Expr {
     BinaryOperator(String *type, Expr *left, Expr *right) {
