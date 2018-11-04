@@ -18,7 +18,6 @@ protected:
         className = name;
     }
 public:
-    // TODO create these objects
     enum Type { OBJECT, LIST, INTEGER, CHAR, STRING, DOUBLE } dtype;
 
     void setType(Type type) {
@@ -66,7 +65,7 @@ public:
     Integer() {
         setVal(0);
     }
-    virtual std::string toString() {
+    virtual std::string toString() const {
         char buf[20];
         sprintf(buf, "%lld", getVal());
         return buf;
@@ -80,6 +79,9 @@ public:
     }
     Char() {
         setVal(0);
+    }
+    virtual std::string toString() const {
+        return std::string("\'") + getVal() + "\'";
     }
 };
 class String : public BasicType<std::string, DynamicType::Type::STRING> {

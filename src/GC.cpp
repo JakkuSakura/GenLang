@@ -49,6 +49,4 @@ int GC::autoClean(DynamicType *root) {
     return cnt;
 }
 
-GC gc;
-
 }
