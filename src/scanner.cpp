@@ -49,7 +49,7 @@ loop:
             str += ch;
             ch = getc(fin);
         } while(isdigit(ch));
-        if(!isspace(ch))
+        if(isalpha(ch) || ch == '_')
             throw "unexpected char";
         ungetc(ch, fin);
         return new(Token, Token::Type::CONSTANT, new(String, "CONSTANT"), new(Integer, atol(str.c_str())));

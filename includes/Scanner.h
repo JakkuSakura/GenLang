@@ -12,6 +12,9 @@ namespace GenLang{
             append("val", v);
             type = tp;
         }
+        Object *getVal() {
+            return (Object *)get("val");
+        }
     };
 
     struct Scanner {
