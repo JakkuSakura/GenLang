@@ -15,6 +15,9 @@ namespace GenLang{
         Object *getVal() {
             return (Object *)get("val");
         }
+        Type getTokenType() {
+            return type;
+        }
     };
 
     struct Scanner {

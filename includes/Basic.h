@@ -34,6 +34,7 @@ public:
 };
 template<class T, DynamicType::Type ty>
 class BasicType : public DynamicType {
+    typedef BasicType<T, ty> thisType;
     T val;
 protected:
     void setVal(const T &v) {
@@ -54,6 +55,21 @@ public:
     }
     T &getVal() {
         return val;
+    }
+    friend bool operator<(const thisType &a, const thisType &b) {
+        return a->getVal() < b->getVal();
+    }
+    friend bool operator>(const thisType &a, const thisType &b) {
+        return a->getVal() > b->getVal();
+    }
+    friend bool operator==(const thisType &a, const thisType &b) {
+        return a->getVal() == b->getVal();
+    }
+    friend bool operator>=(const thisType &a, const thisType &b) {
+        return a->getVal() >= b->getVal();
+    }
+    friend bool operator<=(const thisType &a, const thisType &b) {
+        return a->getVal() <= b->getVal();
     }
 };
 
@@ -86,6 +102,9 @@ public:
 };
 class String : public BasicType<std::string, DynamicType::Type::STRING> {
 public:
+    String(const char *s) {
+        setVal(std::string(s));
+    }
     String(const std::string &s) {
         setVal(s);
     }

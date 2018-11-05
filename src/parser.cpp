@@ -51,10 +51,13 @@ struct Parser {
     GC &gc;
     Scanner &scanner;
     Parser(GC &gc, Scanner &sc) : gc(gc), scanner(sc) { }
-    std::vector<Token *> v;
+    std::vector<Token *> tokens;
     int index = 0;
     void advance() {
         ++index;
+    }
+    Token *getToken() {
+        return tokens[index];
     }
     std::map<void *, int> backups;
     void backup(void *frame) {
@@ -64,66 +67,110 @@ struct Parser {
         index = backups[frame];
     }
     bool eps() {
-        return v[index]->type == Token::Type::TEOF;
+        return getToken()->type == Token::Type::TEOF;
+    }
+    Token *oper(const std::string &s) {
+        if(getToken()->type == Token::Type::OPERATOR
+                && as(String, getTokenVal())->getVal() == s) {
+            Token *tk = getToken();
+            advance();
+            return tk;
+        }
+        return NULL;
     }
     bool semi() {
-        return v[index]->type == Token::Type::OPERATOR
-            && as(String, getTokenVal())->getVal() == ";";
+        return oper(";");
     }
-    bool number() {
-        return v[index]->type == Token::Type::CONSTANT;
+    Token *number() {
+        if( getToken()->type == Token::Type::CONSTANT ) {
+            Token *tk = getToken();
+            advance();
+            return tk;
+        }
+        return NULL;
     }
-    bool string() {
-        return v[index]->type == Token::Type::STRING;
-    }
-    Token *oper() {
-        if(v[index]->type == Token::Type::OPERATOR)
-            return v[index];
+    Token *string() {
+        if( getToken()->type == Token::Type::STRING ) {
+            Token *tk = getToken();
+            advance();
+            return tk;
+        }
         return NULL;
     }
 
     Object *getTokenVal() {
-        return v[index]->getVal();
+        return getToken()->getVal();
     }
     void readinTokens() {
-        v.clear();
+        tokens.clear();
         index = 0;
         Token *tk;
         do
         {
             tk = scanner.getToken();
-            v.push_back(tk);
+            tokens.push_back(tk);
             std::cout << tk->toString() << std::endl;
-        }while (tk->type != Token::Type::TEOF);
+        } while (tk->type != Token::Type::TEOF);
     }
-    Expr *exprElement() {
+    Expr *numberExpr() {
+        if(Token *tk = number()) {
+            Expr *expr = new(Expr, tk->getVal());
+            return expr;
+        }
+        return NULL;
+    }
+    Expr *multiExpr() {
         Expr *expr = 0;
         backup(&expr);
-        if(number() || string()) {
-            expr = new(Expr, getTokenVal());
-            advance();
+
+        if((expr = numberExpr())) {
+            if(Token *tk = oper("*"))
+                if(Expr *expr2 = multiExpr())
+                    return new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+            return expr;
+        }
+        restore(&expr);
+
+        if((expr = numberExpr())) {
+            if(Token *tk = oper("/"))
+                if(Expr *expr2 = multiExpr())
+                    return new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+            return expr;
+        }
+        restore(&expr);
+
+        if((expr = numberExpr())) {
+            if(Token *tk = oper("%"))
+                if(Expr *expr2 = multiExpr())
+                    return new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+            return expr;
+        }
+        restore(&expr);
+
+        if((expr = numberExpr())) {
             return expr;
         }
         restore(&expr);
         return NULL;
     }
-    Expr *expression(){
+    #define d() std::cerr << __FILE__ << " " << __LINE__ << std::endl;
+    Expr *addExpr() {
         Expr *expr = 0;
         backup(&expr);
-        if((expr = exprElement())) {
-            Token *tk = 0;
-            if((tk = oper()))
+        if((expr = multiExpr())) {
+            Token *tk;
+            do
             {
-                advance();
-                Expr *expr2 = 0;
-                backup(&expr2);
-                expr2 = expression();
-                if(expr2)
-                    return new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
-                restore(&expr2);
-            } else {
-                return expr;
-            }
+                tk = 0;
+                backup(&tk);
+                if((tk = oper("+")) || (tk = oper("+"))) {
+                    if(Expr *expr2 = multiExpr())
+                        expr = new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+                    else
+                        restore(&tk);
+                }
+            }while(tk);
+            return expr;
         }
         restore(&expr);
         return NULL;
@@ -131,12 +178,12 @@ struct Parser {
     Stmt *statement() {
         Stmt *s = 0;
         backup(&s);
-        if(Expr *expr = expression()) {
+        if(Expr *expr = addExpr()) {
             if(semi()) {
                 s = new(Stmt, expr);
-                advance();
                 return s;
             }
+            std::cout << "end at " << index << std::endl;
         }
         restore(&s);
         return NULL;
