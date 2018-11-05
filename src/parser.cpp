@@ -122,31 +122,22 @@ struct Parser {
     Expr *multiExpr() {
         Expr *expr = 0;
         backup(&expr);
-
         if((expr = numberExpr())) {
-            if(Token *tk = oper("*"))
-                if(Expr *expr2 = multiExpr())
-                    return new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+            Token *tk;
+            do
+            {
+                tk = 0;
+                backup(&tk);
+                if((tk = oper("*")) || (tk = oper("/")) || (tk = oper("%"))) {
+                    if(Expr *expr2 = numberExpr())
+                        expr = new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+                    else
+                        restore(&tk);
+                }
+            }while(tk);
             return expr;
         }
         restore(&expr);
-
-        if((expr = numberExpr())) {
-            if(Token *tk = oper("/"))
-                if(Expr *expr2 = multiExpr())
-                    return new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
-            return expr;
-        }
-        restore(&expr);
-
-        if((expr = numberExpr())) {
-            if(Token *tk = oper("%"))
-                if(Expr *expr2 = multiExpr())
-                    return new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
-            return expr;
-        }
-        restore(&expr);
-
         if((expr = numberExpr())) {
             return expr;
         }
