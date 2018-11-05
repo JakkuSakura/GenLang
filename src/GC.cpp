@@ -27,7 +27,7 @@ int GC::autoClean(DynamicType *root) {
                     qu.push(it->second);
                 }
             }
-        } else {
+        } else if(typeid(*dt) == typeid(List)) {
             List *lst = (List *)dt;
             for (List::iterator it = lst->begin(); it != lst->end(); ++it) {
                 if(!se.count(*it))
@@ -38,14 +38,18 @@ int GC::autoClean(DynamicType *root) {
             }
         }
     }
+    
+    std::vector<DynamicType *> todel;
     int cnt = 0;
-    for (std::set<DynamicType *>::iterator it = objects.begin(); it != objects.end(); ++it) {
-        if(!se.count(*it))
-        {
-            objects.erase(*it);
-            delete *it;
+    for (auto e : objects) {
+        if(!se.count(e)) {
+            todel.push_back(e);
+            delete e;
             ++cnt;
         }
+    }
+    for (auto e : todel) {
+        objects.erase(e);
     }
     return cnt;
 }

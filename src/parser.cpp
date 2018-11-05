@@ -9,7 +9,7 @@ struct Node : public Object {
     Node(const std::string &type) {
         setClassName(type);
     }
-    void setVal(Object *obj) {
+    void setVal(DynamicType *obj) {
         put("val", obj);
     }
 };
@@ -18,6 +18,17 @@ struct Expr : public Node {
     template<class T>
     Expr(T *i) : Node("Expr") {
         setVal(i);
+    }
+};
+struct LetExpr : public Expr {
+    List *lst;
+    LetExpr() {
+        setClassName("LetExpr");
+        lst = new(List);
+        setVal(lst);
+    }
+    void append(Token *id) {
+        lst->append(id);
     }
 };
 struct Stmt : public Node {
@@ -105,8 +116,7 @@ struct Parser {
         tokens.clear();
         index = 0;
         Token *tk;
-        do
-        {
+        do {
             tk = scanner.getToken();
             tokens.push_back(tk);
             std::cout << tk->toString() << std::endl;
@@ -124,8 +134,7 @@ struct Parser {
         backup(&expr);
         if((expr = numberExpr())) {
             Token *tk;
-            do
-            {
+            do {
                 tk = 0;
                 backup(&tk);
                 if((tk = oper("*")) || (tk = oper("/")) || (tk = oper("%"))) {
@@ -150,11 +159,10 @@ struct Parser {
         backup(&expr);
         if((expr = multiExpr())) {
             Token *tk;
-            do
-            {
+            do {
                 tk = 0;
                 backup(&tk);
-                if((tk = oper("+")) || (tk = oper("+"))) {
+                if((tk = oper("+")) || (tk = oper("-"))) {
                     if(Expr *expr2 = multiExpr())
                         expr = new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
                     else
@@ -166,6 +174,22 @@ struct Parser {
         restore(&expr);
         return NULL;
     }
+    LetExpr *letExpr() {
+        if(as(String, getTokenVal())->getVal() == "let") {
+            advance();
+            Token *tk = 0;
+            backup(&tk);
+            if((tk = getToken())) {
+                if(tk->getTokenType() == Token::Type::IDENTIFIER) {
+                    LetExpr *le = new(LetExpr);
+                    le->append(tk);
+                    return le;
+                }
+            }
+            restore(&tk);
+        }
+        return NULL;
+    }
     Stmt *statement() {
         Stmt *s = 0;
         backup(&s);
@@ -174,7 +198,13 @@ struct Parser {
                 s = new(Stmt, expr);
                 return s;
             }
-            std::cout << "end at " << index << std::endl;
+        }
+        restore(&s);
+        if(LetExpr *expr = letExpr()) {
+            if(semi()) {
+                s = new(Stmt, expr);
+                return s;
+            }
         }
         restore(&s);
         return NULL;
