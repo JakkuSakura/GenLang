@@ -5,6 +5,7 @@
 #include <deque>
 #include <queue>
 #include <set>
+#include <typeinfo>
 namespace GenLang {
 int GC::autoClean(DynamicType *root) {
     std::set<DynamicType *> se;
@@ -16,7 +17,7 @@ int GC::autoClean(DynamicType *root) {
         DynamicType *dt = qu.front();
         qu.pop();
         if(!dt) continue;
-        if(dt->getType() == DynamicType::OBJECT)
+        if(typeid(*dt) == typeid(Object))
         {
             Object *obj = (Object *)dt;
             for (Object::iterator it = obj->begin(); it != obj->end(); ++it) {

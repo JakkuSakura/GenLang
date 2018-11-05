@@ -18,30 +18,21 @@ protected:
         className = name;
     }
 public:
-    enum Type { OBJECT, LIST, INTEGER, CHAR, STRING, DOUBLE } dtype;
-
-    void setType(Type type) {
-        dtype = type;
-    }
-    Type getType() {
-        return dtype;
-    }
     const std::string &getClassName() const {
         return className;
     }
     virtual std::string toString() const = 0;
     virtual ~DynamicType() {}
 };
-template<class T, DynamicType::Type ty>
+template<class T>
 class BasicType : public DynamicType {
-    typedef BasicType<T, ty> thisType;
+    typedef BasicType<T> thisType;
     T val;
 protected:
     void setVal(const T &v) {
         val = v;
     }
     BasicType() {
-        setType(ty);
     }
     operator const T () const {
         return getVal();
@@ -73,7 +64,7 @@ public:
     }
 };
 
-class Integer : public BasicType<long long, DynamicType::Type::INTEGER> {
+class Integer : public BasicType<long long> {
 public:
     Integer(long long val) {
         setVal(val);
@@ -88,7 +79,7 @@ public:
     }
 };
 
-class Char : public BasicType<char, DynamicType::Type::CHAR> {
+class Char : public BasicType<char> {
 public:
     Char(char ch) {
         setVal(ch);
@@ -100,7 +91,7 @@ public:
         return std::string("\'") + getVal() + "\'";
     }
 };
-class String : public BasicType<std::string, DynamicType::Type::STRING> {
+class String : public BasicType<std::string> {
 public:
     String(const char *s) {
         setVal(std::string(s));
@@ -115,7 +106,7 @@ public:
         return "\"" + getVal() + "\"";
     }
 };
-class Double : public BasicType<double, DynamicType::Type::DOUBLE> {
+class Double : public BasicType<double> {
 public:
     Double(double d) {
         setVal(d);
@@ -124,11 +115,10 @@ public:
         setVal(0.0);
     }
 };
-template<class Mapping, DynamicType::Type tp>
+template<class Mapping>
 class Container : public DynamicType {
 protected:
     Container() {
-        setType(tp);
     }
 public:
     typedef typename Mapping::iterator iterator;
@@ -160,7 +150,7 @@ protected:
 // };
 typedef std::pair<std::string, DynamicType *> str_pair;
 class Object : public Container
-    <std::vector<str_pair>, DynamicType::Type::OBJECT> {
+    <std::vector<str_pair>> {
     bool sorted;
     bool unorded;
 protected:
@@ -228,7 +218,7 @@ public:
 
 
 };
-class List : public Container<std::deque<DynamicType *>, DynamicType::Type::LIST> {
+class List : public Container<std::deque<DynamicType *>> {
 public:
     DynamicType *get(int id) {
         if(id < 0)

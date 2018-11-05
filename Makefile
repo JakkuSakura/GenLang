@@ -13,7 +13,7 @@ Bin := bin/genlang
 AllLibs : $(Bin)
 
 CC = g++
-CXXFLAGS = -O2 -Wall -Iincludes
+CXXFLAGS = -O2 -Wall -Iincludes -std=c++11
 #$(foreach n,$(AllDirs), -I$(n))
 
 LDFLAGS = -lstdc++
