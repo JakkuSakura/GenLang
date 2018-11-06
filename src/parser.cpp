@@ -2,7 +2,7 @@
 #include "GC.h"
 #include "Scanner.h"
 using namespace GenLang;
-#define new(type, args...) gc.newDynamicType<type>(args)
+#define alloc(type, args...) gc.newDynamicType<type>(args)
 #define as(type, arg) ((type *)(arg))
 #define d() std::cerr << __FILE__ << " " << __LINE__ << std::endl;
 static GC gc;
@@ -31,7 +31,7 @@ struct LetExpr : public Expr {
     List *lst;
     LetExpr() {
         setClassName("LetExpr");
-        lst = new(List);
+        lst = alloc(List);
         setVal(lst);
     }
     void append(AssignExpr *as_expr) {
@@ -70,12 +70,15 @@ struct TypeKeyPair : public Node {
     }
 };
 struct FunDeclExpr : public Expr {
+    TypeKeyPair *type_name_pair;
     List *arguments;
     StmtBlock *body;
-    FunDeclExpr() {
+    FunDeclExpr(TypeKeyPair *tkp) {
         setClassName("FunDeclExpr");
-        arguments = new(List);
+        arguments = alloc(List);
+        type_name_pair = tkp;
         append("arguments", arguments);
+        append("typekeypair", tkp);
     }
     void addArgument(TypeKeyPair *arg) {
         arguments->append(arg);
@@ -164,7 +167,7 @@ struct Parser {
     }
     Expr *numberExpr() {
         if(Token *tk = number()) {
-            Expr *expr = new(Expr, tk->getVal());
+            Expr *expr = alloc(Expr, tk->getVal());
             return expr;
         }
         return NULL;
@@ -178,7 +181,7 @@ struct Parser {
                 tk = 0;
                 if((tk = oper("*")) || (tk = oper("/")) || (tk = oper("%"))) {
                     if(Expr *expr2 = numberExpr())
-                        expr = new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+                        expr = alloc(BinaryOperator, as(String, tk->getVal()), expr, expr2);
                     else
                         throw "except expression";
                 }
@@ -194,7 +197,7 @@ struct Parser {
                 tk = 0;
                 if((tk = oper("+")) || (tk = oper("-"))) {
                     if(Expr *expr2 = multiExpr())
-                        expr = new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+                        expr = alloc(BinaryOperator, as(String, tk->getVal()), expr, expr2);
                     else
                         throw "except expression";
                 }
@@ -206,18 +209,18 @@ struct Parser {
     LetExpr *letExpr() {
         if(as(String, getTokenVal())->getVal() == "let") {
             advance();
-            LetExpr *le = new(LetExpr);
+            LetExpr *le = alloc(LetExpr);
             while(1) {
                 Token *tk = getToken();
                 if(tk->getTokenType() == Token::Type::IDENTIFIER) {
                     advance();
-                    Expr *nd = new(Expr);
+                    Expr *nd = alloc(Expr);
                     if(oper("=")) {
                         if(!(nd = addExpr()))
                             throw "expected expression";
                     }
 
-                    AssignExpr *ae = new(AssignExpr, as(String, tk->getVal()), nd);
+                    AssignExpr *ae = alloc(AssignExpr, as(String, tk->getVal()), nd);
                     le->append(ae);
                     if (!comma()) {
                         break;
@@ -232,7 +235,7 @@ struct Parser {
     }
     StmtBlock *block() {
         if(oper("{")) {
-            List *pgms = new(List);
+            List *pgms = alloc(List);
             while(!oper("}")) {
                 Stmt *st = statement();
                 if(st)
@@ -240,20 +243,62 @@ struct Parser {
                 else
                     throw "expected statement";
             }
-            return new(StmtBlock, pgms);
+            return alloc(StmtBlock, pgms);
+        }
+        return NULL;
+    }
+    String *getTypeName() {
+        Token *tk = getToken();
+        if(tk->type == Token::Type::TYPENAME) {
+            advance();
+            return as(String, tk->getVal());
+        }
+        return NULL;
+    }
+    String *getIdentifier(){
+        Token *nm = getToken();
+        if(nm->type == Token::Type::IDENTIFIER)  {
+            advance();
+            return as(String, nm->getVal());
+        }
+        return NULL;
+    }
+    TypeKeyPair *getPair() {
+        if(String *tn = getTypeName()) {
+            if(String *nm = getIdentifier())  {
+                TypeKeyPair *tkp = alloc(TypeKeyPair, tn, nm);
+                return tkp;
+            } else {
+                throw "excepted identifier";
+            }
         }
         return NULL;
     }
     FunDeclExpr *funDeclExpr() {
-        //TODO
+        if(getToken()->type == Token::Type::TYPENAME) {
+            TypeKeyPair *tkp =  getPair();
+            FunDeclExpr *fexpr = alloc(FunDeclExpr, tkp);
+            if(oper("(")) {
+                while(!oper(")")){
+                    TypeKeyPair *arg = getPair();
+                    fexpr->addArgument(arg);
+                }
+            }else {
+               throw "excepted '('";
+            }
+            StmtBlock *sb = block();
+            if(!sb) {
+                throw "excepted statement block";
+            }
+            fexpr->setBody(sb);
+            return fexpr;
+        }
         return NULL;
     }
     Expr *expression() {
         if(Expr *expr = addExpr())
             return expr;
         if(Expr *expr = letExpr())
-            return expr;
-        if(Expr *expr = funDeclExpr())
             return expr;
         throw "excepted expression";
     }
@@ -263,9 +308,12 @@ struct Parser {
         if(StmtBlock *sb = block()) {
             return sb;
         }
+        if(Expr *expr = funDeclExpr())
+            return alloc(Stmt, expr);
+
         if(Expr *expr = expression()) {
             if(semi()) {
-                Stmt *s = new(Stmt, expr);
+                Stmt *s = alloc(Stmt, expr);
                 return s;
             }
         }
@@ -273,7 +321,7 @@ struct Parser {
     }
 
     List *program() {
-        List *pgms = new(List);
+        List *pgms = alloc(List);
         while(Stmt *st = statement()) {
             pgms->append(st);
         }
@@ -286,6 +334,8 @@ struct Parser {
     }
 
 };
+// TODO oper '='
+
 int main()
 {
     GC gc;
