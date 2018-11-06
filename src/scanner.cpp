@@ -16,7 +16,7 @@ static const char *OPERATORS[] = {
     "==", "=", "<", ">", "!=", "<=", ">=",
     "+=", "-=", "*=", "/=", "**=", "<<=",
     ">>=", "|=", "&=", "^=", "\"", "\'",
-    ".", ",", "?", "//", 0
+    ".", ",", "?", "//", "{", "}", 0
 };
 static const char *SPCEIAL_CHARS = "~!@#$%^&*()_+-={}[]|\\:;\"\',.<>?/";
 #define new(type, args...) gc.newDynamicType<type>(args)
@@ -67,8 +67,8 @@ loop:
             return new(Token, Token::Type::IDENTIFIER, new(String, "IDENTIFIER"), new(String, str));
     } else if(strchr(SPCEIAL_CHARS, ch)) {
         while(operators.count(str + (char)ch)) {
-                str += ch;
-                ch = getc(fin);
+            str += ch;
+            ch = getc(fin);
         }
         if (str == "//") {
             while(ch = getc(fin), ch != EOF && ch != '\n')

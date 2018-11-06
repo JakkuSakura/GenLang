@@ -3,7 +3,8 @@
 #include "Scanner.h"
 using namespace GenLang;
 #define new(type, args...) gc.newDynamicType<type>(args)
-#define as(type, args...) ((type *)args)
+#define as(type, arg) ((type *)(arg))
+#define d() std::cerr << __FILE__ << " " << __LINE__ << std::endl;
 static GC gc;
 struct Node : public Object {
     Node(const std::string &type) {
@@ -15,9 +16,15 @@ struct Node : public Object {
 };
 struct Expr : public Node {
     Expr() : Node("Expr") {}
-    template<class T>
-    Expr(T *i) : Node("Expr") {
-        setVal(i);
+    Expr(DynamicType *dt) : Node("Expr") {
+        setVal(dt);
+    }
+};
+struct AssignExpr : public Expr {
+    AssignExpr(String *id, Expr *expr) {
+        setClassName("AssignExpr");
+        append("id", id);
+        setVal(expr);
     }
 };
 struct LetExpr : public Expr {
@@ -27,18 +34,55 @@ struct LetExpr : public Expr {
         lst = new(List);
         setVal(lst);
     }
-    void append(Token *id) {
-        lst->append(id);
+    void append(AssignExpr *as_expr) {
+        lst->append(as_expr);
+    }
+    virtual std::string toString() const{
+        return lst->toString();
     }
 };
+
 struct Stmt : public Node {
+    Stmt() : Node("Stmt") { }
     Stmt(Expr *expr) : Node("Stmt") {
         append("expr", expr);
     }
+    virtual std::string toString() const {
+        Expr *e = as(Expr, get("expr"));
+        return e ? e->toString() : "NULL";
+    }
 };
-struct StmtBlock : public Node {
-    StmtBlock(List *lst) : Node("StmtBlock") {
+struct StmtBlock : public Stmt {
+    List *list;
+    StmtBlock(List *lst) {
+        setClassName("StmtBlock");
+        list = lst;
         append("list", lst);
+    }
+    virtual std::string toString() const {
+        return getClassName() + list->toString();
+    }
+};
+struct TypeKeyPair : public Node {
+    TypeKeyPair(String *type, String *key) : Node("TypeKeyPair") {
+        append("type", type);
+        append("key", key);
+    }
+};
+struct FunDeclExpr : public Expr {
+    List *arguments;
+    StmtBlock *body;
+    FunDeclExpr() {
+        setClassName("FunDeclExpr");
+        arguments = new(List);
+        append("arguments", arguments);
+    }
+    void addArgument(TypeKeyPair *arg) {
+        arguments->append(arg);
+    }
+    void setBody(StmtBlock *blk) {
+        body = blk;
+        append("bode", blk);
     }
 };
 struct BinaryOperator : public Expr {
@@ -70,13 +114,6 @@ struct Parser {
     Token *getToken() {
         return tokens[index];
     }
-    std::map<void *, int> backups;
-    void backup(void *frame) {
-        backups[frame] = index;
-    }
-    void restore(void *frame) {
-        index = backups[frame];
-    }
     bool eps() {
         return getToken()->type == Token::Type::TEOF;
     }
@@ -96,8 +133,8 @@ struct Parser {
         return oper(";");
     }
     Token *number() {
-        if( getToken()->type == Token::Type::CONSTANT ) {
-            Token *tk = getToken();
+        Token *tk = getToken();
+        if( tk->type == Token::Type::CONSTANT || tk->type == Token::Type::IDENTIFIER ) {
             advance();
             return tk;
         }
@@ -132,49 +169,38 @@ struct Parser {
         }
         return NULL;
     }
+
     Expr *multiExpr() {
         Expr *expr = 0;
-        backup(&expr);
         if((expr = numberExpr())) {
             Token *tk;
             do {
                 tk = 0;
-                backup(&tk);
                 if((tk = oper("*")) || (tk = oper("/")) || (tk = oper("%"))) {
                     if(Expr *expr2 = numberExpr())
                         expr = new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
                     else
-                        restore(&tk);
+                        throw "except expression";
                 }
             }while(tk);
             return expr;
         }
-        restore(&expr);
-        if((expr = numberExpr())) {
-            return expr;
-        }
-        restore(&expr);
         return NULL;
     }
-    #define d() std::cerr << __FILE__ << " " << __LINE__ << std::endl;
     Expr *addExpr() {
-        Expr *expr = 0;
-        backup(&expr);
-        if((expr = multiExpr())) {
+        if(Expr *expr = multiExpr()) {
             Token *tk;
             do {
                 tk = 0;
-                backup(&tk);
                 if((tk = oper("+")) || (tk = oper("-"))) {
                     if(Expr *expr2 = multiExpr())
                         expr = new(BinaryOperator, as(String, tk->getVal()), expr, expr2);
                     else
-                        restore(&tk);
+                        throw "except expression";
                 }
             }while(tk);
             return expr;
         }
-        restore(&expr);
         return NULL;
     }
     LetExpr *letExpr() {
@@ -185,7 +211,14 @@ struct Parser {
                 Token *tk = getToken();
                 if(tk->getTokenType() == Token::Type::IDENTIFIER) {
                     advance();
-                    le->append(tk);
+                    Expr *nd = new(Expr);
+                    if(oper("=")) {
+                        if(!(nd = addExpr()))
+                            throw "expected expression";
+                    }
+
+                    AssignExpr *ae = new(AssignExpr, as(String, tk->getVal()), nd);
+                    le->append(ae);
                     if (!comma()) {
                         break;
                     }
@@ -197,24 +230,46 @@ struct Parser {
         }
         return NULL;
     }
-    Stmt *statement() {
-        Stmt *s = 0;
-        backup(&s);
-        if(LetExpr *expr = letExpr()) {
-            if(semi()) {
-                s = new(Stmt, expr);
-                return s;
+    StmtBlock *block() {
+        if(oper("{")) {
+            List *pgms = new(List);
+            while(!oper("}")) {
+                Stmt *st = statement();
+                if(st)
+                    pgms->append(st);
+                else
+                    throw "expected statement";
             }
+            return new(StmtBlock, pgms);
         }
-        restore(&s);
-        if(Expr *expr = addExpr()) {
-            if(semi()) {
-                s = new(Stmt, expr);
-                return s;
-            }
-        }
-        restore(&s);
         return NULL;
+    }
+    FunDeclExpr *funDeclExpr() {
+        //TODO
+        return NULL;
+    }
+    Expr *expression() {
+        if(Expr *expr = addExpr())
+            return expr;
+        if(Expr *expr = letExpr())
+            return expr;
+        if(Expr *expr = funDeclExpr())
+            return expr;
+        throw "excepted expression";
+    }
+    Stmt *statement() {
+        if(eps())
+            return NULL;
+        if(StmtBlock *sb = block()) {
+            return sb;
+        }
+        if(Expr *expr = expression()) {
+            if(semi()) {
+                Stmt *s = new(Stmt, expr);
+                return s;
+            }
+        }
+        throw "excepted statement";
     }
 
     List *program() {
@@ -224,11 +279,10 @@ struct Parser {
         }
         return pgms;
     }
-    void parse() {
+    List *parse() {
         readinTokens();
         std::cout << "Read token" << std::endl;
-        backups.clear();
-        std::cout << program()->toString() << std::endl;
+        return program();
     }
 
 };
@@ -237,5 +291,11 @@ int main()
     GC gc;
     Scanner scanner(gc, stdin);
     Parser parser(gc, scanner);
-    parser.parse();
+
+    try{
+        List *program = parser.parse();
+        std::cout << program->toString() << std::endl;
+    }catch(const char *s) {
+        std::cerr << s << std::endl;
+    }
 }

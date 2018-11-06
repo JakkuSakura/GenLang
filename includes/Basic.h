@@ -142,12 +142,6 @@ public:
 protected:
     Mapping members;
 };
-// template<class T>
-// struct KeyComparer {
-//     bool operator()(const T &a, const T &b) const {
-//         return a.first < b.first;
-//     }
-// };
 typedef std::pair<std::string, DynamicType *> str_pair;
 class Object : public Container
     <std::vector<str_pair>> {
@@ -183,6 +177,9 @@ public:
         if(i >= 0)
             return members[i].second;
         return NULL;
+    }
+    const DynamicType *get(const std::string &name) const {
+        return ((Object *)this)->get(name);
     }
     template<class T>
     T *put(const std::string &name, T *dt) {
