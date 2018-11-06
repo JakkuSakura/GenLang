@@ -89,6 +89,9 @@ struct Parser {
         }
         return NULL;
     }
+    bool comma() {
+        return oper(",");
+    }
     bool semi() {
         return oper(";");
     }
@@ -177,30 +180,34 @@ struct Parser {
     LetExpr *letExpr() {
         if(as(String, getTokenVal())->getVal() == "let") {
             advance();
-            Token *tk = 0;
-            backup(&tk);
-            if((tk = getToken())) {
+            LetExpr *le = new(LetExpr);
+            while(1) {
+                Token *tk = getToken();
                 if(tk->getTokenType() == Token::Type::IDENTIFIER) {
-                    LetExpr *le = new(LetExpr);
+                    advance();
                     le->append(tk);
-                    return le;
+                    if (!comma()) {
+                        break;
+                    }
+                } else {
+                    throw "must be an IDENTIFIER";
                 }
             }
-            restore(&tk);
+            return le;
         }
         return NULL;
     }
     Stmt *statement() {
         Stmt *s = 0;
         backup(&s);
-        if(Expr *expr = addExpr()) {
+        if(LetExpr *expr = letExpr()) {
             if(semi()) {
                 s = new(Stmt, expr);
                 return s;
             }
         }
         restore(&s);
-        if(LetExpr *expr = letExpr()) {
+        if(Expr *expr = addExpr()) {
             if(semi()) {
                 s = new(Stmt, expr);
                 return s;
