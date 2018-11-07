@@ -433,8 +433,8 @@ struct Parser {
         std::cout << "Read token" << std::endl;
         return program();
     }
-
 };
+
 int main()
 {
     GC gc;
@@ -448,7 +448,3 @@ int main()
         std::cerr << s << std::endl;
     }
 }
-/*
-void foo(){}
-foo();
-*/
