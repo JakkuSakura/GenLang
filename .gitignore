@@ -1,3 +1,6 @@
 .coding-ide/
 .idea/
-
+*/*.o
+*/*.d
+bin/*
+*/*.exe

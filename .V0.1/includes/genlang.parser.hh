@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_SRC_GENLANG_PARSER_HH_INCLUDED
+# define YY_YY_SRC_GENLANG_PARSER_HH_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -45,43 +45,67 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NUMBER = 258,
-    INTEGER = 259,
-    ID = 260,
-    ADD = 261,
-    MUL = 262,
-    SUB = 263,
-    DIV = 264,
-    MOD = 265,
-    LSH = 266,
-    RSH = 267,
-    OR = 268,
-    AND = 269,
-    XOR = 270,
-    NODE = 271,
-    BLOCK = 272
+    TIDENTIFIER = 258,
+    TINTEGER = 259,
+    TDOUBLE = 260,
+    TVARTYPE = 261,
+    TSTRING = 262,
+    TCHAR = 263,
+    TCEQ = 264,
+    TCNE = 265,
+    TCLT = 266,
+    TCLE = 267,
+    TCGT = 268,
+    TCGE = 269,
+    TEQUAL = 270,
+    TENDSTATEMENT = 271,
+    TLPAREN = 272,
+    TRPAREN = 273,
+    TLBRACE = 274,
+    TRBRACE = 275,
+    TCOMMA = 276,
+    TDOT = 277,
+    TPLUS = 278,
+    TMINUS = 279,
+    TMUL = 280,
+    TDIV = 281,
+    TRETURN = 282,
+    TEXTERN = 283,
+    TIMPORT = 284,
+    TIF = 285,
+    TFOR = 286,
+    TWHILE = 287,
+    TCONTINUE = 288,
+    TBREAK = 289
   };
 #endif
-/* Tokens.  */
-#define NUMBER 258
-#define INTEGER 259
-#define ID 260
-#define ADD 261
-#define MUL 262
-#define SUB 263
-#define DIV 264
-#define MOD 265
-#define LSH 266
-#define RSH 267
-#define OR 268
-#define AND 269
-#define XOR 270
-#define NODE 271
-#define BLOCK 272
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 13 "src/lexyacc/genlang.y" /* yacc.c:1909  */
+
+	Node *node;
+	NBlock *block;
+	NExpression *expr;
+	NStatement *stmt;
+	NIdentifier *ident;
+	NString *nstr;
+	NChar *nchar;
+	NVarType *vartype;
+	NProgram *program;
+	NVariableDeclaration *var_decl;
+	std::vector<NVariableDeclaration*> *varvec;
+	std::vector<NExpression*> *exprvec;
+	std::string *string;
+	int token;
+
+#line 106 "src/genlang.parser.hh" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -91,4 +115,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_SRC_GENLANG_PARSER_HH_INCLUDED  */
