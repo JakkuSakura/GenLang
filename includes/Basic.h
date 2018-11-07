@@ -197,10 +197,8 @@ public:
         sorted = false;
         return dt;
     }
-
-    virtual std::string toString() const {
-        std::string buf = getClassName();
-        buf += "{";
+    std::string getMembers() const {
+        std::string buf;
         for (const_iterator it = begin(); it != end(); ++it) {
             if(it != begin()) buf += ",";
             buf += "\"";
@@ -209,6 +207,12 @@ public:
             buf += ":";
             buf += it->second->toString();
         }
+        return buf;
+    }
+    virtual std::string toString() const {
+        std::string buf = getClassName();
+        buf += "{";
+        buf += getMembers();
         buf += "}";
         return buf;
     }

@@ -10,14 +10,20 @@ struct Node : public Object {
     Node(const std::string &type) {
         setClassName(type);
     }
-    void setVal(DynamicType *obj) {
-        put("val", obj);
-    }
 };
 struct Expr : public Node {
     Expr() : Node("Expr") {}
     Expr(DynamicType *dt) : Node("Expr") {
         setVal(dt);
+    }
+    void setVal(DynamicType *obj) {
+        put("val", obj);
+    }
+    DynamicType *getVal() {
+        return get("val");
+    }
+    const DynamicType *getVal() const {
+        return get("val");
     }
 };
 struct AssignExpr : public Expr {
@@ -25,6 +31,9 @@ struct AssignExpr : public Expr {
         setClassName("AssignExpr");
         append("id", id);
         setVal(expr);
+    }
+    virtual std::string toString() const {
+        return as(String, get("id"))->getVal() + "=" + as(Expr, getVal())->toString() ;
     }
 };
 struct LetExpr : public Expr {
@@ -38,10 +47,16 @@ struct LetExpr : public Expr {
         lst->append(as_expr);
     }
     virtual std::string toString() const{
-        return lst->toString();
+        return getClassName() + lst->toString();
     }
 };
-
+struct FuncCall : public Expr{
+    FuncCall(String *id, List *arguments) {
+        setClassName("FuncCall");
+        put("id", id);
+        put("arguments", arguments);
+    }
+};
 struct Stmt : public Node {
     Stmt() : Node("Stmt") { }
     Stmt(Expr *expr) : Node("Stmt") {
@@ -65,8 +80,12 @@ struct StmtBlock : public Stmt {
 };
 struct TypeKeyPair : public Node {
     TypeKeyPair(String *type, String *key) : Node("TypeKeyPair") {
+        setUnorded(true);
         append("type", type);
         append("key", key);
+    }
+    const std::string &getName() const {
+        return as(String, get("key"))->getVal();
     }
 };
 struct FunDeclExpr : public Expr {
@@ -75,17 +94,18 @@ struct FunDeclExpr : public Expr {
     StmtBlock *body;
     FunDeclExpr(TypeKeyPair *tkp) {
         setClassName("FunDeclExpr");
-        arguments = alloc(List);
+        setUnorded(true);
         type_name_pair = tkp;
-        append("arguments", arguments);
         append("typekeypair", tkp);
+        arguments = alloc(List);
+        append("arguments", arguments);
     }
     void addArgument(TypeKeyPair *arg) {
         arguments->append(arg);
     }
     void setBody(StmtBlock *blk) {
         body = blk;
-        append("bode", blk);
+        append("body", blk);
     }
 };
 struct BinaryOperator : public Expr {
@@ -110,9 +130,15 @@ struct Parser {
     Scanner &scanner;
     Parser(GC &gc, Scanner &sc) : gc(gc), scanner(sc) { }
     std::vector<Token *> tokens;
+    std::map<std::string, FunDeclExpr *> functions;
+    std::set<std::string> variables;
+
     int index = 0;
     void advance() {
         ++index;
+    }
+    void back() {
+        --index;
     }
     Token *getToken() {
         return tokens[index];
@@ -137,15 +163,15 @@ struct Parser {
     }
     Token *number() {
         Token *tk = getToken();
-        if( tk->type == Token::Type::CONSTANT || tk->type == Token::Type::IDENTIFIER ) {
+        if( tk->type == Token::Type::CONSTANT ) {
             advance();
             return tk;
         }
         return NULL;
     }
     Token *string() {
-        if( getToken()->type == Token::Type::STRING ) {
-            Token *tk = getToken();
+        Token *tk = getToken();
+        if( tk->type == Token::Type::STRING ) {
             advance();
             return tk;
         }
@@ -155,6 +181,7 @@ struct Parser {
     Object *getTokenVal() {
         return getToken()->getVal();
     }
+
     void readinTokens() {
         tokens.clear();
         index = 0;
@@ -172,10 +199,31 @@ struct Parser {
         }
         return NULL;
     }
+    FuncCall *funcCall() {
+        if(String *id = getIdentifier())
+        {
+            if(testFunc(id->getVal()))
+            if(oper("(")) {
+                List *arguments = alloc(List);
+                while(!oper(")")) {
+                    if(Expr *expr = expression()) {
+                        arguments->append(expr);
+                        comma();
+                    }
+                    else
+                        throw "excepted expression";                    
+                }
+                return alloc(FuncCall, id, arguments);
+            }
+            back();
+            return NULL;
+        }
+        return NULL;
+    }
 
     Expr *multiExpr() {
         Expr *expr = 0;
-        if((expr = numberExpr())) {
+        if((expr = numberExpr()) || (expr = funcCall())) {
             Token *tk;
             do {
                 tk = 0;
@@ -206,22 +254,52 @@ struct Parser {
         }
         return NULL;
     }
+    AssignExpr *assignExpr() {
+        if(String *id = getIdentifier()) {
+            if(oper("=")) {
+                if(Expr *nd = expression())
+                    return alloc(AssignExpr, as(String, id), nd);
+                
+                else
+                    throw "expected expression";
+            } else {
+                back();
+                return NULL;
+            }
+        }
+        return NULL;
+    }
+    bool testFunc(const std::string &id) {
+        return functions.find(id) != functions.end();
+    }
+    bool testVar(const std::string &id) {
+        return variables.count(id);
+    }
+
+    void addVar(const std::string &id) {
+        variables.insert(id);
+    }
     LetExpr *letExpr() {
         if(as(String, getTokenVal())->getVal() == "let") {
             advance();
             LetExpr *le = alloc(LetExpr);
             while(1) {
-                Token *tk = getToken();
-                if(tk->getTokenType() == Token::Type::IDENTIFIER) {
-                    advance();
+                if(String *id = getIdentifier()) {
                     Expr *nd = alloc(Expr);
                     if(oper("=")) {
                         if(!(nd = addExpr()))
                             throw "expected expression";
                     }
-
-                    AssignExpr *ae = alloc(AssignExpr, as(String, tk->getVal()), nd);
+                    AssignExpr *ae = alloc(AssignExpr, as(String, id), nd);
                     le->append(ae);
+                    if(testVar(id->getVal()))
+                        throw "do not declare a variable twice";
+                    if(testFunc(id->getVal()))
+                        throw "it is already a function name";
+                    
+                    addVar(id->getVal());
+                
+                    
                     if (!comma()) {
                         break;
                     }
@@ -233,6 +311,7 @@ struct Parser {
         }
         return NULL;
     }
+
     StmtBlock *block() {
         if(oper("{")) {
             List *pgms = alloc(List);
@@ -263,6 +342,7 @@ struct Parser {
         }
         return NULL;
     }
+
     TypeKeyPair *getPair() {
         if(String *tn = getTypeName()) {
             if(String *nm = getIdentifier())  {
@@ -274,18 +354,29 @@ struct Parser {
         }
         return NULL;
     }
+
     FunDeclExpr *funDeclExpr() {
-        if(getToken()->type == Token::Type::TYPENAME) {
-            TypeKeyPair *tkp =  getPair();
+        if(TypeKeyPair *tkp =  getPair()) {
+            if(testFunc(tkp->getName()))
+                throw "do not declare a function for twice";
+            if(testVar(tkp->getName()))
+                throw "it it already a variable name";
             FunDeclExpr *fexpr = alloc(FunDeclExpr, tkp);
             if(oper("(")) {
                 while(!oper(")")){
-                    TypeKeyPair *arg = getPair();
-                    fexpr->addArgument(arg);
+                    if(TypeKeyPair *arg = getPair())
+                    {
+                        fexpr->addArgument(arg);
+                        comma();
+                    }
+                    else
+                        throw "excepted Type Key pair(s)";
                 }
             }else {
                throw "excepted '('";
             }
+            functions[tkp->getName()] = fexpr;
+
             StmtBlock *sb = block();
             if(!sb) {
                 throw "excepted statement block";
@@ -296,6 +387,9 @@ struct Parser {
         return NULL;
     }
     Expr *expression() {
+        if(Expr *expr = assignExpr())
+            return expr;
+        
         if(Expr *expr = addExpr())
             return expr;
         if(Expr *expr = letExpr())
@@ -312,6 +406,7 @@ struct Parser {
             return alloc(Stmt, expr);
 
         if(Expr *expr = expression()) {
+            
             if(semi()) {
                 Stmt *s = alloc(Stmt, expr);
                 return s;
@@ -322,8 +417,14 @@ struct Parser {
 
     List *program() {
         List *pgms = alloc(List);
-        while(Stmt *st = statement()) {
-            pgms->append(st);
+        try{
+            while(Stmt *st = statement()) {
+                pgms->append(st);
+                d();
+                std::cout << st->toString() << std::endl;
+            }
+        }catch(const char *s) {
+            std::cerr << s << std::endl;
         }
         return pgms;
     }
@@ -334,8 +435,6 @@ struct Parser {
     }
 
 };
-// TODO oper '='
-
 int main()
 {
     GC gc;
@@ -344,8 +443,12 @@ int main()
 
     try{
         List *program = parser.parse();
-        std::cout << program->toString() << std::endl;
+        std::cout << program << std::endl;
     }catch(const char *s) {
         std::cerr << s << std::endl;
     }
 }
+/*
+void foo(){}
+foo();
+*/
