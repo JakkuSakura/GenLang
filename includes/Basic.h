@@ -1,5 +1,5 @@
-#ifndef GENLANG_BASIC
-#define GENLANG_BASIC
+#ifndef GENLANG_BASIC_H
+#define GENLANG_BASIC_H
 #include "Basic.h"
 #include <algorithm>
 #include <cstdlib>
@@ -22,7 +22,7 @@ public:
         return className;
     }
     virtual std::string toString() const = 0;
-    virtual ~DynamicType() {}
+    virtual ~DynamicType() = default;
 };
 template<class T>
 class BasicType : public DynamicType {
@@ -32,8 +32,8 @@ protected:
     void setVal(const T &v) {
         val = v;
     }
-    BasicType() {
-    }
+    BasicType() = default;
+
     operator const T () const {
         return getVal();
     }
@@ -72,7 +72,8 @@ public:
     Integer() {
         setVal(0);
     }
-    virtual std::string toString() const {
+
+    std::string toString() const override {
         char buf[20];
         sprintf(buf, "%lld", getVal());
         return buf;
@@ -87,7 +88,8 @@ public:
     Char() {
         setVal(0);
     }
-    virtual std::string toString() const {
+
+    std::string toString() const override {
         return std::string("\'") + getVal() + "\'";
     }
 };
@@ -102,7 +104,8 @@ public:
     String() {
         setVal("");
     }
-    virtual std::string toString() const {
+
+    std::string toString() const override {
         return "\"" + getVal() + "\"";
     }
 };
@@ -118,8 +121,8 @@ public:
 template<class Mapping>
 class Container : public DynamicType {
 protected:
-    Container() {
-    }
+    Container() = default;
+
 public:
     typedef typename Mapping::iterator iterator;
     typedef typename Mapping::const_iterator const_iterator;
@@ -146,19 +149,19 @@ typedef std::pair<std::string, DynamicType *> str_pair;
 class Object : public Container
     <std::vector<str_pair>> {
     bool sorted;
-    bool unorded;
+    bool unordered;
 protected:
     void setUnorded(bool v) {
-        unorded = v;
+        unordered = v;
     }
 public:
     Object() {
         sorted = true;
-        unorded = false;
+        unordered = false;
     }
 
     int index(const std::string &s) {
-        if(unorded) {
+        if(unordered) {
             for (int i = 0; i < size(); i++) {
                 if(members[i].first == s)
                     return i;
@@ -209,7 +212,8 @@ public:
         }
         return buf;
     }
-    virtual std::string toString() const {
+
+    std::string toString() const override {
         std::string buf = getClassName();
         buf += "{";
         buf += getMembers();
@@ -239,7 +243,8 @@ public:
         members.push_back(dt);
         return dt;
     }
-    virtual std::string toString() const {
+
+    std::string toString() const override {
         std::string buf = "[";
         for (int i = 0; i < size(); i++) {
             if(i) buf += ",";

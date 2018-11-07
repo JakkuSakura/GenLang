@@ -41,7 +41,7 @@ struct AssignExpr : public Expr {
         setVal(expr);
     }
 
-    virtual std::string toString() const {
+    std::string toString() const override {
         return as(String, get("id"))->getVal() + "=" + as(Expr, getVal())->toString();
     }
 };
@@ -59,7 +59,7 @@ struct LetExpr : public Expr {
         lst->append(as_expr);
     }
 
-    virtual std::string toString() const {
+    std::string toString() const override {
         return getClassName() + lst->toString();
     }
 };
@@ -79,7 +79,7 @@ struct Stmt : public Node {
         append("expr", expr);
     }
 
-    virtual std::string toString() const {
+    std::string toString() const override {
         Expr *e = as(Expr, get("expr"));
         return e ? e->toString() : "NULL";
     }
@@ -94,7 +94,7 @@ struct StmtBlock : public Stmt {
         append("list", lst);
     }
 
-    virtual std::string toString() const {
+    std::string toString() const override {
         return getClassName() + list->toString();
     }
 };
