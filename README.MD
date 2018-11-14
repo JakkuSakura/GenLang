@@ -16,6 +16,52 @@ Feature List:
 - [ ] less code
 - [ ] less bugs
 
+## Class System
+use `class` to declare a class. A class could extend form just a base class, and it will be object(inner type is object) if it is not pointed out. Also a class could implement none or more interfaces.  
+
+
+
+use `interface` to declare an interface. An interface could just contain none or more methods.
+
+use `{key:val,...}` to declare a js-like object(inner type is map_object). use `o.key`/`o["key"]`/`o.get("key")` to get its val
+
+use `[val1, val2, val3, ...]` to declare a python-like list(inner type is list). use `l[n]`/`l.get(n)` to fetch val-n.
+
+use `struct` to declare a c-like object, with just c/c++ types in it.
+
+each type has its MetaClass instance.
+
+pass argument by val, for GenLang class, it's by refer actually.
+
+## basic types
+basic types are allocated in stack 
+
+
+int uint                     `let i = 1;`       `let i = u1;`   
+long ulong                   `let l = 666L;`    `let l = u666L;`   
+short ushort                 `let s = 234s;`    `let s = u234s;`  
+byte ubyte                   `let b = 122;`     `let b = u122;`  
+char uchar(unicode-support)  `let c = 'h';`     `let c = u'字';`  
+float double                 `let f = 123.0f;`  `let d = 123.0;`
+
+each of these basic types has it wrapper const class like Int, uInt, Long, uLong, etc.. when it be included by class, it will be automacally boxed.
+
+## c-array
+
+type[n](traditional c array with just c/c++ types in it) `let a as int[5];`  
+cannot return a c-array
+
+
+
+## dynamic types
+string ustring      `let s = "hello";`  `let s = u"hello";`  
+array               `let a = array(int, 666);`  
+list                `let l = ["hello"];`  
+map_object          `let mb = {};`  
+
+
+
+
 ## use a package
 
 ```csharp
@@ -68,8 +114,7 @@ void foo(int a, int b)
 
 ```csharp
 foo();
-foo a + b;
-print a, a + b;
+print(a, a + b);
 
 ```
 ## xx
@@ -77,7 +122,6 @@ print a, a + b;
 ```csharp
 let a = 18;
 let foo = { name: "jack", age: a};
-
 ```
 
 ```java
