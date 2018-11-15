@@ -8,6 +8,9 @@
         "type_traits": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "algorithm": "cpp"
     }
 }

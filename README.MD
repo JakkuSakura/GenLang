@@ -44,6 +44,8 @@ byte ubyte                   `let b = 122;`     `let b = u122;`
 char uchar(unicode-support)  `let c = 'h';`     `let c = u'字';`  
 float double                 `let f = 123.0f;`  `let d = 123.0;`
 
+string ustring               `let s = "hello";`  `let s = u"hello";`
+
 each of these basic types has it wrapper const class like Int, uInt, Long, uLong, etc.. when it be included by class, it will be automacally boxed.
 
 ## c-array
@@ -54,7 +56,6 @@ cannot return a c-array
 
 
 ## dynamic types
-string ustring      `let s = "hello";`  `let s = u"hello";`  
 array               `let a = array(int, 666);`  
 list                `let l = ["hello"];`  
 map_object          `let mb = {};`  
@@ -89,8 +90,14 @@ use `=` to change a val
 ```csharp
 b = 1;
 b = 10.3; // warnning
+
 b = 10.3 as int; // no warnning
+// raw cast for classes (with check)
+// the same as basic types
+
 b = int(10.3);
+// init
+
 
 o = object(1, 2, 3);
 o2 = o.clone();
