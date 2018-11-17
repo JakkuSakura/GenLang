@@ -23,3 +23,6 @@ object
         Struct      some struct
 对于object，传参的方式是引用，对于基本类型，传参数的方式是传值。
 
+## 元对象
+每一种object都有对应的唯一的一个meta_object，自动注册到mate_manager中，里面有对象类型的string和meta_object的一一对应关系。meta_object存储了一些必要的信息，主要是内存分布和类型信息，用于垃圾回收。
+
