@@ -497,7 +497,7 @@ namespace GenLang {
     }
 }
 
-int main() {
+int main2() {
     GC gc;
     Scanner scanner(gc, stdin);
     Parser parser(gc, scanner);
