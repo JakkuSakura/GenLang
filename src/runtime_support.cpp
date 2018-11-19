@@ -15,11 +15,5 @@ void add_type(const char *name, const char *fa, const std::type_info &type)
     genlang_class_manager.push(*obj);
     
 }
-template<class Tp, class ...T>
-Tp *new_object(const char *type, T... args)
-{
-    Tp *obj = new Tp(args...);
-    obj->set_type(genlang_class_manager.find(typeid(Tp)));
-    return obj;
-}
+
 }

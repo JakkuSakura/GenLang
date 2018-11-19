@@ -12,10 +12,11 @@ static void reg()
 {
     add_type("wrapper", "object", typeid(object));
     add_type("Int", "wrapper", typeid(Int));
+    add_type("Long", "wrapper", typeid(Long));
     add_type("Char", "wrapper", typeid(Char));
+    add_type("Double", "wrapper", typeid(Double));
     add_type("String", "wrapper", typeid(String));
     add_type("StringBuilder", "wrapper", typeid(StringBuilder));
-    add_type("Double", "wrapper", typeid(Double));
 }
 static autorun run(reg);
 

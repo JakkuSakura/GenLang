@@ -36,7 +36,32 @@ class wrapper : public object
 class Int : public wrapper<int>
 {
   public:
+    Int(int v) : wrapper(v)
+    {
+
+    }
     Int() : wrapper(0)
+    {
+        
+    }
+
+    
+    string toString() const
+    {
+        char buf[20];
+        sprintf(buf, "%d", getVal());
+        return buf;
+    }
+};
+class Long : public wrapper<long long>
+{
+  public:
+    Long(long long v) : wrapper(v)
+    {
+
+    }
+
+    Long() : wrapper(0LL)
     {
         
     }
@@ -44,7 +69,7 @@ class Int : public wrapper<int>
     string toString() const
     {
         char buf[20];
-        sprintf(buf, "%d", getVal());
+        sprintf(buf, "%lld", getVal());
         return buf;
     }
 };
@@ -77,16 +102,6 @@ class Double : public wrapper<double>
     }
 };
 
-class String : public wrapper<string>
-{
-  public:
-    String(const char *s) : wrapper(s)
-    {
-    }
-    String()
-    {
-    }
-};
 class StringBuilder : public wrapper<string_builder>
 {
   public:
@@ -95,6 +110,17 @@ class StringBuilder : public wrapper<string_builder>
         
     }
     StringBuilder()
+    {
+    }
+};
+class String : public wrapper<string>
+{
+  public:
+    String(const char *s) : wrapper(s)
+    {
+    }
+    String(const string_builder &sb) : wrapper(sb){}
+    String()
     {
     }
 };

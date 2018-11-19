@@ -9,6 +9,7 @@ class string_builder
   public:
     std::string s;
     string_builder(const char *cs) : s(cs) {}
+    string_builder(char ch) { s += ch; }
     string_builder(const std::string &cs) : s(cs) {}
     string_builder() : s() {}
     string_builder(const string_builder &s2) : s(s2.s) {}
@@ -24,10 +25,18 @@ class string_builder
     {
         return a.s == b.s;
     }
-    
+    friend bool operator!=(const string_builder &a, const string_builder &b)
+    {
+        return a.s != b.s;
+    }
     string_builder &operator+=(const string_builder &b)
     {
         s += b.s;
+        return *this;
+    }
+    string_builder &operator+=(char ch)
+    {
+        s += ch;
         return *this;
     }
     string_builder &operator=(const string_builder &b)
@@ -61,6 +70,7 @@ public:
     {
         return string(*a.ptr + *b.ptr);
     }
+    
     friend bool operator<(const string &a, const string &b)
     {
         return *a.ptr < *b.ptr;
@@ -69,7 +79,10 @@ public:
     {
         return *a.ptr == *b.ptr;
     }
-
+    friend bool operator!=(const string &a, const string &b)
+    {
+        return *a.ptr != *b.ptr;
+    }
 };
 
 }

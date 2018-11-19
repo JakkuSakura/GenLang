@@ -1,7 +1,6 @@
 .coding-ide/
-# .vscode
+.vscode
 .idea/
 */*.o
 */*.d
-bin/*
 */*.exe
