@@ -1,4 +1,5 @@
 .coding-ide/
+.vscode/
 .idea/
 */*.o
 */*.d
