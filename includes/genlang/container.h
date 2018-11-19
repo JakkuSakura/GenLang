@@ -1,7 +1,6 @@
 #ifndef GENLANG_CONTAINER_H
 #define GENLANG_CONTAINER_H
 #include <algorithm>
-#include <string>
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>

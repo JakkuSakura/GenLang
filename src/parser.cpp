@@ -8,3 +8,24 @@ static void reg()
     add_type("node", "map_object", typeid(node));
 }
 static autorun run(reg);
+struct item {
+    string name;
+    string rule;
+    bool left;
+};
+namespace GenLang
+{
+    class Parser
+    {
+    public:
+        std::vector<item> items; 
+        node *trymatch()
+        {
+            for(const auto &e : items)
+            {
+                
+            }
+            return NULL;
+        }
+    }
+}

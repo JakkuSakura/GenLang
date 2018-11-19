@@ -50,6 +50,7 @@ public:
     string() : ptr(std::make_shared<const string_builder>("")) {}
     string(const string_builder &s2) : ptr(std::make_shared<const string_builder>(s2.s)) {}
     string(const string &s2) : ptr(s2.ptr) {}
+    string &operator=(const string &s2){ptr = s2.ptr;return *this;}
     operator const string_builder&() const
     {
         return *ptr;
