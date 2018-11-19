@@ -2,6 +2,7 @@
 #define GENLANG_RUNTIME_SUPPORT_H
 #include "genlang/object.h"
 #include "genlang/meta_object.h"
+#include "genlang/garbage_collection.h"
 namespace GenLang{
 extern class_manager genlang_class_manager;
 void add_type(const char *name, const char *fa, const std::type_info &type);
