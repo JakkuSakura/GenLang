@@ -8,16 +8,18 @@ using namespace GenLang;
 namespace GenLang
 {
 class_manager genlang_class_manager;
-void add_types(const char *type_list[][2])
+// GC genlang_garbage_collector;
+void add_type(const char *name, const char *fa, const std::type_info &type)
 {
-    auto p1 = type_list;
-    while (**p1)
-    {
-        const char **pair = *p1;
-        meta_object *obj = new meta_object(pair[0], pair[1]);
-        genlang_class_manager.push(*obj);
-        ++p1;
-    }
+    meta_object *obj = new meta_object(name, fa, type);
+    genlang_class_manager.push(*obj);
+    
 }
-
+template<class Tp, class ...T>
+object *new_object(const char *type, Tp ty, T... args)
+{
+    object *obj = new Tp(args...);
+    obj->set_type(genlang_class_manager.find(typeid(Tp)));
+    return obj;
+}
 }

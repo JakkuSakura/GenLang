@@ -5,6 +5,6 @@
 using namespace GenLang;
 static void reg()
 {
-    genlang_class_manager.push(*new meta_object("node", "map_object"));
+    add_type("node", "map_object", typeid(node));
 }
 static autorun run(reg);

@@ -16,19 +16,19 @@ int GC::autoClean(object *root) {
         object *dt = qu.front();
         qu.pop();
         if(!dt) continue;
-        if(dt->get_type()->faname == )
+        if(dt->get_type()->same_as(typeid(map_object)))
         {
-            Object *obj = (Object *)dt;
-            for (Object::iterator it = obj->begin(); it != obj->end(); ++it) {
+            map_object *obj = (map_object *)dt;
+            for (map_object::iterator it = obj->begin(); it != obj->end(); ++it) {
                 if(it->second && !se.count(it->second))
                 {
                     se.insert(it->second);
                     qu.push(it->second);
                 }
             }
-        } else if(typeid(*dt) == typeid(List)) {
-            List *lst = (List *)dt;
-            for (List::iterator it = lst->begin(); it != lst->end(); ++it) {
+        } if(dt->get_type()->same_as(typeid(list))) {
+            list *lst = (list *)dt;
+            for (list::iterator it = lst->begin(); it != lst->end(); ++it) {
                 if(!se.count(*it))
                 {
                     se.insert(*it);

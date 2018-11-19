@@ -14,6 +14,7 @@ class object
 
   public:
     meta_object *get_type(){return type;}
+    void set_type(meta_object *t){type = t;}
     virtual string toString() const = 0;
     virtual ~object(){};
 };

@@ -1,6 +1,6 @@
 #ifndef GENLANG_WRAPPER_H
 #define GENLANG_WRAPPER_H
-#include "genlang/objects.h"
+#include "genlang/object.h"
 #include "genlang/string.h"
 namespace GenLang{
 template <class T>
@@ -10,17 +10,8 @@ class wrapper : public object
     T val;
 
   protected:
-    void setVal(const T &v)
-    {
-        val = v;
-    }
-    wrapper(T v)
-    {
-        setVal(v);
-    }
-    wrapper() : val()
-    {
-    }
+    wrapper(T v) : val(v){}
+    wrapper() : val() {}
 
     operator const T() const
     {
@@ -45,9 +36,9 @@ class wrapper : public object
 class Int : public wrapper<int>
 {
   public:
-    Int()
+    Int() : wrapper(0)
     {
-        setVal(0);
+        
     }
 
     string toString() const
@@ -61,50 +52,53 @@ class Int : public wrapper<int>
 class Char : public wrapper<char>
 {
   public:
-    Char(char ch)
+    Char(char ch) : wrapper(ch)
     {
-        setVal(ch);
+        
     }
     Char()
     {
-        setVal(0);
-    }
-
-    string toString() const
-    {
-        return string("\'") + getVal() + "\'";
+        
     }
 };
 class Double : public wrapper<double>
 {
   public:
-    Double(double d)
+    Double(double d) : wrapper(d)
     {
-        setVal(d);
     }
     Double()
     {
-        setVal(0.0);
+        
+    }
+    string toString() const 
+    {
+        return "???";
     }
 };
 
 class String : public wrapper<string>
 {
   public:
-    String(const char *s)
+    String(const char *s) : wrapper(s)
     {
-        setVal(s);
     }
     String()
     {
-        setVal("");
-    }
-
-    string toString() const
-    {
-        return string("\"" + getVal().s + "\"");
     }
 };
+class StringBuilder : public wrapper<string_builder>
+{
+  public:
+    StringBuilder(const char *s) : wrapper(s)
+    {
+        
+    }
+    StringBuilder()
+    {
+    }
+};
+
 
 }
 #endif

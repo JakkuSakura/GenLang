@@ -3,12 +3,9 @@
 #include "genlang/autorun.h"
 #include "genlang/runtime_support.h"
 #include "genlang/parser.h"
-
-static const char *basic_type_list[][2] = {
-    {"object", NULL},
-    {0, 0}};
+using namespace GenLang;
 static void reg()
 {
-    GenLang::add_types(basic_type_list);
+    add_type("object", NULL, typeid(object));
 }
 static autorun run(reg);

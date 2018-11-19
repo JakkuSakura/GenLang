@@ -27,10 +27,8 @@ class container : public object
 };
 class map_object : public container
 {
-    typedef std::pair<string, object *> str_pair;
+    typedef std::pair<string_builder, object *> str_pair;
     typedef std::vector<str_pair> T;
-    typedef T::iterator iterator;
-    typedef T::const_iterator const_iterator;
 
     bool sorted;
     bool unordered;
@@ -43,6 +41,8 @@ class map_object : public container
     }
 
   public:
+    typedef T::iterator iterator;
+    typedef T::const_iterator const_iterator;
     map_object()
     {
         sorted = true;
@@ -101,7 +101,7 @@ class map_object : public container
     }
     string get_members() const
     {
-        string buf;
+        string_builder buf;
         for (const_iterator it = begin(); it != end(); ++it)
         {
             if (it != begin())
@@ -117,7 +117,7 @@ class map_object : public container
 
     string toString() const
     {
-        string buf;// = getClassName();
+        string_builder buf;// = getClassName();
         buf += "{";
         buf += get_members();
         buf += "}";
@@ -143,13 +143,12 @@ class map_object : public container
     {
         return members.size();
     }
+    
 };
 
 class list : public container
 {
     typedef std::deque<object *> T;
-    typedef T::iterator iterator;
-    typedef T::const_iterator const_iterator;
     T members;
   public:
     object *get(int id)
@@ -174,7 +173,7 @@ class list : public container
 
     string toString() const
     {
-        string buf = "[";
+        string_builder buf = "[";
         for (int i = 0; i < size(); i++)
         {
             if (i)
@@ -185,6 +184,8 @@ class list : public container
         return buf;
     }
 
+    typedef T::iterator iterator;
+    typedef T::const_iterator const_iterator;
     iterator begin()
     {
         return members.begin();

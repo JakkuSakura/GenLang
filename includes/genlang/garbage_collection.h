@@ -12,12 +12,6 @@ public:
     inline void signin(T *t) {
         objects.insert(t);
     }
-    template<class T, class... T2>
-    inline T *newObj(T2... args) {
-        T *n = new T(args...);
-        signin(n);
-        return n;
-    }
     ~GC() {
         autoClean(NULL);
     }
