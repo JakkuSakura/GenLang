@@ -27,7 +27,7 @@ class container : public object
 };
 class map_object : public container
 {
-    typedef std::pair<string_builder, object *> str_pair;
+    typedef std::pair<string, object *> str_pair;
     typedef std::vector<str_pair> T;
 
     bool sorted;
