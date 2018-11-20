@@ -7,27 +7,27 @@
 
 namespace GenLang {
     struct node : public map_object {
-        std::vector<node *> matched;
 
         node(string type) {
-            put(string("type"), alloc(String, type));
+            put("type", alloc(String, type));
         }
 
         node(token *tk) {
-            put(string("type"), tk->get_token_type());
-            put(string("val"), tk->get_val());
+            put("type", tk->get_token_type());
+            put("val", tk->get_val());
         }
 
-        node(string type, std::vector<node *> &matched_l) {
-            matched = matched_l;
-            put(string("type"), alloc(String, type));
+        node(string type, list *matched_l) {
+            put("type", alloc(String, type));
+            put("matched", matched_l);
         }
     };
 
     struct item {
         string name;
-        string rule;
-        bool left;
+        list *rule;
+        int left;
+        bool replacable;
     };
 
     class parser {
@@ -40,15 +40,8 @@ namespace GenLang {
 
         std::pair<node *, int> match(const string &rule_name, int token_pos);
 
-        void add_rule(const string &name, const string &rule, bool left);
-        void scan_src()
-        {
-            token *tk;
-            while ((tk = scan.get_token()) && (tk->get_token_type() != TokenType::TEOF))
-            {
-                tokens.push_back(tk);
-            }
-        }
+        void add_rule(const string &name, const string &rule, int left, bool replacable);
+        void scan_src();
     };
 
 } // GenLang

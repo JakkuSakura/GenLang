@@ -8,11 +8,8 @@ class object
 {
   private:
     meta_object *type;
-
-  protected:
-    object():type(0) {}
-
   public:
+    object():type(0) {}
     meta_object *get_meta_object(){return type;}
     void set_meta_object(meta_object *t){type = t;}
     virtual string to_string() const {return "";};

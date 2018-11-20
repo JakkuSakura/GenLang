@@ -43,7 +43,7 @@ loop:
     do ch = getc(fin);
     while(isspace(ch));
     if (ch == EOF)
-        return new_object<token>("token", TokenType::TEOF, (object *) nullptr);
+        return NULL;
 
     if(isdigit(ch))
     {
@@ -54,7 +54,7 @@ loop:
         if(isalpha(ch) || ch == '_')
             throw "unexpected char";
         ungetc(ch, fin);
-        return new_object<token>("token", TokenType::CONSTANT, alloc(Long, atol(str.get_val().c_str())));
+        return new_object<token>("token", alloc(String, "CONSTANT"), alloc(Long, atol(str.get_val().c_str())));
     } else if (isalpha(ch) || ch == '_') {
         do {
             str += ch;
@@ -62,11 +62,11 @@ loop:
         } while(isalpha(ch) || isdigit(ch) || ch == '_');
         ungetc(ch, fin);
         if(keywords.count(str))
-            return new_object<token>("token", alloc(String, TokenType::KEYWORD->get_val() + "#" + str.get_val()), alloc(String, str));
+            return new_object<token>("token", alloc(String, string("KEYWORD#") + str.get_val()), alloc(String, str));
         else if(typenames.count(str))
-            return new_object<token>("token", TokenType::TYPENAME, alloc(String, str));
+            return new_object<token>("token", alloc(String, "TYPENAME"), alloc(String, str));
         else
-            return new_object<token>("token", TokenType::IDENTIFIER, alloc(String, str));
+            return new_object<token>("token", alloc(String, string("IDENTIFIER")), alloc(String, str));
     } else if(strchr(SPCEIAL_CHARS, ch)) {
         while(operators.count(str + (char)ch)) {
             str += ch;
@@ -79,7 +79,7 @@ loop:
         }
         if(str != "") {
             ungetc(ch, fin);
-            return new_object<token>("token", alloc(String, TokenType::OPERATOR->get_val() + "#" + str.get_val()), alloc(String, str));
+            return new_object<token>("token", alloc(String, string("OPERATOR#") + str.get_val()), alloc(String, str));
         }
     }
     throw "Unknown token";

@@ -7,17 +7,6 @@
 #include "genlang/runtime_support.h"
 
 namespace GenLang {
-    namespace TokenType {
-#define tokendef(x) extern String *x;
-        tokendef(STRING);
-        tokendef(OPERATOR);
-        tokendef(KEYWORD);
-        tokendef(IDENTIFIER);
-        tokendef(TYPENAME);
-        tokendef(CONSTANT);
-        tokendef(TEOF);
-#undef tokendef
-    }
     struct token : public map_object {
         token(String *tp, object *v) {
             append("type", tp);

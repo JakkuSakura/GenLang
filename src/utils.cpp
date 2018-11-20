@@ -6,7 +6,7 @@ namespace GenLang {
         list *l = alloc(list);
         string_builder sb;
         for (char c : str) {
-            if (isalpha(c)) sb += c;
+            if (!isspace(c)) sb += c;
             else if (!sb.get_val().empty()) {
                 l->append(alloc(String, sb));
                 sb.get_val().clear();

@@ -1,3 +1,4 @@
+#include <cassert>
 #include "genlang/complier/token.h"
 #include "genlang/utils.h"
 #include "genlang/autorun.h"
@@ -22,34 +23,87 @@ namespace GenLang {
             }
             auto range = rule_map.equal_range(rule_name);
             for (auto it = range.first; it != range.second; ++it) {
-                string expansion = it->second.rule;
-                std::vector<node *> matched_subrules;
+                list *matched_subrules = alloc(list);
                 bool ok = true;
                 int newtokenpos = token_pos;
-                for (auto subrule : *split(expansion)) {
-                    auto pr = match(*(string *) subrule, token_pos + 1);
-                    auto matched = pr.first;
+                node *matched;
+                list *lst = it->second.rule;
+                if (it->second.left) {
+                    auto pr = match(((String *) lst->get(0))->get_val(), newtokenpos);
+                    matched = pr.first;
                     newtokenpos = pr.second;
-                    if (!matched) {
+                    if (matched) {
+                        matched_subrules->append(matched);
+                    } else {
                         ok = false;
-                        break;
                     }
-                    matched_subrules.push_back(matched);
+
+                    do {
+                        bool ok2 = false;
+                        for (int i = 1; i < lst->size(); ++i) {
+                            pr = match(((String *) lst->get(i))->get_val(), newtokenpos);
+                            matched = pr.first;
+                            newtokenpos = pr.second;
+                            if (matched) {
+                                ok2 = true;
+                                matched_subrules->append(matched);
+                                break;
+                            }
+                        }
+                        if(!ok2)
+                        {
+                            break;
+                        }
+
+                        pr = match(((String *) lst->get(0))->get_val(), newtokenpos);
+                        matched = pr.first;
+                        newtokenpos = pr.second;
+                        if (matched) {
+                            matched_subrules->append(matched);
+                        } else {
+                            ok = false;
+                            break;
+                        }
+                    } while (matched);
+                } else {
+                    for (auto subrule : *lst) {
+                        auto pr = match(((String *) subrule)->get_val(), newtokenpos);
+                        matched = pr.first;
+                        newtokenpos = pr.second;
+                        if (!matched) {
+                            ok = false;
+                            break;
+                        }
+                        matched_subrules->append(matched);
+                    }
+
                 }
                 if (ok)
-                    return std::make_pair(alloc(node, rule_name, matched_subrules), newtokenpos);
+                {
+                    if(matched_subrules->size() == 1 && it->second.replacable)
+                        return std::make_pair((node *)matched_subrules->get(0), newtokenpos);
+                    else
+                        return std::make_pair(alloc(node, rule_name, matched_subrules), newtokenpos);
+                }
             }
         }
-        return std::make_pair((node *) NULL, 0);
+        return std::make_pair((node *) NULL, token_pos);
     }
 
-    void parser::add_rule(const string &name, const string &rule, bool left) {
-        item item1 = (item){name, rule, left};
+    void parser::add_rule(const string &name, const string &rule, int left, bool replacable) {
+        list *lst = split(rule);
+        item item1 = (item) {name, lst, left, replacable};
         rule_map.insert(std::make_pair(name, item1));
     }
 
-    parser::parser(FILE *fin, FILE *fout) : fout(fout), scan(fin)
-    {
+    parser::parser(FILE *fin, FILE *fout) : fout(fout), scan(fin) {
         std::cout << "inited parser" << std::endl;
+    }
+
+    void parser::scan_src() {
+        token *tk;
+        while ((tk = scan.get_token())) {
+            tokens.push_back(tk);
+        }
     }
 }
