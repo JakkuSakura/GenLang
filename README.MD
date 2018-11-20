@@ -141,5 +141,5 @@ foo->append("age", gc.newInt(18));
 
 - id  == &x
 - type == typeid(x)
-- str == x.toString()
+- str == x.to_string()
 - etc...

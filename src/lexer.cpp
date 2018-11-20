@@ -6,7 +6,7 @@ namespace GenLang
 {
 
 static const char *KEYWORDS[] = {
-        "let", "as", "class", "struct", "if", "for", "while", "return", nullptr
+        "let", "as", "class", "struct", "if", "for", "while", "return", "continue", nullptr
 };
 static const char *TYPENAMES[] = {
         "void", "string", "object", "list", "int", "char", "double", "long", "float", nullptr
@@ -54,7 +54,7 @@ loop:
         if(isalpha(ch) || ch == '_')
             throw "unexpected char";
         ungetc(ch, fin);
-        return new_object<token>("token", TokenType::CONSTANT, alloc(Long, atol(str.s.c_str())));
+        return new_object<token>("token", TokenType::CONSTANT, alloc(Long, atol(str.get_val().c_str())));
     } else if (isalpha(ch) || ch == '_') {
         do {
             str += ch;
@@ -62,7 +62,7 @@ loop:
         } while(isalpha(ch) || isdigit(ch) || ch == '_');
         ungetc(ch, fin);
         if(keywords.count(str))
-            return new_object<token>("token", TokenType::KEYWORD, alloc(String, str));
+            return new_object<token>("token", alloc(String, TokenType::KEYWORD->get_val() + "#" + str.get_val()), alloc(String, str));
         else if(typenames.count(str))
             return new_object<token>("token", TokenType::TYPENAME, alloc(String, str));
         else
@@ -79,7 +79,7 @@ loop:
         }
         if(str != "") {
             ungetc(ch, fin);
-            return new_object<token>("token", TokenType::OPERATOR, alloc(String, str));
+            return new_object<token>("token", alloc(String, TokenType::OPERATOR->get_val() + "#" + str.get_val()), alloc(String, str));
         }
     }
     throw "Unknown token";

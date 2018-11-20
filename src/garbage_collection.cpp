@@ -16,7 +16,7 @@ int GC::autoClean(object *root) {
         object *dt = qu.front();
         qu.pop();
         if(!dt) continue;
-        if(dt->get_type()->same_as(typeid(map_object)))
+        if(dt->get_meta_object()->same_as(typeid(map_object)))
         {
             auto *obj = (map_object *) dt;
             for (auto &it : *obj) {
@@ -26,7 +26,7 @@ int GC::autoClean(object *root) {
                     qu.push(it.second);
                 }
             }
-        } else if (dt->get_type()->same_as(typeid(list))) {
+        } else if (dt->get_meta_object()->same_as(typeid(list))) {
             list *lst = (list *)dt;
             for (auto &it : *lst) {
                 if (!se.count(it))
@@ -36,6 +36,7 @@ int GC::autoClean(object *root) {
                 }
             }
         }
+        // todo
     }
     
     std::vector<object *> todel;

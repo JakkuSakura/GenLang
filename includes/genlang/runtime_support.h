@@ -13,7 +13,7 @@ template<class Tp, class ...T>
 Tp *new_object(const char *type, T... args)
 {
     Tp *obj = new Tp(args...);
-    obj->set_type(genlang_class_manager.find(typeid(Tp)));
+    obj->set_meta_object(genlang_class_manager.find(typeid(Tp)));
     genlang_garbage_collector.signin(obj);
     return obj;
 }

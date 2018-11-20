@@ -1,6 +1,7 @@
 #include "genlang/object.h"
 #include "genlang/autorun.h"
-
+#include "genlang/wrapper.h"
+#include "genlang/runtime_support.h"
 using namespace std;
 using namespace GenLang;
 

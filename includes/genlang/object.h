@@ -10,12 +10,12 @@ class object
     meta_object *type;
 
   protected:
-    object() {}
+    object():type(0) {}
 
   public:
-    meta_object *get_type(){return type;}
-    void set_type(meta_object *t){type = t;}
-    virtual string toString() const {return "";};
+    meta_object *get_meta_object(){return type;}
+    void set_meta_object(meta_object *t){type = t;}
+    virtual string to_string() const {return "";};
     virtual ~object(){};
 };
 } // namespace GenLang

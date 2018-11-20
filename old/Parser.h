@@ -20,15 +20,15 @@ namespace GenLang{
 
         void setVal(DynamicType *obj);
 
-        DynamicType *getVal();
+        DynamicType *get_val();
 
-        const DynamicType *getVal() const;
+        const DynamicType *get_val() const;
     };
 
     struct AssignExpr : public Expr {
         AssignExpr(String *id, Expr *expr);
 
-        std::string toString() const override;
+        std::string to_string() const override;
     };
 
     struct ImportExpr : public Expr {
@@ -43,7 +43,7 @@ namespace GenLang{
 
         void append(AssignExpr *as_expr);
 
-        std::string toString() const override;
+        std::string to_string() const override;
     };
 
     struct FuncCall : public Expr {
@@ -55,7 +55,7 @@ namespace GenLang{
 
         explicit Stmt(Expr *expr);
 
-        std::string toString() const override;
+        std::string to_string() const override;
     };
 
     struct StmtBlock : public Stmt {
@@ -63,7 +63,7 @@ namespace GenLang{
 
         explicit StmtBlock(List *lst);
 
-        std::string toString() const override;
+        std::string to_string() const override;
     };
 
     struct TypeKeyPair : public Node {

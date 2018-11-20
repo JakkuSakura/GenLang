@@ -39,7 +39,7 @@ namespace GenLang {
 
         Token *oper(const std::string &s) {
             if (getToken()->type == Token::Type::OPERATOR
-                && as(String, getTokenVal())->getVal() == s) {
+                && as(String, getTokenVal())->get_val() == s) {
                 Token *tk = getToken();
                 advance();
                 return tk;
@@ -74,7 +74,7 @@ namespace GenLang {
         }
 
         Object *getTokenVal() {
-            return getToken()->getVal();
+            return getToken()->get_val();
         }
 
         void readinTokens() {
@@ -84,13 +84,13 @@ namespace GenLang {
             do {
                 tk = scanner.getToken();
                 tokens.push_back(tk);
-                std::cout << tk->toString() << std::endl;
+                std::cout << tk->to_string() << std::endl;
             } while (tk->type != Token::Type::TEOF);
         }
 
         Expr *numberExpr() {
             if (Token *tk = number()) {
-                Expr *expr = alloc(Expr, tk->getVal());
+                Expr *expr = alloc(Expr, tk->get_val());
                 return expr;
             }
             return NULL;
@@ -98,7 +98,7 @@ namespace GenLang {
 
         ImportExpr *importExpr() {
             if (getToken()->getTokenType() == Token::Type::IDENTIFIER &&
-                as(String, getTokenVal())->getVal() == "import") {
+                as(String, getTokenVal())->get_val() == "import") {
                 advance();
                 String *id = getIdentifier();
                 if (id) {
@@ -113,7 +113,7 @@ namespace GenLang {
 
         FuncCall *funcCall() {
             if (String *id = getIdentifier()) {
-                if (testFunc(id->getVal()))
+                if (testFunc(id->get_val()))
                     if (oper("(")) {
                         List *arguments = alloc(List);
                         while (!oper(")")) {
@@ -139,7 +139,7 @@ namespace GenLang {
                     tk = 0;
                     if ((tk = oper("*")) || (tk = oper("/")) || (tk = oper("%"))) {
                         if (Expr * expr2 = numberExpr())
-                            expr = alloc(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+                            expr = alloc(BinaryOperator, as(String, tk->get_val()), expr, expr2);
                         else
                             throw "except expression";
                     }
@@ -156,7 +156,7 @@ namespace GenLang {
                     tk = 0;
                     if ((tk = oper("+")) || (tk = oper("-"))) {
                         if (Expr * expr2 = multiExpr())
-                            expr = alloc(BinaryOperator, as(String, tk->getVal()), expr, expr2);
+                            expr = alloc(BinaryOperator, as(String, tk->get_val()), expr, expr2);
                         else
                             throw "except expression";
                     }
@@ -207,7 +207,7 @@ namespace GenLang {
         }
 
         LetExpr *letExpr() {
-            if (as(String, getTokenVal())->getVal() == "let") {
+            if (as(String, getTokenVal())->get_val() == "let") {
                 advance();
                 LetExpr *le = alloc(LetExpr);
                 while (1) {
@@ -219,12 +219,12 @@ namespace GenLang {
                         }
                         auto ae = alloc(AssignExpr, id, nd);
                         le->append(ae);
-                        if (testVar(id->getVal()))
+                        if (testVar(id->get_val()))
                             throw "do not declare a variable twice";
-                        if (testFunc(id->getVal()))
+                        if (testFunc(id->get_val()))
                             throw "it is already a function name";
 
-                        addVar(id->getVal());
+                        addVar(id->get_val());
 
 
                         if (!comma()) {
@@ -258,7 +258,7 @@ namespace GenLang {
             Token *tk = getToken();
             if (tk->type == Token::Type::TYPENAME) {
                 advance();
-                return as(String, tk->getVal());
+                return as(String, tk->get_val());
             }
             return NULL;
         }
@@ -267,7 +267,7 @@ namespace GenLang {
             Token *nm = getToken();
             if (nm->type == Token::Type::IDENTIFIER) {
                 advance();
-                return as(String, nm->getVal());
+                return as(String, nm->get_val());
             }
             return NULL;
         }
@@ -368,7 +368,7 @@ namespace GenLang {
             try {
                 while (Stmt * st = statement()) {
                     pgms->append(st);
-                    std::cout << st->toString() << std::endl;
+                    std::cout << st->to_string() << std::endl;
                 }
             } catch (const char *s) {
                 std::cerr << s << std::endl;
@@ -398,11 +398,11 @@ namespace GenLang {
         put("val", obj);
     }
 
-    DynamicType *GenLang::Expr::getVal() {
+    DynamicType *GenLang::Expr::get_val() {
         return get("val");
     }
 
-    const DynamicType *GenLang::Expr::getVal() const {
+    const DynamicType *GenLang::Expr::get_val() const {
         return get("val");
     }
 
@@ -412,8 +412,8 @@ namespace GenLang {
         setVal(expr);
     }
 
-    std::string GenLang::AssignExpr::toString() const {
-        return as(String, get("id"))->getVal() + "=" + as(Expr, getVal())->toString();
+    std::string GenLang::AssignExpr::to_string() const {
+        return as(String, get("id"))->get_val() + "=" + as(Expr, get_val())->to_string();
     }
 
     GenLang::ImportExpr::ImportExpr(String *id) {
@@ -431,8 +431,8 @@ namespace GenLang {
         lst->append(as_expr);
     }
 
-    std::string GenLang::LetExpr::toString() const {
-        return getClassName() + lst->toString();
+    std::string GenLang::LetExpr::to_string() const {
+        return getClassName() + lst->to_string();
     }
 
     GenLang::FuncCall::FuncCall(String *id, List *arguments) {
@@ -447,9 +447,9 @@ namespace GenLang {
         append("expr", expr);
     }
 
-    std::string GenLang::Stmt::toString() const {
+    std::string GenLang::Stmt::to_string() const {
         Expr *e = as(Expr, get("expr"));
-        return e ? e->toString() : "NULL";
+        return e ? e->to_string() : "NULL";
     }
 
     GenLang::StmtBlock::StmtBlock(List *lst) {
@@ -458,8 +458,8 @@ namespace GenLang {
         append("list", lst);
     }
 
-    std::string GenLang::StmtBlock::toString() const {
-        return getClassName() + list->toString();
+    std::string GenLang::StmtBlock::to_string() const {
+        return getClassName() + list->to_string();
     }
 
     GenLang::TypeKeyPair::TypeKeyPair(String *type, String *key) : Node("TypeKeyPair") {
@@ -469,7 +469,7 @@ namespace GenLang {
     }
 
     const std::string &GenLang::TypeKeyPair::getName() const {
-        return as(String, get("key"))->getVal();
+        return as(String, get("key"))->get_val();
     }
 
     GenLang::FunDeclExpr::FunDeclExpr(TypeKeyPair *tkp) {

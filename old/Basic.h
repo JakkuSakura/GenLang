@@ -21,7 +21,7 @@ public:
     const std::string &getClassName() const {
         return className;
     }
-    virtual std::string toString() const = 0;
+    virtual std::string to_string() const = 0;
     virtual ~DynamicType() = default;
 };
 template<class T>
@@ -35,32 +35,32 @@ protected:
     BasicType() = default;
 
     operator const T () const {
-        return getVal();
+        return get_val();
     }
     operator T () {
-        return getVal();
+        return get_val();
     }
 public:
-    const T &getVal() const {
+    const T &get_val() const {
         return val;
     }
-    T &getVal() {
+    T &get_val() {
         return val;
     }
     friend bool operator<(const thisType &a, const thisType &b) {
-        return a->getVal() < b->getVal();
+        return a->get_val() < b->get_val();
     }
     friend bool operator>(const thisType &a, const thisType &b) {
-        return a->getVal() > b->getVal();
+        return a->get_val() > b->get_val();
     }
     friend bool operator==(const thisType &a, const thisType &b) {
-        return a->getVal() == b->getVal();
+        return a->get_val() == b->get_val();
     }
     friend bool operator>=(const thisType &a, const thisType &b) {
-        return a->getVal() >= b->getVal();
+        return a->get_val() >= b->get_val();
     }
     friend bool operator<=(const thisType &a, const thisType &b) {
-        return a->getVal() <= b->getVal();
+        return a->get_val() <= b->get_val();
     }
 };
 
@@ -73,9 +73,9 @@ public:
         setVal(0);
     }
 
-    std::string toString() const override {
+    std::string to_string() const override {
         char buf[20];
-        sprintf(buf, "%lld", getVal());
+        sprintf(buf, "%lld", get_val());
         return buf;
     }
 };
@@ -89,8 +89,8 @@ public:
         setVal(0);
     }
 
-    std::string toString() const override {
-        return std::string("\'") + getVal() + "\'";
+    std::string to_string() const override {
+        return std::string("\'") + get_val() + "\'";
     }
 };
 class String : public BasicType<std::string> {
@@ -105,8 +105,8 @@ public:
         setVal("");
     }
 
-    std::string toString() const override {
-        return "\"" + getVal() + "\"";
+    std::string to_string() const override {
+        return "\"" + get_val() + "\"";
     }
 };
 class Double : public BasicType<double> {
@@ -208,12 +208,12 @@ public:
             buf += it->first;
             buf += "\"";
             buf += ":";
-            buf += it->second->toString();
+            buf += it->second->to_string();
         }
         return buf;
     }
 
-    std::string toString() const override {
+    std::string to_string() const override {
         std::string buf = getClassName();
         buf += "{";
         buf += getMembers();
@@ -244,11 +244,11 @@ public:
         return dt;
     }
 
-    std::string toString() const override {
+    std::string to_string() const override {
         std::string buf = "[";
         for (int i = 0; i < size(); i++) {
             if(i) buf += ",";
-            buf += members[i]->toString();
+            buf += members[i]->to_string();
         }
         buf += "]";
         return buf;

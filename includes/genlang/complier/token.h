@@ -8,14 +8,15 @@
 
 namespace GenLang {
     namespace TokenType {
-#define tokentp(nm) String *nm = alloc(String, #nm)
-        tokentp(STRING);
-        tokentp(OPERATOR);
-        tokentp(KEYWORD);
-        tokentp(IDENTIFIER);
-        tokentp(TYPENAME);
-        tokentp(CONSTANT);
-        tokentp(TEOF);
+#define tokendef(x) extern String *x;
+        tokendef(STRING);
+        tokendef(OPERATOR);
+        tokendef(KEYWORD);
+        tokendef(IDENTIFIER);
+        tokendef(TYPENAME);
+        tokendef(CONSTANT);
+        tokendef(TEOF);
+#undef tokendef
     }
     struct token : public map_object {
         token(String *tp, object *v) {
@@ -24,12 +25,15 @@ namespace GenLang {
 
         }
 
-        object *getVal() {
+        object *get_val() {
             return get("val");
         }
 
-        String *getTokenType() {
+        String *get_token_type() {
             return (String *) get("type");
+        }
+        bool match(const string &name) {
+            return name == get_token_type()->get_val();
         }
     };
 }

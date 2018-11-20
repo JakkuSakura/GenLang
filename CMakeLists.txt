@@ -3,4 +3,5 @@ INCLUDE_DIRECTORIES(includes)
 file(GLOB genlang_src
         "src/*.cpp"
         )
+
 add_executable(genlang ${genlang_src})
