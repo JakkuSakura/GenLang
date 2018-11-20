@@ -18,21 +18,21 @@ int GC::autoClean(object *root) {
         if(!dt) continue;
         if(dt->get_type()->same_as(typeid(map_object)))
         {
-            map_object *obj = (map_object *)dt;
-            for (map_object::iterator it = obj->begin(); it != obj->end(); ++it) {
-                if(it->second && !se.count(it->second))
+            auto *obj = (map_object *) dt;
+            for (auto &it : *obj) {
+                if (it.second && !se.count(it.second))
                 {
-                    se.insert(it->second);
-                    qu.push(it->second);
+                    se.insert(it.second);
+                    qu.push(it.second);
                 }
             }
-        } if(dt->get_type()->same_as(typeid(list))) {
+        } else if (dt->get_type()->same_as(typeid(list))) {
             list *lst = (list *)dt;
-            for (list::iterator it = lst->begin(); it != lst->end(); ++it) {
-                if(!se.count(*it))
+            for (auto &it : *lst) {
+                if (!se.count(it))
                 {
-                    se.insert(*it);
-                    qu.push(*it);
+                    se.insert(it);
+                    qu.push(it);
                 }
             }
         }

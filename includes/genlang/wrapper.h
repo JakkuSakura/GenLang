@@ -15,11 +15,11 @@ class wrapper : public object
 
     operator const T() const
     {
-        return getVal();
+        return get_val();
     }
     operator T()
     {
-        return getVal();
+        return get_val();
     }
 
   public:
@@ -27,7 +27,8 @@ class wrapper : public object
     {
         return val;
     }
-    T &getVal()
+
+    T &get_val()
     {
         return val;
     }

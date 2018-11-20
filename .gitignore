@@ -4,3 +4,4 @@
 */*.o
 */*.d
 */*.exe
+cmake-build-debug

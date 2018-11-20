@@ -1,41 +1,52 @@
-#include "genlang/object.h"
+#include <genlang/complier/token.h>
 #include "genlang/autorun.h"
-#include "genlang/runtime_support.h"
 #include "genlang/parser.h"
+
 using namespace GenLang;
-static void reg()
-{
+
+static void reg() {
     add_type("node", "map_object", typeid(node));
 }
+
 static autorun run(reg);
 struct item {
     string name;
     string rule;
     bool left;
 };
-namespace GenLang
-{
-    class Parser
-    {
+namespace GenLang {
+    class Parser {
     public:
-        // std::vector<item> items;
-        // std::vector<token> tokens;
-        // std::pair<node *, int> match(const char *rule_name, int tokens_pos)
-        // {
-        //     if (tokens_pos and rule_name == tokens[tokens_pos].name)
-        //         return RuleMatch(tokens[0], tokens[1:])
-        //     for expansion in rule_map.get(rule_name, ()):
-        //         remaining_tokens = tokens
-        //         matched_subrules = []
-        //         for subrule in expansion.split():
-        //             matched, remaining_tokens = match(subrule, remaining_tokens)
-        //             if not matched:
-        //                 break   # 运气不好，跳出循环，处理下一个扩展定义!
-        //             matched_subrules.append(matched)
-        //         else:
-        //             return RuleMatch(rule_name, matched_subrules), remaining_tokens
-        //     return None, None   # 无匹配结果
-        // }
+        std::multimap<string, item> rule_map;
+        std::vector<token> tokens;
+
+        std::pair<node *, int> match(const string &rule_name, int token_pos) {
+            if (token_pos < tokens.size() && rule_name == ((String *) tokens[token_pos].get("name"))->get_val()) {
+                node *nd = alloc(node, tokens[token_pos]);
+                return std::make_pair(nd, token_pos + 1);
+            }
+            auto range = rule_map.equal_range(rule_name);
+            for (auto it = range.first; it != range.second; ++it) {
+                auto expansion = *it;
+                std::vector<node *> matched_subrules;
+                bool ok = true;
+                int newtokenpos = token_pos;
+                for (auto subrule : expansion.split()) {
+                    auto pr = match(subrule, token_pos + 1);
+                    auto matched = pr.first;
+                    newtokenpos = pr.second;
+                    if (!matched) {
+                        ok = false;
+                        break;
+                    }
+                    matched_subrules.push_back(matched)
+
+                }
+                if (ok)
+                    return std::make_pair(alloc(node, rule_name, matched_subrules), newtokenpos);
+            }
+            return std::make_pair((node *) NULL, 0);
+        }
     };
 
 }

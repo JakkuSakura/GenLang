@@ -1,22 +1,35 @@
 #ifndef GENLANG_TOKEN_H
 #define GENLANG_TOKEN_H
+
 #include "genlang/object.h"
 #include "genlang/wrapper.h"
 #include "genlang/container.h"
+#include "genlang/runtime_support.h"
 
-namespace GenLang{
+namespace GenLang {
+    namespace TokenType {
+#define tokentp(nm) String *nm = alloc(String, #nm)
+        tokentp(STRING);
+        tokentp(OPERATOR);
+        tokentp(KEYWORD);
+        tokentp(IDENTIFIER);
+        tokentp(TYPENAME);
+        tokentp(CONSTANT);
+        tokentp(TEOF);
+    }
     struct token : public map_object {
-        enum Type { STRING, SINGAL, KEYWORD, IDENTIFIER, TYPENAME, CONSTANT, OPERATOR, TEOF } type;
-        
-        token(Type tp, object *v) {
+        token(String *tp, object *v) {
+            append("type", tp);
             append("val", v);
-            type = tp;
+
         }
+
         object *getVal() {
             return get("val");
         }
-        Type getTokenType() {
-            return type;
+
+        String *getTokenType() {
+            return (String *) get("type");
         }
     };
 }
