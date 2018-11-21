@@ -9,7 +9,7 @@ namespace GenLang {
     struct node : public map_object {
 
         node(string type) {
-            put("type", alloc(String, type));
+            put("type", alloc_r(String, type));
         }
 
         node(token *tk) {
@@ -18,7 +18,7 @@ namespace GenLang {
         }
 
         node(string type, list *matched_l) {
-            put("type", alloc(String, type));
+            put("type", alloc_r(String, type));
             put("matched", matched_l);
         }
     };

@@ -4,26 +4,26 @@
 #include "genlang/container.h"
 #include <set>
 
+
 namespace GenLang {
-class GC {
+class grabage_collector {
     std::set<object *> objects;
+    std::set<object **> roots;
 public:
     template<class T >
     inline void signin(T *t) {
         objects.insert(t);
     }
-    ~GC() {
-        autoClean(NULL);
+    ~grabage_collector() {
+        autoClean();
     }
-    int autoClean(object *root);
-    void detach(GC &gc) {
-        gc.objects.insert(objects.begin(), objects.end());
-        objects.clear();
-    }
-    object *detach(object *dt) {
-        objects.erase(dt);
-        return dt;
-    }
+    int autoClean();
+    void detach(grabage_collector &gc);
+    object *detach(object *dt);
+
+    void attach_root_ptr(object **pPtr);
+    void detach_root_ptr(object **pPtr);
 };
+
 }
 #endif

@@ -6,7 +6,7 @@ namespace GenLang
 {
 
 static const char *KEYWORDS[] = {
-        "let", "as", "class", "struct", "if", "for", "while", "return", "continue", nullptr
+        "let", "as", "class", "struct", "if", "else", "for", "while", "return", "continue", nullptr
 };
 static const char *TYPENAMES[] = {
         "void", "string", "object", "list", "int", "char", "double", "long", "float", nullptr

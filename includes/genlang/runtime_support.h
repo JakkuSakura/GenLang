@@ -1,13 +1,14 @@
 #ifndef GENLANG_RUNTIME_SUPPORT_H
 #define GENLANG_RUNTIME_SUPPORT_H
+
 #include "genlang/object.h"
 #include "genlang/meta_object.h"
 #include "genlang/garbage_collection.h"
+
 namespace GenLang{
 extern class_manager genlang_class_manager;
-extern GC genlang_garbage_collector;
+extern grabage_collector genlang_garbage_collector;
 void add_type(const char *name, const char *fa, const std::type_info &type);
-
 
 template<class Tp, class ...T>
 Tp *new_object(const char *type, T... args)
@@ -18,7 +19,35 @@ Tp *new_object(const char *type, T... args)
     return obj;
 }
 
-#define alloc(type, args...) new_object<type>(#type, ##args)
+
+    template<class T>
+    class root_ptr  {
+        object *p;
+    public:
+        root_ptr(object *x) {
+            p = x;
+
+            genlang_garbage_collector.attach_root_ptr((object **)this);
+        }
+
+        ~root_ptr() {
+            genlang_garbage_collector.detach_root_ptr((object **)this);
+        }
+
+        T &operator*() {
+            return *(T *)p;
+        }
+        T *get_p()
+        {
+            return (T *)p;
+        }
+    };
+
+#define alloc_r(type, args...) new_object<type>(#type, ##args)
+#define alloc_p(type, args...) root_ptr<type>(alloc_r(type, ##args))
+#define alloc(type, args...) alloc_p(type, ##args).get_p()
+
+
 }
 
 #endif // GENLANG_RUNTIME_SUPPORT_H

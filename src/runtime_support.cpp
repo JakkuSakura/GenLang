@@ -8,7 +8,7 @@ using namespace GenLang;
 namespace GenLang
 {
 class_manager genlang_class_manager;
-GC genlang_garbage_collector;
+grabage_collector genlang_garbage_collector;
 void add_type(const char *name, const char *fa, const std::type_info &type)
 {
     meta_object *obj = new meta_object(name, fa, type);
