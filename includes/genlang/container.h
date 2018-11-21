@@ -128,8 +128,18 @@ namespace GenLang {
             return members.end();
         }
 
-        int size() const {
+        long size() const {
             return members.size();
+        }
+
+        void gc_walk(std::set<object *> &vis, std::queue<object *> &qu) override {
+            for (auto &it : *this) {
+                if (it.second && !vis.count(it.second))
+                {
+                    vis.insert(it.second);
+                    qu.push(it.second);
+                }
+            }
         }
 
     };
@@ -186,9 +196,21 @@ namespace GenLang {
             return members.end();
         }
 
-        int size() const {
+        long size() const {
             return members.size();
         }
+
+        void gc_walk(std::set<object *> &vis, std::queue<object *> &qu) override {
+            for (auto &it : *this) {
+                if (!vis.count(it))
+                {
+                    vis.insert(it);
+                    qu.push(it);
+                }
+            }
+
+        }
+
     };
 }
 #endif

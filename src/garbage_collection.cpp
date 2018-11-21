@@ -7,42 +7,23 @@
 #include "genlang/garbage_collection.h"
 namespace GenLang {
 int GC::autoClean(object *root) {
-    std::set<object *> se;
+    std::set<object *> vis;
     std::queue<object *> qu;
     qu.push(root);
-    se.insert(root);
+    vis.insert(root);
     while(!qu.empty())
     {
-        object *dt = qu.front();
+        object *obj = qu.front();
         qu.pop();
-        if(!dt) continue;
-        if(dt->get_meta_object()->same_as(typeid(map_object)))
-        {
-            auto *obj = (map_object *) dt;
-            for (auto &it : *obj) {
-                if (it.second && !se.count(it.second))
-                {
-                    se.insert(it.second);
-                    qu.push(it.second);
-                }
-            }
-        } else if (dt->get_meta_object()->same_as(typeid(list))) {
-            list *lst = (list *)dt;
-            for (auto &it : *lst) {
-                if (!se.count(it))
-                {
-                    se.insert(it);
-                    qu.push(it);
-                }
-            }
-        }
-        // todo
+        if(!obj || vis.count(obj)) continue;
+        obj->gc_walk(vis, qu);
+
     }
     
     std::vector<object *> todel;
     int cnt = 0;
     for (auto e : objects) {
-        if(!se.count(e)) {
+        if(!vis.count(e)) {
             todel.push_back(e);
             delete e;
             ++cnt;
