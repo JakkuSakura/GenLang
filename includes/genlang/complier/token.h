@@ -11,7 +11,10 @@ namespace GenLang {
         token(String *tp, object *v) {
             append("type", tp);
             append("val", v);
-
+        }
+        token(String *tp) {
+            append("type", tp);
+            append("val", tp);
         }
 
         object *get_val() {

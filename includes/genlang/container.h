@@ -91,7 +91,7 @@ namespace GenLang {
         }
 
         string get_members() const {
-            string_builder buf;
+            string buf;
             for (auto it = begin(); it != end(); ++it) {
                 if (it != begin())
                     buf += ",";
@@ -105,7 +105,7 @@ namespace GenLang {
         }
 
         string to_string() const override {
-            string_builder buf;// = getClassName();
+            string buf;// = getClassName();
             buf += "{";
             buf += get_members();
             buf += "}";
@@ -167,7 +167,7 @@ namespace GenLang {
         }
 
         string to_string() const override {
-            string_builder buf = "[";
+            string buf = "[";
             for (int i = 0; i < size(); i++) {
                 if (i)
                     buf += ",";

@@ -12,3 +12,7 @@ while(233)
 }
 1*(2+3);
 foo(1);
+void foo(int x)
+{
+
+}

@@ -14,7 +14,6 @@ static void reg()
     add_type("Char", "object", typeid(Char));
     add_type("Double", "object", typeid(Double));
     add_type("String", "object", typeid(String));
-    add_type("StringBuilder", "object", typeid(StringBuilder));
 }
 static autorun run(reg);
 

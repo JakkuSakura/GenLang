@@ -8,17 +8,15 @@
 namespace GenLang {
     struct node : public map_object {
 
-        node(string type) {
-            put("type", alloc_r(String, type));
-        }
-
         node(token *tk) {
+            set_unordered(true);
             put("type", tk->get_token_type());
             put("val", tk->get_val());
         }
 
         node(string type, list *matched_l) {
-            put("type", alloc_r(String, type));
+            set_unordered(true);
+            put("type", alloc(String, type));
             put("matched", matched_l);
         }
     };
@@ -45,10 +43,17 @@ namespace GenLang {
         std::multimap<string, item> rule_map;
         std::vector<token *> tokens;
 
+
         std::pair<node *, int> match_rule(const string &rule_name, int token_pos);
 
         void add_rule(const string &name, const string &rule, int type, bool replacable);
         void scan_src();
+
+        node *parse();
+        void show(const root_ptr<node> &root);
+
     };
+    bool is_upper(const string &str);
+    bool is_alpha(const string &str);
 
 } // GenLang

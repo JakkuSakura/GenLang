@@ -92,25 +92,6 @@ namespace GenLang {
             return buf;
         }
     };
-    class StringBuilder : public wrapper<string_builder> {
-    public:
-
-        StringBuilder(const char *s) : wrapper(s) {
-        }
-
-        StringBuilder(StringBuilder *s) : wrapper(s->get_val()) {
-        }
-
-        StringBuilder(const string_builder &sb) : wrapper(sb) {}
-
-        StringBuilder(const string &s) : wrapper(s) {}
-        string to_string() const override {
-            return "\"" + get_val() + "\"";
-        }
-
-        StringBuilder() = default;
-    };
-
     class String : public wrapper<string> {
     public:
         String(const char *s) : wrapper(s) {
@@ -118,11 +99,6 @@ namespace GenLang {
 
         String(String *s) : wrapper(s) {
         }
-
-        String(StringBuilder *s) : wrapper(s->get_val()) {
-        }
-
-        String(const string_builder &sb) : wrapper(sb) {}
 
         String(const string &s) : wrapper(s) {}
 

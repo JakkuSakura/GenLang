@@ -4,7 +4,7 @@ namespace GenLang {
 
     list *split(const string &str) {
         list *l = alloc(list);
-        string_builder sb;
+        string sb;
         for (char c : str) {
             if (!isspace(c)) sb += c;
             else if (!sb.get_val().empty()) {
@@ -21,5 +21,20 @@ namespace GenLang {
 
     list *split(const String &str) {
         return split(str.get_val());
+    }
+
+    bool is_upper(const string &str) {
+        for (char e : str) {
+            if(!isupper(e))
+                return false;
+        }
+        return true;
+    }
+    bool is_alpha(const string &str) {
+        for (char e : str) {
+            if(!isalpha(e))
+                return false;
+        }
+        return true;
     }
 }

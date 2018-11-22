@@ -38,7 +38,7 @@ scanner::scanner(FILE *fin) : fin(fin)  {
 
 token *scanner::get_token() {
 loop:
-    string_builder str;
+    string str;
     int ch;
     do ch = getc(fin);
     while(isspace(ch));
@@ -54,7 +54,7 @@ loop:
         if(isalpha(ch) || ch == '_')
             throw "unexpected char";
         ungetc(ch, fin);
-        return new_object<token>("token", alloc(String, "CONSTANT"), alloc(Long, atol(str.get_val().c_str())));
+        return new_object<token>(alloc(String, "CONSTANT"), alloc(Long, atol(str.get_val().c_str())));
     } else if (isalpha(ch) || ch == '_') {
         do {
             str += ch;
@@ -62,11 +62,11 @@ loop:
         } while(isalpha(ch) || isdigit(ch) || ch == '_');
         ungetc(ch, fin);
         if(keywords.count(str))
-            return new_object<token>("token", alloc(String, string("KEYWORD#") + str.get_val()), alloc(String, str));
+            return new_object<token>(alloc(String, str), alloc(String, str));
         else if(typenames.count(str))
-            return new_object<token>("token", alloc(String, "TYPENAME"), alloc(String, str));
+            return new_object<token>(alloc(String, "TYPENAME"), alloc(String, str));
         else
-            return new_object<token>("token", alloc(String, string("IDENTIFIER")), alloc(String, str));
+            return new_object<token>(alloc(String, "IDENTIFIER"), alloc(String, str));
     } else if(strchr(SPCEIAL_CHARS, ch)) {
         while(operators.count(str + (char)ch)) {
             str += ch;
@@ -79,7 +79,7 @@ loop:
         }
         if(str != "") {
             ungetc(ch, fin);
-            return new_object<token>("token", alloc(String, string("OPERATOR#") + str.get_val()), alloc(String, str));
+            return new_object<token>(alloc(String, str), alloc(String, str));
         }
     }
     throw "Unknown token";

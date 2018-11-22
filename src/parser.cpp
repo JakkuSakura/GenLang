@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cctype>
 #include "genlang/complier/token.h"
 #include "genlang/utils.h"
 #include "genlang/autorun.h"
@@ -16,23 +17,24 @@ namespace GenLang {
 
     std::pair<node *, int> parser::match_rule(const string &rule_name, int token_pos) {
         using namespace rule_types;
-        std::cerr << "trying " << rule_name << std::endl;
+//        std::cerr << "trying " << rule_name << std::endl;
         if (token_pos < tokens.size()) {
             if (tokens[token_pos]->match(rule_name)) {
-                node *nd = alloc(node, tokens[token_pos]);
+                auto nd = alloc_p(node, tokens[token_pos]);
                 return std::make_pair(nd, token_pos + 1);
             }
             auto range = rule_map.equal_range(rule_name);
             for (auto it = range.first; it != range.second; ++it) {
-                list *matched_subrules = alloc(list);
+                auto matched_subrules = alloc_p(list);
                 bool ok = true;
                 int newtokenpos = token_pos;
                 node *matched;
                 list *lst = it->second.rule;
                 int type = it->second.type;
                 switch (type) {
-                    case NONE_OR_MORE:
-                    case ONE_OR_MORE: { // rule+
+                    case NONE_OR_MORE: // rule*
+                    case ONE_OR_MORE:  // rule+
+                    {
                         std::pair<node *, int> pr;
                         int cnt = 0;
                         do {
@@ -44,11 +46,12 @@ namespace GenLang {
                                 cnt += 1;
                             }
                         } while (matched);
-                        if(type == 3 && cnt == 0)
+                        if (type == 3 && cnt == 0)
                             ok = false;
                         break;
                     }
-                    case LEFT: { // rule (mid rule)*
+                    case LEFT:// rule (mid rule)*
+                    {
                         auto pr = match_rule(((String *) lst->get(0))->get_val(), newtokenpos);
                         matched = pr.first;
                         newtokenpos = pr.second;
@@ -85,7 +88,8 @@ namespace GenLang {
                         }
                         break;
                     }
-                    case NORMAL: { // any other rule
+                    case NORMAL: // any other rule
+                    {
                         for (auto subrule : *lst) {
                             auto pr = match_rule(((String *) subrule)->get_val(), newtokenpos);
                             matched = pr.first;
@@ -128,4 +132,25 @@ namespace GenLang {
             tokens.push_back(tk);
         }
     }
+
+    node *parser::parse() {
+        return match_rule("stmts", 0).first;
+    }
+
+    void parser::show(const root_ptr<node> &root) {
+        if(!root)
+            return;
+        if(root->get("val"))
+        {
+            std::cout << root->get("val")->to_string();
+            return;
+        } else if (((String *)root->get("type"))->get_val() == "KEYWORD") // todo
+        {
+            std::cout << ((String *)((list *)root->get("matched"))->get(0))->get_val();
+        }
+        for (object *e : *(list *)root->get("matched")) {
+            show(e);
+        }
+    }
+
 }
