@@ -12,6 +12,9 @@ namespace GenLang{
         std::set<string> operators;
 
     };
+    bool is_keyword(const string &s);
+    bool is_operator(const string &s);
+
 }
 
 #endif

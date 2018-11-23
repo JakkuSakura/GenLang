@@ -138,17 +138,20 @@ namespace GenLang {
     }
 
     void parser::show(const root_ptr<node> &root) {
-        if(!root)
+        if (!root)
             return;
-        if(root->get("val"))
-        {
-            std::cout << root->get("val")->to_string();
+        if (
+                is_keyword(root->get("type")->as<String>()->get_val()) ||
+                is_operator(root->get("type")->as<String>()->get_val()) ||
+                root->get("type")->as<String>()->get_val() == "IDENTIFIER" ||
+                root->get("type")->as<String>()->get_val() == "TYPENAME") {
+            std::cout << root->get("val")->as<String>()->get_val() << " ";
             return;
-        } else if (((String *)root->get("type"))->get_val() == "KEYWORD") // todo
-        {
-            std::cout << ((String *)((list *)root->get("matched"))->get(0))->get_val();
+        } else if (root->get("val")) {
+            std::cout << root->get("val")->to_string() << " ";
+            return;
         }
-        for (object *e : *(list *)root->get("matched")) {
+        for (object *e : *(list *) root->get("matched")) {
             show(e);
         }
     }

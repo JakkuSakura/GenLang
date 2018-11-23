@@ -9,6 +9,11 @@ class object
   public:
     virtual string to_string() const {return "";};
     virtual void gc_walk(std::set<object *> &vis, std::queue<object *> &qu) {}
+    template <class T>
+            T *as()
+    {
+        return (T *)this;
+    }
     virtual ~object(){};
 };
 } // namespace GenLang
