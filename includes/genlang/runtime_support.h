@@ -30,6 +30,7 @@ namespace GenLang {
             genlang_garbage_collector.attach_root_ptr((object **) this);
         }
 
+
         ~root_ptr() {
             genlang_garbage_collector.detach_root_ptr((object **) this);
         }

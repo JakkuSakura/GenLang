@@ -1,18 +1,19 @@
-1 == 2;
-let a = 123 + 2;
-if(a)1;
-if(a == a) 1; else 2;
-if(a != 0)
+void foo(int a)
 {
-    233;
+    printf("%d", a);
 }
-while(233)
+int main()
 {
+    let a = 5;
+    foo(a * 5);
+}
+class A
+{
+    void hello()
+    {
 
+    }
 }
-1*(2+3);
-foo(1);
-void foo(int x)
-{
-
-}
+let a as A;
+let b = A();
+// todo : translate it into A *b = new A(); for a short time, then root_ptr<A> b = alloc_p(A);

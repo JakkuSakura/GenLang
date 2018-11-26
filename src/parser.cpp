@@ -5,6 +5,7 @@
 #include "genlang/autorun.h"
 #include "genlang/complier/parser.h"
 
+
 using namespace GenLang;
 
 static void reg() {
@@ -15,13 +16,17 @@ static void reg() {
 static autorun run(reg);
 namespace GenLang {
 
-    std::pair<node *, int> parser::match_rule(const string &rule_name, int token_pos) {
+    std::pair<root_ptr<node>, int> parser::match_rule(const string &rule_name, int token_pos) {
         using namespace rule_types;
-//        std::cerr << "trying " << rule_name << std::endl;
         if (token_pos < tokens.size()) {
+            if (rule_name == "TYPENAME" && tokens[token_pos]->match("IDENTIFIER")
+                && find_typename(tokens[token_pos]->get_val()->as<String>()->get_val())) {
+                auto p = alloc_p(node, tokens[token_pos]);
+                p->put("type", alloc(String, "TYPENAME"));
+                return std::make_pair(p, token_pos + 1);
+            }
             if (tokens[token_pos]->match(rule_name)) {
-                auto nd = alloc_p(node, tokens[token_pos]);
-                return std::make_pair(nd, token_pos + 1);
+                return std::make_pair(alloc_p(node, tokens[token_pos]), token_pos + 1);
             }
             auto range = rule_map.equal_range(rule_name);
             for (auto it = range.first; it != range.second; ++it) {
@@ -32,6 +37,9 @@ namespace GenLang {
                 list *lst = it->second.rule;
                 int type = it->second.type;
                 switch (type) {
+                    case EMPTY:
+                        ok = true;
+                        break;
                     case NONE_OR_MORE: // rule*
                     case ONE_OR_MORE:  // rule+
                     {
@@ -106,24 +114,33 @@ namespace GenLang {
                         break;
                 }
                 if (ok) {
+//                    for (auto e : *matched_subrules) {
+//                        std::cout << e->as<node>()->get("type")->to_string() << " ";
+//                    }
+//                    std::cout << std::endl;
+
                     if (matched_subrules->size() == 1 && it->second.replacable)
-                        return std::make_pair((node *) matched_subrules->get(0), newtokenpos);
-                    else
-                        return std::make_pair(alloc(node, rule_name, matched_subrules), newtokenpos);
+                        return std::make_pair(matched_subrules->get(0), newtokenpos);
+
+                    std::pair<root_ptr<node>, int> t = std::make_pair(alloc(node, rule_name, matched_subrules), newtokenpos);
+                    if(it->second.matched)
+                    {
+                        it->second.matched(this, t.first);
+                    }
+                    return t;
                 }
             }
         }
         return std::make_pair((node *) NULL, token_pos);
     }
 
-    void parser::add_rule(const string &name, const string &rule, int type, bool replacable) {
-        list *lst = split(rule);
-        item item1 = (item) {name, lst, type, replacable};
+    void parser::add_rule(const string &name, const string &rule, int type, bool replacable, void (*matched)(parser *p, node *nd)) {
+        item item1 = (item) {name, split(rule), type, replacable, matched};
         rule_map.insert(std::make_pair(name, item1));
     }
 
     parser::parser(FILE *fin, FILE *fout) : fout(fout), scan(fin) {
-        std::cout << "inited parser" << std::endl;
+//        std::cout << "inited parser" << std::endl;
     }
 
     void parser::scan_src() {
@@ -137,23 +154,8 @@ namespace GenLang {
         return match_rule("stmts", 0).first;
     }
 
-    void parser::show(const root_ptr<node> &root) {
-        if (!root)
-            return;
-        if (
-                is_keyword(root->get("type")->as<String>()->get_val()) ||
-                is_operator(root->get("type")->as<String>()->get_val()) ||
-                root->get("type")->as<String>()->get_val() == "IDENTIFIER" ||
-                root->get("type")->as<String>()->get_val() == "TYPENAME") {
-            std::cout << root->get("val")->as<String>()->get_val() << " ";
-            return;
-        } else if (root->get("val")) {
-            std::cout << root->get("val")->to_string() << " ";
-            return;
-        }
-        for (object *e : *(list *) root->get("matched")) {
-            show(e);
-        }
+    bool parser::find_typename(const string &val) {
+        return scan.typenames.count(val) > 0;
     }
 
 }

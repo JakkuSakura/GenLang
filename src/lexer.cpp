@@ -4,7 +4,7 @@
 using namespace GenLang;
 namespace GenLang {
     static const char *KEYWORDS[] = {
-            "let", "as", "class", "struct", "if", "else", "for", "while", "return", "continue", nullptr
+            "let", "as", "class", "struct", "if", "else", "for", "while", "return", "continue", "native", nullptr
     };
     static const char *TYPENAMES[] = {
             "void", "string", "object", "list", "int", "char", "double", "long", "float", nullptr
@@ -74,12 +74,28 @@ namespace GenLang {
                 ch = getc(fin);
             } while (isalpha(ch) || isdigit(ch) || ch == '_');
             ungetc(ch, fin);
-            if (keywords.count(str))
+            if (str == "native") {
+                // todo
+            } else if (keywords.count(str))
                 return new_object<token>(alloc(String, str), alloc(String, str));
             else if (typenames.count(str))
                 return new_object<token>(alloc(String, "TYPENAME"), alloc(String, str));
             else
                 return new_object<token>(alloc(String, "IDENTIFIER"), alloc(String, str));
+        } else if (ch == '"') {
+            int last = 0;
+            do {
+                ch = getc(fin);
+                if (ch == EOF)
+                    throw "Unfinished string";
+                if (ch == '"') {
+                    if (last != '\\')
+                        break;
+                }
+                str += ch;
+                last = ch;
+            } while (true);
+            return new_object<token>(alloc(String, "STRING"), alloc(String, str));
         } else if (strchr(SPCEIAL_CHARS, ch)) {
             while (operators.count(str + (char) ch)) {
                 str += ch;
@@ -89,6 +105,8 @@ namespace GenLang {
                 while (ch = getc(fin), ch != EOF && ch != '\n');
                 goto loop;
             }
+            // todo block comment
+
             if (str != "") {
                 ungetc(ch, fin);
                 return new_object<token>(alloc(String, str), alloc(String, str));
