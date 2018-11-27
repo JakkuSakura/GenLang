@@ -17,3 +17,8 @@ class A
 let a as A;
 let b = A();
 // todo : translate it into A *b = new A(); for a short time, then root_ptr<A> b = alloc_p(A);
+/* test block */
+let c = 123;
+native{
+ blblbl
+}

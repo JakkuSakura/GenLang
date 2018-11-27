@@ -18,38 +18,42 @@ namespace GenLang {
     void generator::show(const root_ptr <node> &root) {
         if (!root)
             return;
-        if (is_keyword(root->get("type")->as<String>()->get_val())
-            || is_operator(root->get("type")->as<String>()->get_val())
-            || root->get("type")->as<String>()->get_val() == "IDENTIFIER"
-            || root->get("type")->as<String>()->get_val() == "TYPENAME") {
+        if (root->get("val")) {
+            if (is_keyword(root->get_type())
+                || is_operator(root->get_type())
+                || root->get_type() == "IDENTIFIER"
+                || root->get_type() == "TYPENAME"
+                || root->get_type() == "NATIVE" ) {
 
-            if (root->get("val")->as<String>()->get_val() == "{"
-                || root->get("val")->as<String>()->get_val() == "}")
-                std::cout << std::endl;
+                if (root->get_val() == "{"
+                    || root->get_val() == "}")
+                    std::cout << std::endl;
 
-            std::cout << root->get("val")->as<String>()->get_val() << " ";
-            if (root->get("val")->as<String>()->get_val() == ";"
-                || root->get("val")->as<String>()->get_val() == "}"
-                || root->get("val")->as<String>()->get_val() == "{")
-                std::cout << std::endl;
+                std::cout << root->get_val() << " ";
+                if (root->get_val() == ";"
+                    || root->get_val() == "}"
+                    || root->get_val() == "{")
+                    std::cout << std::endl;
 
-            return;
-        } else if (root->get("val")) {
-            std::cout << root->get("val")->to_string() << " ";
-            return;
-        } else if (root->get("type")->as<String>()->get_val() == "let_stmt") {
+                return;
+            } else {
+                std::cout << root->get("val")->to_string() << " ";
+                return;
+            }
+
+        } else if (root->get_type() == "let_stmt") {
             //std::cerr << root->get("matched")->to_string() << std::endl;
             std::cout << "auto ";
-            list *a_let = root->get("matched")->as<list>()->get(1) // assigns
-                    ->as<node>()->get("matched")->as<list>()->get(0) // assign 0
-                    ->as<node>()->get("matched")->as<list>();
+            list *a_let = root->get_matched()->get(1) // assigns
+                    ->as<node>()->get_matched()->get(0) // assign 0
+                    ->as<node>()->get_matched();
             show(a_let->get(0));
             std::cout << " = ";
             show(a_let->get(2));
             std::cout << ";" << std::endl;
             // like : let a = 5;
         } else {
-            for (object *e : *root->get("matched")->as<list>()) {
+            for (object *e : *root->get_matched()) {
                 show(e);
             }
 
@@ -58,9 +62,9 @@ namespace GenLang {
 
     void generator::gen(const root_ptr <node> &root) {
         std::cout << "#include <cstdio>" << std::endl;
-        for (object *o : *root->get("matched")->as<list>()) {
+        for (object *o : *root->get_matched()) {
             node *n = o->as<node>();
-            if (n->get("type")->as<String>()->get_val() == "func_decl")
+            if (n->get_type() == "func_decl")
                 func_decls.push_back(n);
         }
         show(root);

@@ -7,7 +7,7 @@ using namespace std;
 using namespace rule_types;
 void reg_typename(parser *p, node *nd)
 {
-    const GenLang::string &s = nd->get("matched")->as<list>()->get(1)->as<node>()->get("val")->as<String>()->get_val();
+    const GenLang::string &s = nd->get_matched()->get(1)->as<node>()->get("val")->as<String>()->get_val();
     p->scan.typenames.insert(s);
 }
 
@@ -15,6 +15,7 @@ void reg_rules(parser &pr) {
     pr.add_rule("parentheses", "( math_expr )", NORMAL, false);
     pr.add_rule("args", "math_expr ,", LEFT, false);
     pr.add_rule("args", "", EMPTY, false);
+    pr.add_rule("new_obj", "TYPENAME ( args )", NORMAL, false);
     pr.add_rule("call", "IDENTIFIER ( args )", NORMAL, false);
 
     pr.add_rule("list", "[ args ]", NORMAL, false);
@@ -25,6 +26,7 @@ void reg_rules(parser &pr) {
     pr.add_rule("map_obj", "{ obj_pairs }", NORMAL, false);
 
 
+    pr.add_rule("atom", "new_obj", NORMAL, true);
     pr.add_rule("atom", "call", NORMAL, true);
     pr.add_rule("atom", "list", NORMAL, true);
     pr.add_rule("atom", "map_obj", NORMAL, true);
@@ -85,6 +87,9 @@ void reg_rules(parser &pr) {
 
     pr.add_rule("stmt", "func_decl ;", NORMAL, true);
     pr.add_rule("stmt", "func_def", NORMAL, true);
+    pr.add_rule("native_blk", "NATIVE", NORMAL, true);
+
+    pr.add_rule("stmt", "native_blk", NORMAL, true);
 
     pr.add_rule("stmtblk", "{ stmts }", NORMAL, false);
 

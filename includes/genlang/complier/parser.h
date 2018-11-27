@@ -21,6 +21,18 @@ namespace GenLang {
             put("type", alloc(String, type));
             put("matched", matched_l);
         }
+        const string &get_type()
+        {
+            return get("type")->as<String>()->get_val();
+        }
+        list *get_matched()
+        {
+            return get("matched")->as<list>();
+        }
+        const string &get_val()
+        {
+            return get("val")->as<String>()->get_val();
+        }
     };
 
     class parser;
