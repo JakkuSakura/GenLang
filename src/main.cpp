@@ -19,6 +19,11 @@ void reg_rules(parser &pr) {
     pr.add_rule("call", "IDENTIFIER ( args )", NORMAL, false);
 
     pr.add_rule("list", "[ args ]", NORMAL, false);
+
+    pr.add_rule("subscript", "[ math_expr ]", NORMAL, false);
+    pr.add_rule("subscripts", "subscript", ONE_OR_MORE, false);
+    pr.add_rule("raw_array", "TYPENAME subscripts", NORMAL, false);
+
     pr.add_rule("obj_pair", "IDENTIFIER : math_expr", NORMAL, false);
     pr.add_rule("obj_pairs", "obj_pair ,", LEFT, false);
     pr.add_rule("obj_pairs", "", EMPTY, false);
@@ -53,13 +58,13 @@ void reg_rules(parser &pr) {
 
     pr.add_rule("assign", "IDENTIFIER = math_expr", NORMAL, false);
 
-    pr.add_rule("assign", "IDENTIFIER as TYPENAME", NORMAL, false);
-
     pr.add_rule("assigns", "assign ,", LEFT, false);
 
+    // todo
     pr.add_rule("let_stmt", "let assigns ;", NORMAL, false);
 
     pr.add_rule("let_stmt", "let args as TYPENAME ;", NORMAL, false);
+    pr.add_rule("let_stmt", "let args as raw_array ;", NORMAL, false);
 
 
     pr.add_rule("stmt", "expr ;", NORMAL, false);
@@ -110,11 +115,12 @@ int main() {
 
         root_ptr<node> val = parser1.parse();
         if (val) {
-            for (auto e : *(list *) val->get("matched"))
-                cout << e->to_string() << endl;
+//            for (auto e : *(list *) val->get("matched"))
+//                cout << e->to_string() << endl;
+            cout << val->to_string() << endl;
+            generator gen;
+            gen.gen(val);
         }
-        generator gen;
-        gen.gen(val);
     } catch (const char *s) {
         cerr << s << endl;
     } catch (const std::string &s) {

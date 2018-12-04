@@ -1,24 +1,3 @@
-void foo(int a)
-{
-    printf("%d", a);
-}
-int main()
-{
-    let a = 5;
-    foo(a * 5);
-}
-class A
-{
-    void hello()
-    {
-
-    }
-}
-let a as A;
-let b = A();
-// todo : translate it into A *b = new A(); for a short time, then root_ptr<A> b = alloc_p(A);
-/* test block */
-let c = 123;
-native{
- blblbl
-}
+// todo : array support
+let a as int;
+int[10];

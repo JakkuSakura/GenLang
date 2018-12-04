@@ -28,6 +28,7 @@ namespace GenLang {
             if (tokens[token_pos]->match(rule_name)) {
                 return std::make_pair(alloc_p(node, tokens[token_pos]), token_pos + 1);
             }
+//            std::cerr << "trying " << rule_name << std::endl;
             auto range = rule_map.equal_range(rule_name);
             for (auto it = range.first; it != range.second; ++it) {
                 auto matched_subrules = alloc_p(list);

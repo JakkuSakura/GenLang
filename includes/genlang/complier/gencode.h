@@ -42,16 +42,13 @@ namespace GenLang {
             }
 
         } else if (root->get_type() == "let_stmt") {
-            //std::cerr << root->get("matched")->to_string() << std::endl;
-            std::cout << "auto ";
-            list *a_let = root->get_matched()->get(1) // assigns
-                    ->as<node>()->get_matched()->get(0) // assign 0
-                    ->as<node>()->get_matched();
-            show(a_let->get(0));
-            std::cout << " = ";
-            show(a_let->get(2));
+
+            // like : let a as int;
+            list *a_let = root->get_matched();
+            show(a_let->get(3));
+
+            show(a_let->get(1));
             std::cout << ";" << std::endl;
-            // like : let a = 5;
         } else {
             for (object *e : *root->get_matched()) {
                 show(e);
