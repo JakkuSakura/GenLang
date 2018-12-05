@@ -4,7 +4,7 @@
 #include "genlang/utils.h"
 #include "genlang/autorun.h"
 #include "genlang/complier/parser.h"
-
+#include <vector>
 
 using namespace GenLang;
 
@@ -12,12 +12,41 @@ static void reg() {
     add_type("node", "map_object", typeid(node));
 }
 
+static std::vector<GenLang::string> st;
+
+class autostack {
+    bool ok;
+public:
+    autostack(std::vector<GenLang::string> &st, GenLang::string s) {
+        st.push_back(s);
+        ok = true;
+    }
+
+    void set(bool s) {
+        ok = s;
+    }
+
+    ~autostack() {
+        std::cerr << st.back() << " " << (ok ? "SUCCEEDED" : "FAILED") << std::endl;
+        st.pop_back();
+    }
+
+};
 
 static autorun run(reg);
 namespace GenLang {
 
     std::pair<root_ptr<node>, int> parser::match_rule(const string &rule_name, int token_pos) {
         using namespace rule_types;
+        autostack holder(st, rule_name);
+        for (auto &e : st) {
+            std::cerr << e << " ";
+        }
+        std::cerr << std::endl;
+        std::cerr << "token pos " << token_pos << std::endl;
+        if (rule_name == "call") {
+            std::cerr << "stopped" << std::endl;
+        }
         if (token_pos < tokens.size()) {
             if (rule_name == "TYPENAME" && tokens[token_pos]->match("IDENTIFIER")
                 && find_typename(tokens[token_pos]->get_val()->as<String>()->get_val())) {
@@ -28,7 +57,6 @@ namespace GenLang {
             if (tokens[token_pos]->match(rule_name)) {
                 return std::make_pair(alloc_p(node, tokens[token_pos]), token_pos + 1);
             }
-//            std::cerr << "trying " << rule_name << std::endl;
             auto range = rule_map.equal_range(rule_name);
             for (auto it = range.first; it != range.second; ++it) {
                 auto matched_subrules = alloc_p(list);
@@ -59,7 +87,8 @@ namespace GenLang {
                             ok = false;
                         break;
                     }
-                    case LEFT:// rule (mid rule)*
+                    case ONE_AND_MORE: // rule [rule2]+
+                    case ONE_AND_SPERATOR:// rule (mid rule)*
                     {
                         auto pr = match_rule(((String *) lst->get(0))->get_val(), newtokenpos);
                         matched = pr.first;
@@ -81,15 +110,17 @@ namespace GenLang {
                                 if (!ok2) {
                                     break;
                                 }
+                                if (type == ONE_AND_SPERATOR) {
+                                    pr = match_rule(((String *) lst->get(0))->get_val(), newtokenpos);
+                                    matched = pr.first;
+                                    newtokenpos = pr.second;
+                                    if (matched) {
+                                        matched_subrules->append(matched);
+                                    } else {
+                                        ok = false;
+                                        break;
+                                    }
 
-                                pr = match_rule(((String *) lst->get(0))->get_val(), newtokenpos);
-                                matched = pr.first;
-                                newtokenpos = pr.second;
-                                if (matched) {
-                                    matched_subrules->append(matched);
-                                } else {
-                                    ok = false;
-                                    break;
                                 }
                             } while (matched);
                         } else {
@@ -123,24 +154,26 @@ namespace GenLang {
                     if (matched_subrules->size() == 1 && it->second.replacable)
                         return std::make_pair(matched_subrules->get(0), newtokenpos);
 
-                    std::pair<root_ptr<node>, int> t = std::make_pair(alloc(node, rule_name, matched_subrules), newtokenpos);
-                    if(it->second.matched)
-                    {
+                    std::pair<root_ptr<node>, int> t = std::make_pair(alloc(node, rule_name, matched_subrules),
+                                                                      newtokenpos);
+                    if (it->second.matched) {
                         it->second.matched(this, t.first);
                     }
                     return t;
                 }
             }
         }
+        holder.set(false);
         return std::make_pair((node *) NULL, token_pos);
     }
 
-    void parser::add_rule(const string &name, const string &rule, int type, bool replacable, void (*matched)(parser *p, node *nd)) {
+    void parser::add_rule(const string &name, const string &rule, int type, bool replacable,
+                          void (*matched)(parser *p, node *nd)) {
         item item1 = (item) {name, split(rule), type, replacable, matched};
         rule_map.insert(std::make_pair(name, item1));
     }
 
-    parser::parser(FILE *fin, FILE *fout) : fout(fout), scan(fin) {
+    parser::parser(FILE *fin) : scan(fin) {
 //        std::cout << "inited parser" << std::endl;
     }
 

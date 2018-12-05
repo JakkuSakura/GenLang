@@ -5,34 +5,46 @@
 using namespace GenLang;
 using namespace std;
 using namespace rule_types;
-void reg_typename(parser *p, node *nd)
+
+void reg_classname(parser *p, node *nd)
 {
     const GenLang::string &s = nd->get_matched()->get(1)->as<node>()->get("val")->as<String>()->get_val();
     p->scan.typenames.insert(s);
+    cerr << "class " << s << endl;
 }
 
 void reg_rules(parser &pr) {
     pr.add_rule("parentheses", "( math_expr )", NORMAL, false);
-    pr.add_rule("args", "math_expr ,", LEFT, false);
+
+
+
+    pr.add_rule("args", "math_expr ,", ONE_AND_SPERATOR, false);
     pr.add_rule("args", "", EMPTY, false);
-    pr.add_rule("new_obj", "TYPENAME ( args )", NORMAL, false);
-    pr.add_rule("call", "IDENTIFIER ( args )", NORMAL, false);
+
+    pr.add_rule("tuple", "( args )", NORMAL, false);
+
+    pr.add_rule("tuples", "tuple", ONE_OR_MORE, false);
+
+    pr.add_rule("call", "IDENTIFIER subscripts tuples", ONE_AND_MORE, false);
+    pr.add_rule("call", "parentheses subscripts tuples", ONE_AND_MORE, false);
 
     pr.add_rule("list", "[ args ]", NORMAL, false);
 
     pr.add_rule("subscript", "[ math_expr ]", NORMAL, false);
     pr.add_rule("subscripts", "subscript", ONE_OR_MORE, false);
+
     pr.add_rule("raw_array", "TYPENAME subscripts", NORMAL, false);
 
+
     pr.add_rule("obj_pair", "IDENTIFIER : math_expr", NORMAL, false);
-    pr.add_rule("obj_pairs", "obj_pair ,", LEFT, false);
+    pr.add_rule("obj_pairs", "obj_pair ,", ONE_AND_SPERATOR, false);
     pr.add_rule("obj_pairs", "", EMPTY, false);
 
     pr.add_rule("map_obj", "{ obj_pairs }", NORMAL, false);
 
-
-    pr.add_rule("atom", "new_obj", NORMAL, true);
     pr.add_rule("atom", "call", NORMAL, true);
+    pr.add_rule("atom", "fetch", NORMAL, true);
+    pr.add_rule("atom", "new_obj", NORMAL, true);
     pr.add_rule("atom", "list", NORMAL, true);
     pr.add_rule("atom", "map_obj", NORMAL, true);
     pr.add_rule("atom", "parentheses", NORMAL, true);
@@ -42,12 +54,18 @@ void reg_rules(parser &pr) {
 
     pr.add_rule("power", "atom ** power", NORMAL, true);
     pr.add_rule("power", "atom", NORMAL, true);
-    pr.add_rule("multi", "power * / %", LEFT, true);
-    pr.add_rule("add", "multi + -", LEFT, true);
+    pr.add_rule("multi", "power * / %", ONE_AND_SPERATOR, true);
+    pr.add_rule("add", "multi + -", ONE_AND_SPERATOR, true);
 
-    pr.add_rule("compare", "add == != === !== < > <= >=", LEFT, true);
+    pr.add_rule("compare", "add == != === !== < > <= >=", ONE_AND_SPERATOR, true);
 
-    pr.add_rule("math_expr", "compare", NORMAL, true);
+    pr.add_rule("assign", "compare = assign", NORMAL, true);
+    pr.add_rule("assign", "compare", NORMAL, true);
+
+    pr.add_rule("assigns", "assign ,", ONE_AND_SPERATOR, false);
+
+    pr.add_rule("math_expr", "assign", NORMAL, true);
+
 
     pr.add_rule("expr", "math_expr", NORMAL, true);
 
@@ -56,9 +74,7 @@ void reg_rules(parser &pr) {
     pr.add_rule("if_stmt", "if ( math_expr ) stmt", NORMAL, false);
     pr.add_rule("while_stmt", "while ( math_expr ) stmt", NORMAL, false);
 
-    pr.add_rule("assign", "IDENTIFIER = math_expr", NORMAL, false);
 
-    pr.add_rule("assigns", "assign ,", LEFT, false);
 
     // todo
     pr.add_rule("let_stmt", "let assigns ;", NORMAL, false);
@@ -76,14 +92,15 @@ void reg_rules(parser &pr) {
 
     pr.add_rule("pair", "TYPENAME IDENTIFIER", NORMAL, false);
 
-    pr.add_rule("decl_args", "pair ,", LEFT, false);
-    pr.add_rule("decl_args", "", EMPTY, false);
-
     pr.add_rule("func_decl", "pair ( decl_args ) ", NORMAL, false);
-
     pr.add_rule("func_def", "func_decl stmtblk ", NORMAL, false);
 
-    pr.add_rule("class_decl", "class IDENTIFIER", NORMAL, false, reg_typename);
+    pr.add_rule("decl_args", "pair ,", ONE_AND_SPERATOR, false);
+    pr.add_rule("decl_args", "", EMPTY, false);
+
+
+
+    pr.add_rule("class_decl", "class IDENTIFIER", NORMAL, false, reg_classname);
     pr.add_rule("class_def", "class_decl stmtblk", NORMAL, false);
 
     pr.add_rule("stmt", "class_decl ;", NORMAL, true);
@@ -98,15 +115,15 @@ void reg_rules(parser &pr) {
 
     pr.add_rule("stmtblk", "{ stmts }", NORMAL, false);
 
-    pr.add_rule("stmts", "stmt", NONE_OR_MORE, true);
+    pr.add_rule("stmts", "stmt", NONE_OR_MORE, false);
 }
 
 int main() {
+    srand(time(0));
     FILE *f = fopen("input.txt", "r");
-    parser parser1(f, stdout);
+    parser parser1(f);
 
     reg_rules(parser1);
-
 
     try {
         parser1.scan_src();

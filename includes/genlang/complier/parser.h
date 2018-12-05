@@ -29,9 +29,24 @@ namespace GenLang {
         {
             return get("matched")->as<list>();
         }
-        const string &get_val()
+        const string &get_str_val()
         {
             return get("val")->as<String>()->get_val();
+        }
+        bool has(const string &s)
+        {
+            if(get("matched"))
+            {
+                if(get_type() == s)
+                    return true;
+                for(auto e : *this->get_matched())
+                {
+                    if(!e) continue;
+                    if(e->as<node>()->has(s))
+                        return true;
+                }
+            }
+            return false;
         }
     };
 
@@ -48,17 +63,16 @@ namespace GenLang {
     namespace rule_types
     {
         enum {
-            NORMAL, LEFT, NONE_OR_MORE, ONE_OR_MORE, EMPTY
+            NORMAL, ONE_AND_SPERATOR, NONE_OR_MORE, ONE_OR_MORE, EMPTY, ONE_AND_MORE
         };
     }
     class parser {
     public:
-        FILE *fout;
         scanner scan;
-        parser(FILE *fin, FILE *fout);
+        parser(FILE *fin);
         std::multimap<string, item> rule_map;
         std::vector<token *> tokens;
-
+        std::set<string> typenames;
 
         std::pair<root_ptr<node>, int> match_rule(const string &rule_name, int token_pos);
 
