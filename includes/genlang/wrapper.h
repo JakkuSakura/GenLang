@@ -103,9 +103,32 @@ namespace GenLang {
         String(const string &s) : wrapper(s) {}
 
         String() = default;
+
+        int size() const {
+            return get_val().size();
+        }
+
         string to_string() const override {
             return "\"" + get_val() + "\"";
         }
+        String *append(String *s) {
+            get_val() += s->get_val();
+            return this;
+        }
+        String *append(const string &s) {
+            get_val() += s;
+            return this;
+        }
+
+        String *append(char c) {
+            get_val() += c;
+            return this;
+        }
+
+        char get(int x) const {
+            return get_val().get_val()[x];
+        }
+
 
     };
 

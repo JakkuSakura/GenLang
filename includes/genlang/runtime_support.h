@@ -25,7 +25,7 @@ namespace GenLang {
     class root_ptr {
         object *p;
     public:
-        root_ptr(object *x) {
+        root_ptr(object *x = NULL) {
             p = x;
             genlang_garbage_collector.attach_root_ptr((object **) this);
         }
@@ -54,6 +54,7 @@ namespace GenLang {
         operator T *() const {
             return (T *) p;
         }
+
     };
 
 #define alloc_r(type, args...) new_object<type>(args)

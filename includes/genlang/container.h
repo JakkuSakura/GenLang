@@ -46,7 +46,7 @@ namespace GenLang {
             unordered = false;
         }
 
-        long index(const string &s) {
+        int index(const string &s) {
             if (unordered) {
                 for (int i = 0; i < size(); i++) {
                     if (members[i].first == s)
@@ -55,7 +55,7 @@ namespace GenLang {
             } else {
                 if (!sorted)
                     std::sort(members.begin(), members.end());
-                long i = std::lower_bound(members.begin(), members.end(), std::make_pair(s, (object *) NULL)) - begin();
+                int i = std::lower_bound(members.begin(), members.end(), std::make_pair(s, (object *) NULL)) - begin();
                 if (i < size() && members[i].first == s)
                     return i;
             }
@@ -63,7 +63,7 @@ namespace GenLang {
         }
 
         object *get(const string &name) {
-            long i = index(name);
+            int i = index(name);
             if (i >= 0)
                 return members[i].second;
             return NULL;
@@ -75,7 +75,7 @@ namespace GenLang {
 
         template<class T>
         T *put(const string &name, T *dt) {
-            long i = index(name);
+            int i = index(name);
             if (i >= 0)
                 members[i].second = dt;
             else
@@ -128,7 +128,7 @@ namespace GenLang {
             return members.end();
         }
 
-        long size() const {
+        int size() const {
             return members.size();
         }
 
@@ -196,8 +196,8 @@ namespace GenLang {
             return members.end();
         }
 
-        long size() const {
-            return members.size();
+        int size() const {
+            return (int)members.size();
         }
 
         void gc_walk(std::set<object *> &vis, std::queue<object *> &qu) override {

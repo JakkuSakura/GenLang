@@ -97,7 +97,8 @@ namespace GenLang {
                     }
                     else
                     {
-                        str = ch;
+                        str = "";
+                        str += ch;
                         while (ch = getc(fin), ch != EOF && ch != ';')
                             str += ch;
                     }
@@ -126,7 +127,7 @@ namespace GenLang {
                 } while (true);
                 return new_object<token>(alloc(String, "STRING"), alloc(String, str));
             } else if (strchr(SPCEIAL_CHARS, ch)) {
-                while (operators.count(str + (char) ch)) {
+                while (operators.count(str + (string) ch)) {
                     str += ch;
                     ch = getc(fin);
                 }

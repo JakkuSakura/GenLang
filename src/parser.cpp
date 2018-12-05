@@ -12,26 +12,6 @@ static void reg() {
     add_type("node", "map_object", typeid(node));
 }
 
-static std::vector<GenLang::string> st;
-
-class autostack {
-    bool ok;
-public:
-    autostack(std::vector<GenLang::string> &st, GenLang::string s) {
-        st.push_back(s);
-        ok = true;
-    }
-
-    void set(bool s) {
-        ok = s;
-    }
-
-    ~autostack() {
-        std::cerr << st.back() << " " << (ok ? "SUCCEEDED" : "FAILED") << std::endl;
-        st.pop_back();
-    }
-
-};
 
 static autorun run(reg);
 namespace GenLang {
@@ -44,9 +24,7 @@ namespace GenLang {
         }
         std::cerr << std::endl;
         std::cerr << "token pos " << token_pos << std::endl;
-        if (rule_name == "call") {
-            std::cerr << "stopped" << std::endl;
-        }
+
         if (token_pos < tokens.size()) {
             if (rule_name == "TYPENAME" && tokens[token_pos]->match("IDENTIFIER")
                 && find_typename(tokens[token_pos]->get_val()->as<String>()->get_val())) {

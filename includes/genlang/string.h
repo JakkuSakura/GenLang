@@ -15,13 +15,16 @@ namespace GenLang {
 
         string(const char *cs) : s(cs) {}
 
-        string(char ch) { s += ch; }
+        explicit string(char ch) { s += ch; }
 
         string(std::string cs) : s(std::move(cs)) {}
 
         string() : s() {}
 
         string(const string &s2) : s(s2.s) {}
+        int size() const {
+            return (int)get_val().size();
+        }
 
         friend string operator+(const string &a, const string &b) {
             return string(a.s + b.s);
@@ -87,6 +90,7 @@ namespace GenLang {
             std::swap(a.s, b.s);
         }
     };
+
 
 
 }
