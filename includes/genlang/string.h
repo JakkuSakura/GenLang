@@ -22,6 +22,12 @@ namespace GenLang {
         string() : s() {}
 
         string(const string &s2) : s(s2.s) {}
+        char &operator[](int i) {
+            return s[i];
+        }
+        const char &operator[](int i) const {
+            return s[i];
+        }
         int size() const {
             return (int)get_val().size();
         }

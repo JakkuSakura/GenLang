@@ -148,10 +148,12 @@ namespace GenLang {
         typedef std::vector<object *> T;
         T members;
     public:
+        const object *get(int id) const {
+            return members[index(id)];
+        }
+
         object *get(int id) {
-            if (id < 0)
-                id = (int) members.size() - 1 - id;
-            return members[id];
+            return members[index(id)];
         }
 
         template<class T>
@@ -176,7 +178,7 @@ namespace GenLang {
             buf += "]";
             return buf;
         }
-        int index(int i) {
+        int index(int i) const {
             if(i < 0) i = (int)members.size() + i;
             return i;
         }

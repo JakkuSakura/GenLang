@@ -70,4 +70,44 @@ namespace GenLang {
         return nstr;
     }
 
+    string strip(const string &s) {
+        string s2;
+        int i = 0;
+        for (; i < s.size(); ++i) {
+            if(!isspace(s.get_val()[i]))
+                break;
+        }
+        s2 += s.get_val().substr((unsigned long)i, INF);
+        while (isspace(s2.get_val().back()))
+            s2.get_val().pop_back();
+        return s2;
+    }
+
+    autostack::autostack(std::vector<GenLang::string> &st, GenLang::string s) : st(st) {
+        st.push_back(s);
+        ok = true;
+        if(show_auto_stack)
+            std::cerr << "ENTERED " << s << std::endl;
+    }
+
+    void autostack::set(bool s) {
+        ok = s;
+    }
+
+    void autostack::print_stack() {
+        if(show_auto_stack)
+        {
+            for (auto &e : st) {
+                std::cerr << e << " ";
+            }
+            std::cerr << std::endl;
+
+        }
+    }
+
+    autostack::~autostack() {
+        if (show_auto_stack)
+            std::cerr << st.back() << " " << (ok ? "SUCCEEDED" : "FAILED") << std::endl;
+        st.pop_back();
+    }
 }

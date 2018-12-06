@@ -1,3 +1,6 @@
-multi REPLACEABLE : CONSTANT ( '+' CONSTANT ) *
-add REPLACEABLE : multi ( '*' multi ) *
-root REPLACEABLE : add EPS
+atom REPLACEABLE : CONSTANT
+atom REPLACEABLE : IDENTIFIER
+atom REPLACEABLE : STRING
+multi REPLACEABLE : atom ( ( '*' | '/' | '%' ) atom ) *
+add : multi ( ( '+' | '-' ) multi ) *
+root : ( add ; ) * EPS

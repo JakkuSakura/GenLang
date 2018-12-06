@@ -47,6 +47,14 @@ namespace GenLang{
             }
             return false;
         }
+        string to_string() const override {
+            if (get("val"))
+                return get("val")->to_string();
+            else if(get("matched"))
+                return get("matched")->to_string();
+            else
+                return "EMPTY";
+        }
     };
 
 
