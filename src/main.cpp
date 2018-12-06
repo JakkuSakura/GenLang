@@ -151,20 +151,34 @@
 using namespace GenLang;
 int main()
 {
-    regular_parser p;
-    p.add_rule("multi : CONSTANT ( '*' CONSTANT ) * ");
-    p.build_all();
-    p.print_all();
-
-    token *tk;
-    FILE *f = fopen("input3.txt", "r");
-    scanner scan(f);
-    while ((tk = scan.get_token())) {
-         p.put_token(tk);
+    regular_parser pr;
+    {
+        system("pwd");
+        FILE *f = fopen("gramma.txt", "r");
+        char buf[1000];
+        while (fgets(buf, 1000, f)) {
+            pr.add_rule(buf);
+        }
+        fclose(f);
     }
 
-    fclose(f);
+    pr.build_all();
+    pr.print_all();
 
-    auto result = p.match_rule("multi", 0);
-    std::cout << result.first->to_string() << std::endl;
+    {
+        FILE *f = fopen("input3.txt", "r");
+        scanner scan(f);
+        token *tk;
+        while ((tk = scan.get_token())) {
+             pr.put_token(tk);
+        }
+
+        fclose(f);
+    }
+
+    auto result = pr.match_rule("root", 0);
+    if(result.first && result.first->get_matched()->size())
+        std::cout << result.first->to_string() << std::endl;
+    else
+        std::cout << "Error :" << result.second << " " << pr.get_token(result.second)->to_string() << std::endl;
 }

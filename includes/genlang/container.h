@@ -55,7 +55,7 @@ namespace GenLang {
             } else {
                 if (!sorted)
                     std::sort(members.begin(), members.end());
-                int i = std::lower_bound(members.begin(), members.end(), std::make_pair(s, (object *) NULL)) - begin();
+                int i = int(std::lower_bound(members.begin(), members.end(), std::make_pair(s, (object *) NULL)) - begin());
                 if (i < size() && members[i].first == s)
                     return i;
             }
@@ -129,7 +129,7 @@ namespace GenLang {
         }
 
         int size() const {
-            return members.size();
+            return (int)members.size();
         }
 
         void gc_walk(std::set<object *> &vis, std::queue<object *> &qu) override {
@@ -145,7 +145,7 @@ namespace GenLang {
     };
 
     class list : public container {
-        typedef std::deque<object *> T;
+        typedef std::vector<object *> T;
         T members;
     public:
         object *get(int id) {
@@ -175,6 +175,14 @@ namespace GenLang {
             }
             buf += "]";
             return buf;
+        }
+        int index(int i) {
+            if(i < 0) i = (int)members.size() + i;
+            return i;
+        }
+
+        void del(int i) {
+            members.erase(members.begin() + index(i));
         }
 
         typedef T::iterator iterator;

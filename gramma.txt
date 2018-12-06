@@ -1,0 +1,3 @@
+multi REPLACEABLE : CONSTANT ( '+' CONSTANT ) *
+add REPLACEABLE : multi ( '*' multi ) *
+root REPLACEABLE : add EPS
