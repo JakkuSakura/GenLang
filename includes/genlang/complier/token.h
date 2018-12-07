@@ -27,6 +27,11 @@ namespace GenLang {
         bool match(const string &name) {
             return name == get_token_type()->get_val();
         }
+        token *set(int col, int row) {
+            append("col", alloc(Int, col));
+            append("row", alloc(Int, row));
+            return this;
+        }
     };
 }
 

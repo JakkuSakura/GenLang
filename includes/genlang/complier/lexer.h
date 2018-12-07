@@ -7,14 +7,16 @@
 namespace GenLang {
     struct scanner {
         FILE *fin;
-
+        int col = 0, row = 0;
         scanner() {
             fin = stdin;
         }
 
         scanner(FILE *fin);
 
-        token *get_token();
+        root_ptr<token> get_token();
+        int getc(FILE *f);
+        void ungetc(int ch, FILE *f);
 
         std::set<string> keywords;
         std::set<string> typenames;

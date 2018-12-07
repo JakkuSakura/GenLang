@@ -182,7 +182,7 @@ int main() {
     }
 
     try {
-        auto result = pr.match_rule("root", 0, true);
+        auto result = pr.match_rule("root", 0);
         std::cout << result.first->to_string() << std::endl;
     } catch (const string &s) {
         std::cerr << s << std::endl;

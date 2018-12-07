@@ -18,10 +18,10 @@ namespace GenLang {
     struct regular_node : list {
         enum {
             NONE, AND, OR, ONE_OR_NONE, ONE_OR_MORE, NONE_OR_MORE, NODE, REP
-        } mode;
+        } mode = NONE;
         string name;
         int rep_begin, rep_end;
-        bool replaceable, errorat;
+        bool replaceable = false, errorat = false;
 
         int r_begin();
 
@@ -52,10 +52,10 @@ namespace GenLang {
         void print_all();
 
         std::pair<root_ptr<list>, int>
-        match_node(const root_ptr<regular_node> &root_node, int token_pos, bool fatal);
+        match_node(const root_ptr<regular_node> &root_node, int token_pos);
 
 
-        std::pair<root_ptr<node>, int> match_rule(const string &rule_name, int token_pos, bool fatal);
+        std::pair<root_ptr<node>, int> match_rule(const string &rule_name, int token_pos);
 
         void put_token(const root_ptr<token> &tk);
     };

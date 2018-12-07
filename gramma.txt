@@ -2,5 +2,5 @@ atom REPLACEABLE : CONSTANT
 atom REPLACEABLE : IDENTIFIER
 atom REPLACEABLE : STRING
 multi REPLACEABLE : atom ( ( '*' | '/' | '%' ) atom ) *
-add : multi ( ( '+' | '-' ) multi ) *
-root : ( add ; ) * EPS
+add : multi ( ( '+' | '-' ) ( multi ) # ) *
+root : add
