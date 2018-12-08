@@ -10,7 +10,7 @@
 #include "genlang/garbage_collection.h"
 
 namespace GenLang {
-    int grabage_collector::autoClean() {
+    int grabage_collector::auto_clean() {
         std::set<object *> vis;
         std::queue<object *> qu;
         for (auto e : roots) {
@@ -64,7 +64,7 @@ namespace GenLang {
     void class_manager::push(meta_object &o) {
         objs.push_back(&o);
         o.manager = this;
-        std::cerr << "registered " << o.name << " " << o.info.name() << std::endl;
+//        std::cerr << "registered " << o.name << " " << o.info.name() << std::endl;
     }
 
     meta_object *class_manager::find(const char *name) {

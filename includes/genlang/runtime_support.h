@@ -13,8 +13,9 @@ namespace GenLang {
 
     template<class Tp, class ...T>
     Tp *new_object(T... args) {
+        // todo Tp *new_object(string name, T... args) {
         Tp *obj = new Tp(args...);
-        genlang_class_manager.types[obj] = genlang_class_manager.find(typeid(Tp));
+//        genlang_class_manager.types[obj] = genlang_class_manager.find(name);
         genlang_garbage_collector.signin(obj);
         return obj;
     }

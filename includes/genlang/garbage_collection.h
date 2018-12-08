@@ -17,10 +17,10 @@ namespace GenLang {
         }
 
         ~grabage_collector() {
-            autoClean();
+            auto_clean();
         }
 
-        int autoClean();
+        int auto_clean();
 
         void detach(grabage_collector &gc);
 
@@ -36,10 +36,17 @@ namespace GenLang {
         std::map<void *, meta_object *> types;
 
         void push(meta_object &o);
+        // todo
+
 
         meta_object *find(const char *name);
 
         meta_object *find(const std::type_info &info);
+        string find_name(void *p) {
+            if(!p)
+                return "NULL";
+            return types[p]->name;
+        }
 
         ~class_manager();
     };
