@@ -14,6 +14,11 @@ class object
     {
         return (T *)this;
     }
+    template <class T>
+    const T *as() const
+    {
+        return (const T *)this;
+    }
     virtual ~object(){};
 };
 } // namespace GenLang

@@ -159,31 +159,32 @@ int main() {
         char buf[1000];
         while (fgets(buf, 1000, f)) {
             string s = buf;
-            s = strip(s);
+            string result;
+            result= s.strip();
+            s = result;
             if (s.size() && s[0] != '#')
                 pr.add_rule(s);
         }
         fclose(f);
     }
 
-    pr.build_all();
     pr.print_all();
 
     {
         FILE *f = fopen("input3.txt", "r");
         scanner scan(f);
+        scan.readfile();
         token *tk;
         while ((tk = scan.get_token())) {
             pr.put_token(tk);
-//            std::cout << tk->to_string() << std::endl;
+            std::cout << tk->to_string() << std::endl;
         }
-
         fclose(f);
     }
-
+    GenLang::show_auto_stack = true;
     try {
-        auto result = pr.match_rule("root", 0);
-        std::cout << result.first->to_string() << std::endl;
+        auto result = pr.parse();
+        std::cout << result->to_string() << std::endl;
     } catch (const string &s) {
         std::cerr << s << std::endl;
     }

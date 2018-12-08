@@ -15,10 +15,11 @@ namespace GenLang{
             put("val", tk->get_val());
         }
 
-        node(const string &type, list *matched_l) {
+        node(const string &type, list *matched_l, const string &tip) {
             set_unordered(true);
             put("type", alloc(String, type));
             put("matched", matched_l);
+            put("tip", alloc(String, tip));
         }
         const string &get_type()
         {
@@ -51,7 +52,9 @@ namespace GenLang{
             if (get("val"))
                 return get("val")->to_string();
             else if(get("matched"))
-                return get("matched")->to_string();
+            {
+                return get("tip")->as<String>()->get_val() + get("matched")->to_string();
+            }
             else
                 return "EMPTY";
         }

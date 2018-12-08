@@ -4,7 +4,7 @@
 
 
 namespace GenLang {
-
+    bool show_auto_stack = false;
     list *split(const string &str) {
         list *l = alloc(list);
         string sb;
@@ -44,8 +44,6 @@ namespace GenLang {
         return true;
     }
 
-
-
     root_ptr<list> splice(const root_ptr<list> &l, int left, int right) {
         root_ptr<list> nl = alloc(list);
         if(left < 0) left = l->size() + left;
@@ -58,36 +56,12 @@ namespace GenLang {
         return nl;
     }
 
-    root_ptr<String> splice(const root_ptr<String> str, int left, int right) {
-        root_ptr<String> nstr = alloc(String);
-        if(left < 0) left = str->size() + left;
-        if(right < 0) right = str->size() + right;
-        left = std::max(left, 0);
-        right = std::min(right, str->size());
-        for (int i = left; i < right; ++i) {
-            nstr->append(str->get(i));
-        }
-        return nstr;
-    }
-
-    string strip(const string &s) {
-        string s2;
-        int i = 0;
-        for (; i < s.size(); ++i) {
-            if(!isspace(s.get_val()[i]))
-                break;
-        }
-        s2 += s.get_val().substr((unsigned long)i, INF);
-        while (isspace(s2.get_val().back()))
-            s2.get_val().pop_back();
-        return s2;
-    }
-
-    autostack::autostack(std::vector<GenLang::string> &st, GenLang::string s) : st(st) {
+    autostack::autostack(std::vector<GenLang::string> &st, GenLang::string s, GenLang::string name) : st(st) {
         st.push_back(s);
         ok = true;
+        this->name = name;
         if(show_auto_stack)
-            std::cerr << "ENTERED " << s << std::endl;
+            std::cerr << this->name <<  " ENTERED " << s << std::endl;
     }
 
     void autostack::set(bool s) {
@@ -107,7 +81,7 @@ namespace GenLang {
 
     autostack::~autostack() {
         if (show_auto_stack)
-            std::cerr << st.back() << " " << (ok ? "SUCCEEDED" : "FAILED") << std::endl;
+            std::cerr << this->name << " " << st.back() << " " << (ok ? "SUCCEEDED" : "FAILED") << std::endl;
         st.pop_back();
     }
 }

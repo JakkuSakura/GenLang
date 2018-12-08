@@ -16,16 +16,27 @@
 
 namespace GenLang {
     struct regular_node : list {
-        enum {
-            NONE, AND, OR, ONE_OR_NONE, ONE_OR_MORE, NONE_OR_MORE, NODE, REP
+        enum ContainerType{
+            NONE, AND, OR, TOKEN
         } mode = NONE;
-        string name;
+        enum RepType {
+            ONCE, OPTIONAL, ONCE_OR_MORE, ANY, REP
+        } rep = ONCE;
+        string val, tip;
         int rep_begin, rep_end;
-        bool replaceable = false, errorat = false;
+        bool replaceable = false, extract = false, errorat = false;
 
         int r_begin();
 
         int r_end();
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "HidingNonVirtualFunction"
+        regular_node *get(int i) const
+        {
+            return (regular_node *)list::get(i);
+        }
+#pragma clang diagnostic pop
 
         string to_string() const override;
 
@@ -41,13 +52,11 @@ namespace GenLang {
     public:
         root_ptr<token> get_token(int i);
 
-        root_ptr<regular_node> add(std::stack<root_ptr<regular_node> > &st);
+        root_ptr<regular_node> new_rp_node(std::stack<root_ptr<regular_node> > &st, regular_node::ContainerType type);
 
         root_ptr<regular_node> build(const root_ptr<list> &tkls, int pos);
 
         void add_rule(const string &str);
-
-        void build_all();
 
         void print_all();
 
@@ -56,6 +65,16 @@ namespace GenLang {
 
 
         std::pair<root_ptr<node>, int> match_rule(const string &rule_name, int token_pos);
+
+        root_ptr<node> parse()
+        {
+            auto r = match_rule("root", 0);
+            if(r.first)
+                return r.first;
+            else
+                throw string("cannot match anything");
+
+        }
 
         void put_token(const root_ptr<token> &tk);
     };

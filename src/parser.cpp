@@ -18,7 +18,7 @@ namespace GenLang {
 
     std::pair<root_ptr<node>, int> parser::match_rule(const string &rule_name, int token_pos) {
         using namespace rule_types;
-        autostack holder(st, rule_name);
+//        autostack holder(st, rule_name);
         for (auto &e : st) {
             std::cerr << e << " ";
         }
@@ -130,9 +130,9 @@ namespace GenLang {
 //                    std::cout << std::endl;
 
                     if (matched_subrules->size() == 1 && it->second.replacable)
-                        return std::make_pair(matched_subrules->get(0), newtokenpos);
+                        return std::make_pair(matched_subrules->get(0)->as<node>(), newtokenpos);
 
-                    std::pair<root_ptr<node>, int> t = std::make_pair(alloc(node, rule_name, matched_subrules),
+                    std::pair<root_ptr<node>, int> t = std::make_pair(alloc(node, rule_name, matched_subrules, ""),
                                                                       newtokenpos);
                     if (it->second.matched) {
                         it->second.matched(this, t.first);
@@ -141,7 +141,7 @@ namespace GenLang {
                 }
             }
         }
-        holder.set(false);
+//        holder.set(false);
         return std::make_pair((node *) NULL, token_pos);
     }
 

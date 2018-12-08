@@ -11,6 +11,7 @@
 #include <set>
 #include <iostream>
 #include "genlang/object.h"
+#include "genlang/string.h"
 
 namespace GenLang {
 
@@ -55,7 +56,8 @@ namespace GenLang {
             } else {
                 if (!sorted)
                     std::sort(members.begin(), members.end());
-                int i = int(std::lower_bound(members.begin(), members.end(), std::make_pair(s, (object *) NULL)) - begin());
+                int i = int(
+                        std::lower_bound(members.begin(), members.end(), std::make_pair(s, (object *) NULL)) - begin());
                 if (i < size() && members[i].first == s)
                     return i;
             }
@@ -129,13 +131,12 @@ namespace GenLang {
         }
 
         int size() const {
-            return (int)members.size();
+            return (int) members.size();
         }
 
         void gc_walk(std::set<object *> &vis, std::queue<object *> &qu) override {
             for (auto &it : *this) {
-                if (it.second && !vis.count(it.second))
-                {
+                if (it.second && !vis.count(it.second)) {
                     vis.insert(it.second);
                     qu.push(it.second);
                 }
@@ -145,19 +146,25 @@ namespace GenLang {
     };
 
     class list : public container {
-        typedef std::vector<object *> T;
-        T members;
+        typedef std::vector<object *> mem_tp;
+        typedef mem_tp::iterator iterator;
+        typedef mem_tp::const_iterator const_iterator;
+        mem_tp members;
     public:
         const object *get(int id) const {
+            if (index(id) > members.size())
+                return NULL;
             return members[index(id)];
         }
 
         object *get(int id) {
+            if (index(id) > members.size())
+                return NULL;
             return members[index(id)];
         }
 
         template<class T>
-        T *put(int id, T *dt) {
+        T *put(int id, object *dt) {
             members[id] = dt;
             return dt;
         }
@@ -178,8 +185,9 @@ namespace GenLang {
             buf += "]";
             return buf;
         }
+
         int index(int i) const {
-            if(i < 0) i = (int)members.size() + i;
+            if (i < 0) i = (int) members.size() + i;
             return i;
         }
 
@@ -187,8 +195,6 @@ namespace GenLang {
             members.erase(members.begin() + index(i));
         }
 
-        typedef T::iterator iterator;
-        typedef T::const_iterator const_iterator;
 
         iterator begin() {
             return members.begin();
@@ -207,13 +213,12 @@ namespace GenLang {
         }
 
         int size() const {
-            return (int)members.size();
+            return (int) members.size();
         }
 
         void gc_walk(std::set<object *> &vis, std::queue<object *> &qu) override {
             for (auto &it : *this) {
-                if (!vis.count(it))
-                {
+                if (!vis.count(it)) {
                     vis.insert(it);
                     qu.push(it);
                 }

@@ -5,10 +5,8 @@
 #include "genlang/string.h"
 #include "genlang/runtime_support.h"
 #include "genlang/wrapper.h"
-#include "genlang/utils.h"
 
 namespace GenLang {
-    string strip(const string &s);
 
     list *split(const string &str);
 
@@ -18,19 +16,18 @@ namespace GenLang {
 
     root_ptr<list> splice(const root_ptr<list> &l, int left, int right);
 
-    root_ptr<String> splice(const root_ptr<String> str, int left, int right);
-
     bool is_upper(const string &str);
 
     bool is_alpha(const string &str);
 
-    static bool show_auto_stack = false;
+    extern bool show_auto_stack;
 
     class autostack {
         bool ok;
         std::vector<GenLang::string> &st;
+        string name;
     public:
-        autostack(std::vector<GenLang::string> &st, GenLang::string s);
+        autostack(std::vector<GenLang::string> &st, GenLang::string s, GenLang::string name);
 
         void set(bool s);
 

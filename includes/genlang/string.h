@@ -1,5 +1,3 @@
-#include <utility>
-
 #ifndef GENLANG_STRING_H
 #define GENLANG_STRING_H
 
@@ -22,14 +20,36 @@ namespace GenLang {
         string() : s() {}
 
         string(const string &s2) : s(s2.s) {}
+        int index(int i) const {
+            if(i < 0)
+                return i + size();
+            return i;
+        }
         char &operator[](int i) {
-            return s[i];
+            return s[index(i)];
         }
         const char &operator[](int i) const {
-            return s[i];
+            return s[index(i)];
         }
+
+        string strip() const {
+            string s2;
+            int i = 0;
+            for (; i < s.size(); ++i) {
+                if(!isspace(s[i]))
+                    break;
+            }
+            s2 += s.substr((unsigned long long)i, std::string::npos);
+            while (isspace(s2.get_val().back()))
+                s2.get_val().pop_back();
+            return s2;
+        }
+        string sub_str(int b, int e) const {
+            return s.substr((unsigned long long) index(b), (unsigned long long)(index(e) - index(b)));
+        }
+
         int size() const {
-            return (int)get_val().size();
+            return (int)s.size();
         }
 
         friend string operator+(const string &a, const string &b) {

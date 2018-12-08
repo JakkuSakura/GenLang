@@ -25,7 +25,7 @@ namespace GenLang {
     class root_ptr {
         object *p;
     public:
-        root_ptr(object *x = NULL) {
+        root_ptr(T *x = NULL) {
             p = x;
             genlang_garbage_collector.attach_root_ptr((object **) this);
         }

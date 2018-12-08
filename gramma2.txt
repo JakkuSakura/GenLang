@@ -24,44 +24,44 @@
 
 #map_obj : { obj_pairs }
 
-#atom : call
-#atom : fetch
-#atom : new_obj
-#atom : list
-#atom : map_obj
-atom : parentheses
-atom : CONSTANT
-atom : IDENTIFIER
-atom : STRING
+#atom & : call
+#atom & : fetch
+#atom & : new_obj
+#atom & : list
+#atom & : map_obj
+atom & : parentheses
+atom & : CONSTANT
+atom & : IDENTIFIER
+atom & : STRING
 
-power : atom | atom '**' power
-multi : power ( ( '*' | '/' | '%' ) power ) *
+power & : [ atom ( atom '**' power ) ]
+multi & : power ( [ '*' '/' '%' ] power # ) *
 
-add_rule : multi ( ( '+' | '-' ) multi ) *
+add_rule & : multi ( [ '+' '-' ] multi # ) *
 
-compare : add_rule ( ( '==' | '=' | '==' | '==' | '<' | '>' | '<=' | '>=' ) add_rule ) *
+compare & : add_rule ( [ '==' '=' '==' '==' '<' '>' '<=' '>=' ] add_rule # ) *
 
-assign : compare | compare = assign
+assign & : [ compare ( compare = assign ) ]
 
 
 #assigns : assign (, assign ) *
 
-math_expr : assign
+math_expr & : assign
 
-expr : math_expr
+expr & : math_expr
 
 #if_stmt : if ( math_expr ) stmt else stmt
 #if_stmt : if ( math_expr ) stmt
-#while_stmt : while ( math_expr ) stmt
+#while_stmt : while ( math_expr # ) # stmt
 
 
-#let_stmt : let assigns ;
+#let_stmt : let assigns ; #
 
-#let_stmt : let args as TYPENAME ;
-#let_stmt : let args as raw_array ;
+#let_stmt : let args as TYPENAME ; #
+#let_stmt : let args as raw_array ; #
 
 
-stmt : expr ;
+stmt : expr ; #
 #stmt : ;
 #stmt : if_stmt
 #stmt : while_stmt
@@ -93,3 +93,5 @@ stmt : expr ;
 #stmtblk : { stmts }
 
 stmts : stmt *
+
+root : stmts &

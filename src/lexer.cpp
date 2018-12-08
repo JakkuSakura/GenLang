@@ -50,18 +50,19 @@ namespace GenLang {
         operators = makeset(OPERATORS);
     }
     int scanner::getc(FILE *f) {
-        int ch = ::getc(f);
-        if (ch == '\n') {
-            row = 0, col += 1;
-        } else {
-            row += 1;
-        }
+        if(index >= len)
+            return EOF;
+        int ch = file[index];
+        col = cols[index];
+        row = rows[index];
+        index += 1;
         return ch;
     }
     void scanner::ungetc(int ch, FILE *f) {
-        // todo : first read all the file and process the position
-        row -= 1;
-        ::ungetc(ch, f);
+        if(ch == EOF) return;
+        index -= 1;
+        col = cols[index];
+        row = rows[index];
     }
     root_ptr<token> scanner::get_token() {
         bool rep;
@@ -72,6 +73,7 @@ namespace GenLang {
             int ch;
             do ch = getc(fin);
             while (isspace(ch));
+            int col = this->col, row = this->row;
             if (ch == EOF)
                 return NULL;
 
@@ -81,8 +83,9 @@ namespace GenLang {
                     ch = getc(fin);
                 } while (isdigit(ch));
                 if (isalpha(ch) || ch == '_')
-                    throw "unexpected char";
-                ungetc(ch, fin);
+                    throw string("unexpected char");
+                if(ch != EOF)
+                    ungetc(ch, fin);
                 return new_object<token>(alloc(String, "CONSTANT"), alloc(Long, atol(str.get_val().c_str())))->set(col, row);
             } else if (isalpha(ch) || ch == '_') {
                 do {
@@ -169,5 +172,31 @@ namespace GenLang {
             }
         }while (rep);
         throw string("Unknown token");
+    }
+
+    void scanner::readfile() {
+        fseek(fin, 0, SEEK_END);
+        len = (int)ftell(fin);
+        file = new char[len + 1];
+        cols = new int[len + 1];
+        rows = new int[len + 1];
+        index = 0;
+        fseek(fin, 0, SEEK_SET);
+        fread(file, 1, (size_t)len, fin);
+        row = col = 0;
+        while(index < len)
+        {
+            int ch = file[index];
+            rows[index] = row;
+            cols[index] = col;
+            if (ch == '\n') {
+                row = 0, col += 1;
+            } else {
+                col += 1;
+            }
+            ++index;
+        }
+        file[len] = 0;
+        index = 0;
     }
 }
