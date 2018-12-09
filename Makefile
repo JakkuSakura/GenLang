@@ -1,4 +1,4 @@
-SHELL = /bin/bash
+SHELL := /bin/bash
 
 AllDirs := src includes
 Sources := $(foreach n,$(AllDirs), $(wildcard $(n)/*.cpp))
@@ -8,12 +8,12 @@ StaticLib := #bin/genlang.a
 DynamicLib := #bin/ganlang.so
 Bin := bin/genlang
 
-#AllLibs : $(DynamicLib)
-#AllLibs : $(StaticLib)
-AllLibs : $(Bin)
+#AllLibs := $(DynamicLib)
+#AllLibs := $(StaticLib)
+AllLibs := $(Bin)
 
-CC = g++
-CXXFLAGS = -O2 -Wall -Iincludes -std=c++11
+CC := g++
+CXXFLAGS := -O2 -Wall -Iincludes -std=c++11
 #$(foreach n,$(AllDirs), -I$(n))
 
 LDFLAGS = -lstdc++
