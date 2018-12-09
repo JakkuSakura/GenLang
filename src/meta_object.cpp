@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "genlang/meta_object.h"
 using namespace std;
 namespace GenLang

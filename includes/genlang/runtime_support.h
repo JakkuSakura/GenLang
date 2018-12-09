@@ -55,8 +55,8 @@ namespace GenLang {
 
     };
 
-#define alloc_p(type, args...) root_ptr<type>(new_object<type>(#type, ##args))
-#define alloc(type, args...) alloc_p(type, ##args).get_p()
+#define alloc_p(type, ...) root_ptr<type>(new_object<type>(#type, ##__VA_ARGS__))
+#define alloc(type, ...) alloc_p(type, ##__VA_ARGS__).get_p()
 
 
 }

@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "genlang/complier/lexer.h"
 
 using namespace GenLang;

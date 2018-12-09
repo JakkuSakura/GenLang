@@ -2,7 +2,6 @@
 #define PROJECT_GENCODE_H
 
 #include "genlang/complier/token.h"
-#include "genlang/complier/parser.h"
 
 namespace GenLang {
 
