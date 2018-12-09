@@ -7,12 +7,12 @@ using namespace GenLang;
 
 namespace GenLang
 {
-class_manager genlang_class_manager;
-grabage_collector genlang_garbage_collector;
+class_manager class_manager::inst;
+garbage_collector garbage_collector::inst;
 void add_type(const char *name, const char *fa, const std::type_info &type)
 {
     meta_object *obj = new meta_object(name, fa, type);
-    genlang_class_manager.push(*obj);
+    class_manager::inst.push(*obj);
     
 }
 

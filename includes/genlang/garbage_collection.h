@@ -7,38 +7,47 @@
 
 
 namespace GenLang {
-    class grabage_collector {
+    class garbage_collector {
         std::set<object *> objects;
         std::set<object **> roots;
+        garbage_collector(){}
+        ~garbage_collector() {
+            auto_clean();
+        }
     public:
         template<class T>
         inline void signin(T *t) {
             objects.insert(t);
         }
 
-        ~grabage_collector() {
-            auto_clean();
-        }
 
         int auto_clean();
 
-        void detach(grabage_collector &gc);
+        void detach(garbage_collector &gc);
 
         object *detach(object *dt);
 
         void attach_root_ptr(object **pPtr);
 
         void detach_root_ptr(object **pPtr);
+        static garbage_collector inst;
     };
 
-    struct class_manager {
+    class class_manager {
         std::vector<meta_object *> objs;
         std::map<void *, meta_object *> types;
-
+        class_manager(){}
+        ~class_manager();
+    public:
         void push(meta_object &o);
-        // todo
-
-
+        void put_type(void *o, meta_object *meta)
+        {
+            types[o] = meta;
+        }
+        void erase_type(void *o)
+        {
+            types.erase(o);
+        }
         meta_object *find(const char *name);
 
         meta_object *find(const std::type_info &info);
@@ -48,7 +57,7 @@ namespace GenLang {
             return types[p]->name;
         }
 
-        ~class_manager();
+        static class_manager inst;
     };
 
 }

@@ -49,8 +49,9 @@ namespace GenLang {
         typenames = makeset(TYPENAMES);
         operators = makeset(OPERATORS);
     }
+
     int scanner::getc(FILE *f) {
-        if(index >= len)
+        if (index >= len)
             return EOF;
         int ch = file[index];
         col = cols[index];
@@ -58,15 +59,17 @@ namespace GenLang {
         index += 1;
         return ch;
     }
+
     void scanner::ungetc(int ch, FILE *f) {
-        if(ch == EOF) return;
+        if (ch == EOF) return;
         index -= 1;
         col = cols[index];
         row = rows[index];
     }
+
     root_ptr<token> scanner::get_token() {
         bool rep;
-        do{
+        do {
             rep = false;
 
             string str;
@@ -84,9 +87,10 @@ namespace GenLang {
                 } while (isdigit(ch));
                 if (isalpha(ch) || ch == '_')
                     throw string("unexpected char");
-                if(ch != EOF)
+                if (ch != EOF)
                     ungetc(ch, fin);
-                return new_object<token>(alloc(String, "CONSTANT"), alloc(Long, atol(str.get_val().c_str())))->set(col, row);
+                return new_object<token>("token", alloc(String, "CONSTANT"),
+                                         alloc(Long, atol(str.get_val().c_str())))->set(col, row);
             } else if (isalpha(ch) || ch == '_') {
                 do {
                     str += ch;
@@ -95,14 +99,12 @@ namespace GenLang {
                 ungetc(ch, fin);
                 if (str == "native") {
                     ch = getc(fin);
-                    while(isspace(ch)) ch = getc(fin);
-                    if(ch == '{')
-                    {
+                    while (isspace(ch)) ch = getc(fin);
+                    if (ch == '{') {
                         int braces = 1;
                         str = "";
-                        while ((ch = getc(fin)) && ch != EOF)
-                        {
-                            if(ch == '{')
+                        while ((ch = getc(fin)) && ch != EOF) {
+                            if (ch == '{')
                                 braces += 1;
                             else if (ch == '}')
                                 braces -= 1;
@@ -110,24 +112,22 @@ namespace GenLang {
                                 break;
                             str += ch;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         str = "";
                         str += ch;
                         while (ch = getc(fin), ch != EOF && ch != ';')
                             str += ch;
                     }
 
-                    return new_object<token>(alloc(String, "NATIVE"), alloc(String, str))->set(col, row);
+                    return new_object<token>("token", alloc(String, "NATIVE"), alloc(String, str))->set(col, row);
 
 
                 } else if (keywords.count(str))
-                    return new_object<token>(alloc(String, str), alloc(String, str));
+                    return new_object<token>("token", alloc(String, str), alloc(String, str));
                 else if (typenames.count(str))
-                    return new_object<token>(alloc(String, "TYPENAME"), alloc(String, str))->set(col, row);
+                    return new_object<token>("token", alloc(String, "TYPENAME"), alloc(String, str))->set(col, row);
                 else
-                    return new_object<token>(alloc(String, "IDENTIFIER"), alloc(String, str))->set(col, row);
+                    return new_object<token>("token", alloc(String, "IDENTIFIER"), alloc(String, str))->set(col, row);
             } else if (ch == '"') {
                 int last = 0;
                 do {
@@ -141,7 +141,7 @@ namespace GenLang {
                     str += ch;
                     last = ch;
                 } while (true);
-                return new_object<token>(alloc(String, "STRING"), alloc(String, str))->set(col, row);
+                return new_object<token>("token", alloc(String, "STRING"), alloc(String, str))->set(col, row);
             } else if (strchr(SPCEIAL_CHARS, ch)) {
                 while (operators.count(str + (string) ch)) {
                     str += ch;
@@ -155,9 +155,8 @@ namespace GenLang {
 
                 if (str == "/*") {
                     int lst = 0;
-                    while (ch = getc(fin), ch != EOF)
-                    {
-                        if(lst == '*' && ch == '/')
+                    while (ch = getc(fin), ch != EOF) {
+                        if (lst == '*' && ch == '/')
                             break;
                         lst = ch;
                     }
@@ -167,25 +166,24 @@ namespace GenLang {
 
                 if (str != "") {
                     ungetc(ch, fin);
-                    return new_object<token>(alloc(String, str), alloc(String, str))->set(col, row);
+                    return new_object<token>("token", alloc(String, str), alloc(String, str))->set(col, row);
                 }
             }
-        }while (rep);
+        } while (rep);
         throw string("Unknown token");
     }
 
     void scanner::readfile() {
         fseek(fin, 0, SEEK_END);
-        len = (int)ftell(fin);
+        len = (int) ftell(fin);
         file = new char[len + 1];
         cols = new int[len + 1];
         rows = new int[len + 1];
         index = 0;
         fseek(fin, 0, SEEK_SET);
-        fread(file, 1, (size_t)len, fin);
+        fread(file, 1, (size_t) len, fin);
         row = col = 0;
-        while(index < len)
-        {
+        while (index < len) {
             int ch = file[index];
             rows[index] = row;
             cols[index] = col;

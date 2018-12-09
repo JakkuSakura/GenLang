@@ -10,7 +10,7 @@
 #include "genlang/garbage_collection.h"
 
 namespace GenLang {
-    int grabage_collector::auto_clean() {
+    int garbage_collector::auto_clean() {
         std::set<object *> vis;
         std::queue<object *> qu;
         for (auto e : roots) {
@@ -30,7 +30,7 @@ namespace GenLang {
         for (auto e : objects) {
             if (!vis.count(e)) {
                 todel.push_back(e);
-                genlang_class_manager.types.erase(e);
+                class_manager::inst.erase_type(e);
                 delete e;
                 ++cnt;
             }
@@ -43,28 +43,29 @@ namespace GenLang {
     }
 
 
-    object *grabage_collector::detach(object *dt) {
+    object *garbage_collector::detach(object *dt) {
         objects.erase(dt);
         return dt;
     }
 
-    void grabage_collector::detach(grabage_collector &gc) {
+    void garbage_collector::detach(garbage_collector &gc) {
         gc.objects.insert(objects.begin(), objects.end());
         objects.clear();
     }
 
-    void grabage_collector::attach_root_ptr(object **pPtr) {
+    void garbage_collector::attach_root_ptr(object **pPtr) {
         roots.insert(pPtr);
     }
 
-    void grabage_collector::detach_root_ptr(object **pPtr) {
+    void garbage_collector::detach_root_ptr(object **pPtr) {
         roots.erase(pPtr);
     }
 
     void class_manager::push(meta_object &o) {
+        std::cerr << this << " registered " << o.name << " " << o.info.name() << std::endl;
         objs.push_back(&o);
         o.manager = this;
-//        std::cerr << "registered " << o.name << " " << o.info.name() << std::endl;
+        std::cerr << objs.size() << std::endl;
     }
 
     meta_object *class_manager::find(const char *name) {

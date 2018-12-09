@@ -6,17 +6,14 @@
 #include "genlang/garbage_collection.h"
 
 namespace GenLang {
-    extern class_manager genlang_class_manager;
-    extern grabage_collector genlang_garbage_collector;
 
     void add_type(const char *name, const char *fa, const std::type_info &type);
 
     template<class Tp, class ...T>
-    Tp *new_object(T... args) {
-        // todo Tp *new_object(string name, T... args) {
+    Tp *new_object(const char *name, T... args) {
         Tp *obj = new Tp(args...);
-//        genlang_class_manager.types[obj] = genlang_class_manager.find(name);
-        genlang_garbage_collector.signin(obj);
+        class_manager::inst.put_type(obj, class_manager::inst.find(name));
+        garbage_collector::inst.signin(obj);
         return obj;
     }
 
@@ -28,12 +25,12 @@ namespace GenLang {
     public:
         root_ptr(T *x = NULL) {
             p = x;
-            genlang_garbage_collector.attach_root_ptr((object **) this);
+            garbage_collector::inst.attach_root_ptr((object **) this);
         }
 
 
         ~root_ptr() {
-            genlang_garbage_collector.detach_root_ptr((object **) this);
+            garbage_collector::inst.detach_root_ptr((object **) this);
         }
 
         T &operator*() const {
@@ -58,8 +55,7 @@ namespace GenLang {
 
     };
 
-#define alloc_r(type, args...) new_object<type>(args)
-#define alloc_p(type, args...) root_ptr<type>(alloc_r(type, ##args))
+#define alloc_p(type, args...) root_ptr<type>(new_object<type>(#type, ##args))
 #define alloc(type, args...) alloc_p(type, ##args).get_p()
 
 

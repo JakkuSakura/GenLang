@@ -5,7 +5,7 @@ using namespace GenLang;
 
 int main() {
     object *o = alloc(object);
-    std::cout << "wtf " << genlang_class_manager.find_name(o) << std::endl;
+    std::cout << "wtf " << class_manager::inst.find_name(o) << std::endl;
     regular_parser pr;
     {
         system("pwd");
