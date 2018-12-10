@@ -12,8 +12,8 @@ namespace GenLang {
     template<class Tp, class ...T>
     Tp *new_object(const char *name, T... args) {
         Tp *obj = new Tp(args...);
-        class_manager::inst.put_type(obj, class_manager::inst.find(name));
-        garbage_collector::inst.signin(obj);
+        class_manager::instance().put_type(obj, class_manager::instance().find(name));
+        garbage_collector::instance().signin(obj);
         return obj;
     }
 
@@ -25,12 +25,12 @@ namespace GenLang {
     public:
         root_ptr(T *x = NULL) {
             p = x;
-            garbage_collector::inst.attach_root_ptr((object **) this);
+            garbage_collector::instance().attach_root_ptr((object **) this);
         }
 
 
         ~root_ptr() {
-            garbage_collector::inst.detach_root_ptr((object **) this);
+            garbage_collector::instance().detach_root_ptr((object **) this);
         }
 
         T &operator*() const {

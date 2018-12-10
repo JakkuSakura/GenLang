@@ -23,7 +23,6 @@ struct meta_object
     const char *faname;
     const std::type_info &info;
     std::vector<const char *> memname;
-    class_manager *manager;
 };
 
 }

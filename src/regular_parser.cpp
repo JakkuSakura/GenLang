@@ -123,8 +123,8 @@ GenLang::regular_parser::build(const GenLang::root_ptr<GenLang::list> &tkls, int
             nd->val = first->get_val();
             top_ele->append(nd.get_p());
         }
-//        std::cerr << root->to_string() << std::endl;
     }
+//    std::cerr << root->to_string() << std::endl;
 
     return root;
 
@@ -172,44 +172,46 @@ GenLang::regular_parser::match_node(const GenLang::root_ptr<GenLang::regular_nod
     int pos = token_pos;
     root_ptr<list> matched = alloc(list);
 
-    int rep;
-    for (rep = 0; rep < root_node->r_end(); ++rep) {
+    int rep, end_times = root_node->r_end();
+    for (rep = 0; rep < end_times; ++rep) {
         root_ptr<list> matched_subrules = alloc(list);
+        int newpos;
 
-        for (int index = 0; index < root_node->size(); ++index) {
-            root_ptr<regular_node> s = root_node->get(index);
-
-            list *lst = NULL;
-            node *nde = NULL;
-            int newpos;
-            if (s->mode == regular_node::TOKEN) {
-                std::pair<root_ptr<node>, int> result = match_rule(s->val, pos);
-                nde = result.first;
-                newpos = result.second;
-            } else {
-                std::pair<root_ptr<list>, int> result = match_node(s, pos);
-                lst = result.first;
-                newpos = result.second;
-            }
-            if (!(lst || nde) && (root_node->mode != regular_node::OR || index == root_node->size() - 1))
-                goto exit;
-
-            if (lst) {
-                for (auto e : *lst)
-                    if (e->as<node>()->get_type() != EMPTY)
-                        matched_subrules->append(e);
-                pos = newpos;
-            } else if (nde) {
-                if (s->extract)
-                    for (auto e : *nde->get_matched())
-                        matched_subrules->append(e);
-                else
-                    matched_subrules->append(nde);
-                pos = newpos;
-            }
-
-            if ((lst || nde) && root_node->mode == regular_node::OR)
+        if (root_node->mode == regular_node::TOKEN) {
+            std::pair<root_ptr<node>, int> result = match_rule(root_node->val, pos);
+            node *nde = result.first;
+            newpos = result.second;
+            if (!nde)
                 break;
+            if (root_node->extract)
+                for (auto e : *nde->get_matched())
+                    matched_subrules->append(e);
+            else
+                matched_subrules->append(nde);
+            pos = newpos;
+
+        } else {
+
+            for (int index = 0; index < root_node->size(); ++index) {
+                root_ptr<regular_node> s = root_node->get(index);
+
+                std::pair<root_ptr<list>, int> result = match_node(s, pos);
+                list *lst = result.first;
+                newpos = result.second;
+                if (!lst && (root_node->mode != regular_node::OR || index == root_node->size() - 1))
+                    goto exit;
+
+                if (lst) {
+                    for (auto e : *lst)
+                        if (e->as<node>()->get_type() != EMPTY)
+                            matched_subrules->append(e);
+                    pos = newpos;
+                }
+
+
+                if (lst && root_node->mode == regular_node::OR)
+                    break;
+            }
         }
         for (object *e : *matched_subrules) {
             matched->append(e);
@@ -221,7 +223,7 @@ GenLang::regular_parser::match_node(const GenLang::root_ptr<GenLang::regular_nod
     } else {
         if (root_node->errorat) {
             char buf[1000];
-            sprintf(buf, "parse error : missing %s at %d \n %s", root_node->to_string().get_val().c_str(), token_pos,
+            sprintf(buf, "parse error : missing %s (%s) at %d \n %s", root_node->to_string().get_val().c_str(), root_node->tip.get_val().c_str() ,token_pos,
                     token_pos < tokens.size() ? tokens[token_pos]->to_string().get_val().c_str() : "");
             throw string(buf);
         }
@@ -274,4 +276,13 @@ GenLang::regular_parser::match_rule(const GenLang::string &rule_name, const int 
 
 void GenLang::regular_parser::put_token(const GenLang::root_ptr<GenLang::token> &tk) {
     tokens.push_back(tk);
+}
+
+GenLang::root_ptr<GenLang::node> GenLang::regular_parser::parse() {
+    auto r = match_rule("root", 0);
+    if(r.first)
+        return r.first;
+    else
+        throw string("cannot match anything");
+
 }

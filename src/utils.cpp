@@ -4,7 +4,7 @@
 
 
 namespace GenLang {
-    bool show_auto_stack = false;
+
     list *split(const string &str) {
         list *l = alloc(list);
         string sb;
@@ -55,7 +55,7 @@ namespace GenLang {
         }
         return nl;
     }
-
+    bool show_auto_stack = false;
     autostack::autostack(std::vector<GenLang::string> &st, GenLang::string s, GenLang::string name) : st(st) {
         st.push_back(s);
         ok = true;

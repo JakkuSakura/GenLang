@@ -1,1 +1,6 @@
-1*5;
+int main ()
+{
+    let a as int;
+    //a = 1;
+    //printf("%d", a);
+}

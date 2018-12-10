@@ -30,7 +30,7 @@ namespace GenLang {
         for (auto e : objects) {
             if (!vis.count(e)) {
                 todel.push_back(e);
-                class_manager::inst.erase_type(e);
+                class_manager::instance().erase_type(e);
                 delete e;
                 ++cnt;
             }
@@ -61,34 +61,70 @@ namespace GenLang {
         roots.erase(pPtr);
     }
 
+    garbage_collector &garbage_collector::instance() {
+        static garbage_collector inst;
+        return inst;
+
+    }
+
+    garbage_collector::garbage_collector() {}
+
+    garbage_collector::~garbage_collector() {
+        auto_clean();
+    }
+
+
+    void garbage_collector::signin(object *t) {
+        objects.insert(t);
+    }
+
     void class_manager::push(meta_object &o) {
         std::cerr << this << " registered " << o.name << " " << o.info.name() << std::endl;
         objs.push_back(&o);
-        o.manager = this;
-        std::cerr << objs.size() << std::endl;
     }
 
     meta_object *class_manager::find(const char *name) {
         if (!name)
-            return NULL;
+            return nullptr;
         for (auto &obj : objs)
             if (std::strcmp(name, obj->name) == 0)
                 return obj;
-        return NULL;
+        return nullptr;
     }
 
     meta_object *class_manager::find(const std::type_info &info) {
         for (auto &obj : objs)
             if (obj->info == info)
                 return obj;
-        return NULL;
+        return nullptr;
     }
 
     class_manager::~class_manager() {
         for (auto e : objs)
             delete e;
-        objs.clear();
     }
+
+    void class_manager::put_type(void *o, meta_object *meta) {
+        types[o] = meta;
+    }
+
+    void class_manager::erase_type(void *o) {
+        types.erase(o);
+    }
+
+    string class_manager::find_name(void *p) {
+        if(!p)
+            return "NULL";
+        return types[p]->name;
+    }
+
+    class_manager &class_manager::instance() {
+        static class_manager inst;
+        return inst;
+
+    }
+
+    class_manager::class_manager() {}
 
 
 }

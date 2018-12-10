@@ -12,19 +12,19 @@ namespace GenLang {
         int len = 0;
         int col = 0, row = 0;
         int index = 0;
-        scanner() {
-            fin = stdin;
-        }
-        ~scanner() {
-            delete [] file;
-            delete [] rows;
-            delete [] cols;
-        }
+
+        scanner();
+
+        ~scanner();
+
         scanner(FILE *fin);
+
         void readfile();
 
         root_ptr<token> get_token();
+
         int getc(FILE *f);
+
         void ungetc(int ch, FILE *f);
 
         std::set<string> keywords;

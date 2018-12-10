@@ -66,15 +66,7 @@ namespace GenLang {
 
         std::pair<root_ptr<node>, int> match_rule(const string &rule_name, int token_pos);
 
-        root_ptr<node> parse()
-        {
-            auto r = match_rule("root", 0);
-            if(r.first)
-                return r.first;
-            else
-                throw string("cannot match anything");
-
-        }
+        root_ptr<node> parse();
 
         void put_token(const root_ptr<token> &tk);
     };

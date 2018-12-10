@@ -35,10 +35,10 @@ namespace GenLang{
         }
         bool has(const string &s)
         {
+            if(get_type() == s)
+                return true;
             if(get("matched"))
             {
-                if(get_type() == s)
-                    return true;
                 for(auto e : *this->get_matched())
                 {
                     if(!e) continue;

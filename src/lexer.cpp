@@ -122,7 +122,7 @@ namespace GenLang {
 
 
                 } else if (keywords.count(str))
-                    return new_object<token>("token", alloc(String, str), alloc(String, str));
+                    return new_object<token>("token", alloc(String, str), alloc(String, str))->set(col, row);
                 else if (typenames.count(str))
                     return new_object<token>("token", alloc(String, "TYPENAME"), alloc(String, str))->set(col, row);
                 else
@@ -187,7 +187,7 @@ namespace GenLang {
             rows[index] = row;
             cols[index] = col;
             if (ch == '\n') {
-                row = 0, col += 1;
+                col = 0, row += 1;
             } else {
                 col += 1;
             }
@@ -195,5 +195,14 @@ namespace GenLang {
         }
         file[len] = 0;
         index = 0;
+    }
+
+    scanner::scanner() : scanner(stdin) {
+    }
+
+    scanner::~scanner() {
+        delete[] file;
+        delete[] rows;
+        delete[] cols;
     }
 }

@@ -1,38 +1,36 @@
-#parentheses : ( math_expr )
+parentheses : '(' math_expr ')'
 
-#args : math_expr ,
-#args :
+args : math_expr ,
+args :
 
-#tuple : ( args )
+tuple : '(' args ')'
 
-#tuples : tuple
+tuples : tuple
 
-#call : IDENTIFIER subscripts tuples
-#call : parentheses subscripts tuples
+call : IDENTIFIER subscripts tuples
+call : parentheses subscripts tuples
 
-#list : [ args ]
+list : '[' args ']'
 
-#subscript : [ math_expr ]
-#subscripts : subscript
+subscript : '[' math_expr ']'
+subscripts : subscript +
 
-#raw_array : TYPENAME subscripts
+raw_array : TYPENAME subscripts
 
 
-#obj_pair : IDENTIFIER : math_expr
-#obj_pairs : obj_pair ,
-#obj_pairs :
+obj_pair : IDENTIFIER : math_expr
+obj_pairs : obj_pair ( , obj_pair ) *
 
-#map_obj : { obj_pairs }
+map_obj : { obj_pairs }
 
-#atom & : call
-#atom & : fetch
-#atom & : new_obj
-#atom & : list
-#atom & : map_obj
-atom & : parentheses
+atom & : call
 atom & : CONSTANT
 atom & : IDENTIFIER
 atom & : STRING
+atom & : new_obj
+atom & : list
+atom & : map_obj
+atom & : parentheses
 
 power & : [ atom ( atom '**' power ) ]
 multi & : power ( [ '*' '/' '%' ] power # ) *
@@ -43,55 +41,62 @@ compare & : add_rule ( [ '==' '=' '==' '==' '<' '>' '<=' '>=' ] add_rule # ) *
 
 assign & : [ compare ( compare = assign ) ]
 
-
-#assigns : assign (, assign ) *
+assigns : assign ( , assign ) *
 
 math_expr & : assign
 
 expr & : math_expr
 
-#if_stmt : if ( math_expr ) stmt else stmt
-#if_stmt : if ( math_expr ) stmt
-#while_stmt : while ( math_expr # ) # stmt
+if_stmt : if '(' math_expr ')' # stmt ( else stmt ) ?
+while_stmt : while '(' math_expr # ')' # stmt
 
 
-#let_stmt : let assigns ; #
 
-#let_stmt : let args as TYPENAME ; #
-#let_stmt : let args as raw_array ; #
+raw_assign : IDENTIFIER ( = math_expr ) ?
 
 
+let_args_assigns :  raw_assign ( , raw_assign ) *
+
+let_args :  IDENTIFIER ( , IDENTIFIER ) *
+
+let_stmt 'let_stmt' : let let_args as TYPENAME ; #
+let_stmt 'let_stmt' : let let_args as raw_array ; #
+let_stmt 'let_stmt' : let let_args_assigns ; #
+
+
+stmt & : ;
+stmt & : if_stmt
+stmt & : while_stmt
+stmt & : stmtblk
+stmt & : let_stmt
 stmt 'stmt' : expr ; #
-#stmt : ;
-#stmt : if_stmt
-#stmt : while_stmt
-#stmt : stmtblk
-#stmt : let_stmt
 
-#pair : TYPENAME IDENTIFIER
+pair : TYPENAME IDENTIFIER
 
-#func_decl : pair ( decl_args )
-#func_def : func_decl stmtblk
+func_decl 'func_decl' : pair '(' decl_args ')'
+func_def 'func_def' : func_decl stmtblk
 
-#decl_args : pair ,
-#decl_args :
+decl_args 'args' : pair ( , pair ) *
+decl_args 'args' : EMPTY
 
 
 
-#class_decl : class IDENTIFIER
-#class_def : class_decl stmtblk
+class_def : class_decl stmtblk
+class_decl : class IDENTIFIER
 
-#stmt : class_decl ;
+stmt : class_def
+stmt : class_decl ;
 
-#stmt : class_def
 
-#stmt : func_decl ;
-#stmt : func_def
-#native_blk : NATIVE
-#stmt : native_blk
+stmt : func_decl ;
+stmt : func_def
+native_blk : NATIVE
+stmt : native_blk
 
-#stmtblk : { stmts }
+stmtblk 'body' : { stmts }
 
 stmts : stmt *
 
 root 'root' : stmts &
+
+# untested something
